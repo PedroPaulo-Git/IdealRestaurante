@@ -15,7 +15,44 @@
 .navbar-menu li {
     list-style-type: none;
     font-size: 18px;
-    font-weight: 500;
+    font-weight: 580;
     cursor: pointer;
 }
 /* right navbar */
+
+.navbar-right{
+    
+    display: flex;
+    height: 50px;
+    gap: 40px;
+}
+.navbar-right-search{
+    position: relative;
+}
+.navbar-right-search .dot{
+    position: absolute;
+    width: 8px;
+    height: 8px;
+    top: -5px;
+    right: -5px;
+    border-radius: 50%;
+    background-color: #e22e37;
+}
+.navbar-right svg{
+    cursor: pointer;
+  /* TAMANHO DIRETO NO CODIGO*/ 
+}
+.navbar .active{
+    padding-bottom: 2px ;
+    border-bottom: 2px solid #282d26;
+}
+button.button-navbar{
+    cursor: pointer;
+    background-color: #282d26;
+    color:#eeeaeb ;
+    width: 135px;
+    height: 38px;
+    font-weight: 500;
+    border: none;
+    border-radius: 3px;
+}
