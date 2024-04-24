@@ -1,10 +1,19 @@
 .header{
-    height: 34vw;
+    height: 28vw;
     margin: 30px auto;
     background-image: url('/BannerIdealRest.jpg');
     background-repeat: no-repeat;
     background-size: contain;
     position: relative;
+}
+.header-contents-h2{
+    font-size:max(2.5vw,5px); 
+    text-shadow: 3px 3px 8px rgba(0, 0, 0, 0.5);
+}
+.header-contents-p{
+    font-size:1.1vw;
+    text-shadow: 2px 2px 2px rgba(0, 0, 0, 0.9);
+
 }
 .header-contents{
     color: #eeeaeb;
@@ -13,7 +22,18 @@
     flex-direction: column;
     align-items: start;
     gap:1.5vw;
-    max-width: 50%;
+    max-width: 40%;
     left: 4vw;
-    bottom:30%;
+    bottom:16%;
+    animation: fadeIn 1.8s;
+}
+.button-header-contents{
+    cursor: pointer;
+    background-color: #282d26;
+    color:#eeeaeb ;
+    padding: 0.5vw 2.3vw;
+    font-size:max(0.8vw,13px); 
+    font-weight: 500;
+    border: none;
+    border-radius: 3px;
 }
