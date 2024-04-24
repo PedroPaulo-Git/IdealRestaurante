@@ -1,0 +1,19 @@
+.header{
+    height: 34vw;
+    margin: 30px auto;
+    background-image: url('/BannerIdealRest.jpg');
+    background-repeat: no-repeat;
+    background-size: contain;
+    position: relative;
+}
+.header-contents{
+    color: #eeeaeb;
+    position: absolute;
+    display: flex;
+    flex-direction: column;
+    align-items: start;
+    gap:1.5vw;
+    max-width: 50%;
+    left: 4vw;
+    bottom:30%;
+}
