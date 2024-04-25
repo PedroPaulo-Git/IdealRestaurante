@@ -29,11 +29,16 @@
 }
 .button-header-contents{
     cursor: pointer;
-    background-color: #282d26;
+    background-color: #e22e37;
+    box-shadow: 3px 3px 5px #303030;
     color:#eeeaeb ;
     padding: 0.5vw 2.3vw;
     font-size:max(0.8vw,13px); 
     font-weight: 500;
     border: none;
     border-radius: 3px;
+}
+.button-header-contents:hover{
+    transform: scale(1.09);
+    transition: all 1s;
 }
