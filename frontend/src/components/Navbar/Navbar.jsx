@@ -21,9 +21,9 @@ const Navbar = () => {
       </ul>
 
       <div className='navbar-right'>
-        <span style={{fontSize:30,marginTop:2}} className='navbar-right-search-icon'><FaSearch /></span>
+        <span style={{fontSize:26,marginTop:2}} className='navbar-right-search-icon'><FaSearch /></span>
         <div className='navbar-right-search'>
-          <span style={{fontSize:30}} className='navbar-right-basket'><FaBasketShopping /></span>
+          <span style={{fontSize:28}} className='navbar-right-basket'><FaBasketShopping /></span>
           <div className='dot'></div>
         </div>
         <button className='button-navbar'>Registrar</button>

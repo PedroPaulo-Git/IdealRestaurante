@@ -7,11 +7,12 @@
     position: relative;
 }
 .header-contents-h2{
+    max-width: 100%;
     font-size:max(2.5vw,5px); 
     text-shadow: 3px 3px 8px rgba(0, 0, 0, 0.5);
 }
 .header-contents-p{
-    font-size:1.1vw;
+    font-size:max(1.1vw,5px);
     text-shadow: 2px 2px 2px rgba(0, 0, 0, 0.9);
 
 }
@@ -32,8 +33,8 @@
     background-color: #e22e37;
     box-shadow: 3px 3px 5px #303030;
     color:#eeeaeb ;
-    padding: 0.5vw 2.3vw;
-    font-size:max(0.8vw,13px); 
+    padding: 0.3vw 2.3vw;
+    font-size:max(1vw,5px); 
     font-weight: 500;
     border: none;
     border-radius: 3px;
@@ -41,4 +42,24 @@
 .button-header-contents:hover{
     transform: scale(1.09);
     transition: all 1s;
+}
+@media (max-width:650px) {
+    
+    .header-contents{
+        bottom: 5vw;
+        max-width: 50%;
+    }
+    .header-contents-p{
+       display: none;
+    }
+    .header-contents-h2{
+        font-size:max(4vw,10px); 
+   
+    }
+    .button-header-contents{
+        margin-top: 1vw;
+        padding: 1vw 3vw;
+        font-size: max(1.5vw,8px);
+        box-shadow: 1px 1px 3px #330000;
+    }
 }

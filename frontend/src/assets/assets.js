@@ -1,6 +1,13 @@
 
-import Logo from './Logo.png'
+import Logo from './Logo.png';
+import LogoFooter from './LogoFooter.png';
+import LogoFoooter2 from './LogoFooterwhite.png';
 import Rating_star from "./rating_star.png";
+import Plus from './plus.png';
+import More from './more.png';
+import Less from './less.png';
+import AppDownloadIMG_Apple from './AppDownload_apple.png';
+import AppDownloadIMG_Google from './AppDownload_google.png';
 
 import ExploreImage from './ExploreImage.jpg';
 import ExploreImage2 from './ExploreImage2.jpg';
@@ -28,7 +35,14 @@ import Meats5 from './Meats5.jpg';
 
 export const assets = {
     Logo,
+    LogoFooter,
+    LogoFoooter2,
     Rating_star: Rating_star,
+    Plus,
+    More,
+    Less,
+    AppDownloadIMG_Apple,
+    AppDownloadIMG_Google
 }
 
 export const assets_menuList = [
@@ -74,7 +88,7 @@ export const food_list = [
         name: 'Pizzas Tradicionais',
         image: Pizza1,
         price: 52,
-        description: 'Uma seleção incrível de pizzas tradicionais com sabores clássicos que todos adoram.',
+        description: 'Uma seleção incrível de pizzas tradicionais com sabores clássicos.',
         category: 'Pizza'
     },
     {
@@ -82,7 +96,7 @@ export const food_list = [
         name: 'Pizzas Especiais',
         image: Pizza2,
         price: 55,
-        description: 'Descubra nossas pizzas especiais com uma combinação única de sabores, feitas para satisfazer os paladares mais exigentes.',
+        description: 'Descubra nossas pizzas especiais com uma combinação única de sabores.',
         category: 'Pizza'
     },
     {
@@ -90,7 +104,7 @@ export const food_list = [
         name: 'Pizzas Doces',
         image: Pizza3,
         price: 45,
-        description: 'Deleite-se com nossas deliciosas pizzas doces, perfeitas para aqueles momentos em que você deseja um doce sabor de pizza.',
+        description: 'Deleite-se com nossas deliciosas pizzas doces.',
         category: 'Pizza'
     },
 
@@ -101,7 +115,7 @@ export const food_list = [
         image: Salad1,
         price: 30,
         description: 'Uma salada fresca com alface, croutons, queijo parmesão e molho Caesar.',
-        category: 'Salad'
+        category: 'Salada'
     },
     {
         _id: '5',
@@ -109,7 +123,7 @@ export const food_list = [
         image: Salad2,
         price: 25,
         description: 'Uma opção refrescante e saudável com uma variedade de frutas frescas.',
-        category: 'Salad'
+        category: 'Salada'
     },
 
   /* CARNES >>>>*/
@@ -118,16 +132,16 @@ export const food_list = [
         name: 'Bife de Filé Mignon',
         image: Meats1,
         price: 60,
-        description: 'Delicioso bife de filé mignon grelhado, acompanhado de legumes frescos.',
-        category: 'Meat'
+        description: 'Delicioso bife de filé mignon grelhado.',
+        category: 'Carne'
     },
     {
         _id: '7',
         name: 'Costela BBQ',
         image: Meats2,
         price: 55,
-        description: 'Costela suculenta com molho barbecue, perfeita para os amantes de carne.',
-        category: 'Meat'
+        description: 'Costela suculenta com molho barbecue.',
+        category: 'Carne'
     },
     {
         _id: '8',
@@ -135,7 +149,7 @@ export const food_list = [
         image: Meats3,
         price: 35,
         description: 'Peito de frango grelhado servido com acompanhamentos deliciosos.',
-        category: 'Meat'
+        category: 'Carne'
     },
     {
         _id: '9',
@@ -143,7 +157,7 @@ export const food_list = [
         image: Meats4,
         price: 40,
         description: 'Um hambúrguer suculento com todos os acompanhamentos clássicos.',
-        category: 'Meat'
+        category: 'Carne'
     },
     {
         _id: '10',
@@ -151,7 +165,7 @@ export const food_list = [
         image: Meats5,
         price: 65,
         description: 'Picanha grelhada no ponto certo, acompanhada de arroz, feijão e farofa.',
-        category: 'Meat'
+        category: 'Carne'
     },
     
 

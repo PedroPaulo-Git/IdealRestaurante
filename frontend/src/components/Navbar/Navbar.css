@@ -2,6 +2,7 @@
     padding: 10px;
     display: flex;
     align-items: center;
+    text-align: center;
     justify-content: space-between;
 }
 .Logo{
@@ -21,7 +22,7 @@
 /* right navbar */
 
 .navbar-right{
-    
+    align-items: center;
     display: flex;
     height: 50px;
     gap: 40px;
@@ -50,9 +51,42 @@ button.button-navbar{
     cursor: pointer;
     background-color: #282d26;
     color:#eeeaeb ;
-    width: 135px;
-    height: 38px;
+    width:max(2vw,80px);
+    height:max(1vw,30px);
     font-weight: 500;
     border: none;
     border-radius: 3px;
+}
+@media (max-width:1050px) {
+    .navbar{
+        display: flex;
+        align-items: center;
+        text-align: center;
+        justify-content: space-between;
+    }
+    .navbar-menu{
+        gap:18px;
+    }
+    .navbar-menu li{
+        font-size:max(1.6vw,10px);
+    }
+    .Logo{
+        max-width: 100px;
+    }
+    .button-navbar{
+    
+    }
+    .navbar-right svg{
+      width: 20px;
+      
+    }
+  
+}
+@media (max-width:750px) {
+    .navbar-menu{
+        display: none;
+    }
+    .navbar-right{
+        gap: 3vw;
+    }
 }
