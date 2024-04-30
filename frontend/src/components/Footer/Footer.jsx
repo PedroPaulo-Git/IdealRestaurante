@@ -9,7 +9,7 @@ import { FaWhatsapp } from "react-icons/fa6";
 
 const Footer = () => {
     return (
-        <div className='footer'>
+        <div className='footer' id='footer'>
             <div className='footer-content'>
 
                 <div className='footer-content-left'>
@@ -39,6 +39,7 @@ const Footer = () => {
                 </div>
 
             </div>
+            <hr />
             <p className='footer-copyright'>&copy; 2024 Ideal Restaurante . All rights reserved.</p>
         </div>
     )

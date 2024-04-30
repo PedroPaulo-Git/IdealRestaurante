@@ -8,6 +8,7 @@ import More from './more.png';
 import Less from './less.png';
 import AppDownloadIMG_Apple from './AppDownload_apple.png';
 import AppDownloadIMG_Google from './AppDownload_google.png';
+import Close from './Close.png';
 
 import ExploreImage from './ExploreImage.jpg';
 import ExploreImage2 from './ExploreImage2.jpg';
@@ -42,7 +43,8 @@ export const assets = {
     More,
     Less,
     AppDownloadIMG_Apple,
-    AppDownloadIMG_Google
+    AppDownloadIMG_Google,
+    Close
 }
 
 export const assets_menuList = [

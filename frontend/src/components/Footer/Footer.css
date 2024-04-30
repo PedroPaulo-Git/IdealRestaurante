@@ -1,6 +1,6 @@
 .footer{
     background-color: #282d26;
-    padding: 4vw 7vw;
+    padding: 2vw 7vw;
     margin-top: 8vw;
     color: #eeeaeb;
     max-width:100%;;
@@ -75,6 +75,17 @@
 .footer-content-right h2{
     margin-bottom: 0.8vw;
 }
+.footer hr{
+    margin-top: 4vw;
+    height: 2px;
+    border: none;
+    background-color: #60615f;
+
+}
+
+
+
+
 
 @media (max-width:750px) {
     .footer{
@@ -104,6 +115,10 @@
    }
     
     .footer-copyright{
-        
+       padding-bottom: 3vw;
+    }
+    .footer hr{
+        margin: 1vw 0 3vw;
+        margin-inline: 10vw;
     }
 }
