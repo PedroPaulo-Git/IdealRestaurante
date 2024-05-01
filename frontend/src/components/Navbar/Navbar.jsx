@@ -12,7 +12,7 @@ const Navbar = ({setShowLoginPopup}) => {
   return (
     <div className='navbar'>
 
-      <img className='Logo' src={assets.Logo} alt="" />
+<Link to='/'><img className='Logo' src={assets.Logo} alt="" /></Link> 
 
       <ul className='navbar-menu'>
         <Link to='/' onClick={()=>{setMenu('home')}} className={`${menu === 'home' ? 'active':''}`}>home</Link>

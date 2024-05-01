@@ -6,7 +6,7 @@ import { StoreContext } from '../../context/StoreContext';
 
 const Cart = () => {
 
-  const { cartItems, food_list, removeFromCart } = useContext<any>(StoreContext);
+  const { cartItems, food_list, removeFromCart,getTotalCart } = useContext<any>(StoreContext);
 
   return (
     <div className='cart'>
@@ -31,7 +31,7 @@ const Cart = () => {
                   <p className='cart-items-name' >{item.name}</p>
                   <p className='cart-items-price' >R${item.price}</p>
                   <p className='cart-items-quantity' >{cartItems[item._id]}</p>
-                  <p className='cart-items-total' >{item.price * cartItems[item._id]}</p>
+                  <p className='cart-items-total' >R${item.price * cartItems[item._id]}</p>
                   <p className='cart-items-remove' onClick={() => removeFromCart(item._id)}>x</p>
                 </div>
                 <hr />
@@ -47,15 +47,15 @@ const Cart = () => {
 
             <div className='cart-total-details'>
               <p>Subtotal</p>
-              {0}
+              R${getTotalCart()}
             </div>
             <div className='cart-total-details'>
               <p>Taxa de Entrega</p>
-              {0}
+              R${0}
             </div>
             <div className='cart-total-details-total'>
               <p>Total</p>
-              {0}
+              R${getTotalCart()}
             </div>
 
             <button className='cart-total-details-button'>Concluir Pagamento</button>
@@ -63,9 +63,13 @@ const Cart = () => {
           </div>
           <div className='cart-total-promotion'>
             <div className='cart-total-right'>
-              <p>Se vc tiver um código promocional,Adicione aqui !</p>
-              <input type="text" />
-              <button>Aplicar</button>
+
+              <p className='cart-total-right-title'>Se vc tiver um código promocional,Adicione aqui !</p>
+              <div className='cart-total-right-inputs'>
+              <input placeholder='Código Promocional' className='cart-total-right-input' type="text" />
+              <button className='cart-total-right-button'>Aplicar</button>
+            </div>
+
             </div>
           </div>
 

@@ -51,8 +51,9 @@ button.button-navbar{
     cursor: pointer;
     background-color: #282d26;
     color:#eeeaeb ;
-    width:max(2vw,80px);
-    height:max(1vw,30px);
+    width:max(6vw,70px);
+    height:max(2vw,25px);
+    font-size: max(0.6vw,10px);
     font-weight: 500;
     border: none;
     border-radius: 3px;

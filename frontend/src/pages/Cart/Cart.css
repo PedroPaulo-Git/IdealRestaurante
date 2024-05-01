@@ -1,5 +1,5 @@
 .cart{
-    margin-top: 100px;
+    margin-top: 5vw;
 }
 
 .cart-items-title{
@@ -78,4 +78,47 @@
     font-size: max(0.8vw,8px);
 }
 
+/* PARTE DE PROMOCAO CARRINHO*/
 
+.cart-total-promotion{
+    width: 40%;
+}
+.cart-total-right-title{
+    font-size: max(0.8vw,10px);
+    margin-bottom:0.5vw;
+}
+.cart-total-right-inputs{
+    height: max(2vw,25px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.cart-total-right-input{
+    width: 80%;
+    height: 100%;
+    border: none;
+    padding: max(0.8vw,8px);
+    font-size: max(0.7vw,10px);
+    border: 1px solid #d3d3d3;
+    outline: black;
+}
+.cart-total-right-button{
+    display: flex;
+    align-items: center;
+    text-align: center;
+    justify-content: center;
+    width: 20%;
+    height: 98%;
+    cursor: pointer;
+    padding:max(0.8vw,8px);
+    font-size: max(0.7vw,8px);
+    background-color: #282d26;
+    color: #eeeaeb;
+    font-weight: 580;
+    border: none;
+}
+@media (max-width:750px) {
+    .cart-total{
+        margin-top: 60vw;
+    }
+}
