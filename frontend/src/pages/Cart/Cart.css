@@ -1,0 +1,33 @@
+.cart{
+    margin-top: 100px;
+}
+
+.cart-items-title{
+    display: grid;
+    grid-template-columns: 1fr 1.5fr 1fr 1.2fr 1fr 0.5fr;
+    align-items: center;
+    justify-content: center;
+    font-size: max(0.8vw,12px);
+}
+
+.cart-items-title{
+    font-weight: 550;
+    color: rgb(97, 97, 97);
+}
+.cart-items-item{
+    color: #282d26;
+}
+
+.cart-items-item{
+    margin-block: 0.5vw;
+}
+.cart-items-image{
+    width: max(5vw,50px);
+    height: max(5vw,50px);
+    object-fit: cover;  
+ 
+}
+.cart-items-remove{
+    cursor: pointer;
+    font-size: max(1vw,12px);
+}

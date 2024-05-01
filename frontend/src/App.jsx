@@ -17,9 +17,9 @@ const App = () => {
     <div className='app'>
       <Navbar setShowLoginPopup={setShowLoginPopup}/>
       <Routes>
-        <Route path='/' element={<Home/>}/>
-        <Route path='/pedido' element={<PlaceOrder/>}/>
+        <Route path='/' element={<Home/>}/>        
         <Route path='/carrinho' element={<Cart/>}/>
+        <Route path='/pedido' element={<PlaceOrder/>}/>
       </Routes>
     </div>
     <Footer/>

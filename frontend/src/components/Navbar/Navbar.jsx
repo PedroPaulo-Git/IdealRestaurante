@@ -24,7 +24,7 @@ const Navbar = ({setShowLoginPopup}) => {
       <div className='navbar-right'>
         <span style={{fontSize:26,marginTop:2}} className='navbar-right-search-icon'><FaSearch /></span>
         <div className='navbar-right-search'>
-          <span style={{fontSize:28}} className='navbar-right-basket'><FaBasketShopping /></span>
+          <Link to='carrinho' style={{fontSize:28}} className='navbar-right-basket'><FaBasketShopping /></Link>
           <div className='dot'></div>
         </div>
         <button onClick={()=>setShowLoginPopup(true)} className='button-navbar'>Registrar</button>
