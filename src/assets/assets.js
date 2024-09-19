@@ -144,143 +144,139 @@ export const food_list = [
         description: 'Uma opção refrescante e saudável com uma variedade de frutas frescas.',
         category: 'Salada'
     },
-    /* SUSHIS >>>>*/
     {
         _id: '6',
-        name: 'Bife de Filé Mignon',
+        name: 'Sushi Nigiri',
         image: Sushi1,
         price: 1.5,
-        description: 'Delicioso bife de filé mignon grelhado.',
+        description: 'Tradicional sushi com fatia de peixe fresco sobre arroz temperado.',
         category: 'Sushi'
     },
     {
         _id: '7',
-        name: 'Costela BBQ',
+        name: 'Sushi Uramaki',
         image: Sushi2,
         price: 1.5,
-        description: 'Costela suculenta com molho barbecue.',
+        description: 'Sushi enrolado com arroz por fora e alga nori por dentro, recheado com peixe e vegetais.',
         category: 'Sushi'
     },
     {
         _id: '8',
-        name: 'Frango Grelhado',
+        name: 'Sushi Oshi',
         image: Sushi3,
         price: 1.5,
-        description: 'Peito de frango grelhado servido com acompanhamentos deliciosos.',
+        description: 'Sushi prensado em formato retangular, com camadas de arroz e peixe.',
         category: 'Sushi'
     },
     {
         _id: '9',
-        name: 'Hambúrguer Clássico',
+        name: 'Sushi Maki',
         image: Sushi4,
         price: 1.5,
-        description: 'Um hambúrguer suculento com todos os acompanhamentos clássicos.',
+        description: 'Clássico rolinho de sushi com alga nori por fora e recheio de peixe e arroz.',
         category: 'Sushi'
     },
     {
         _id: '10',
-        name: 'Churrasco de Picanha',
+        name: 'Temaki Frito',
         image: Sushi5,
         price: 1.5,
-        description: 'Picanha grelhada no ponto certo, acompanhada de arroz, feijão e farofa.',
+        description: 'Temaki crocante e frito, recheado com peixe e arroz.',
         category: 'Sushi'
     },
     {
         _id: '11',
-        name: 'Churrasco de Picanha',
+        name: 'Sushi Hot Roll',
         image: Sushi6,
         price: 1.5,
-        description: 'Picanha grelhada no ponto certo, acompanhada de arroz, feijão e farofa.',
+        description: 'Sushi empanado e frito, recheado com salmão e cream cheese.',
         category: 'Sushi'
     },
-
-
     /* CARNES >>>>*/
-    {
-        _id: '12',
-        name: 'Bife de Filé Mignon',
-        image: Meats1,
-        price: 60,
-        description: 'Delicioso bife de filé mignon grelhado.',
-        category: 'Carne'
-    },
-    {
-        _id: '13',
-        name: 'Costela BBQ',
-        image: Meats2,
-        price: 55,
-        description: 'Costela suculenta com molho barbecue.',
-        category: 'Carne'
-    },
-    {
-        _id: '14',
-        name: 'Frango Grelhado',
-        image: Meats3,
-        price: 35,
-        description: 'Peito de frango grelhado servido com acompanhamentos deliciosos.',
-        category: 'Carne'
-    },
-    {
-        _id: '15',
-        name: 'Hambúrguer Clássico',
-        image: Meats4,
-        price: 40,
-        description: 'Um hambúrguer suculento com todos os acompanhamentos clássicos.',
-        category: 'Carne'
-    },
-    {
-        _id: '16',
-        name: 'Churrasco de Picanha',
-        image: Meats5,
-        price: 65,
-        description: 'Picanha grelhada no ponto certo, acompanhada de arroz, feijão e farofa.',
-        category: 'Carne'
-    },
+{
+    _id: '12',
+    name: 'Costela Assada ao Bafo',
+    image: Meats1,
+    price: 60,
+    description: 'Costela assada lentamente ao bafo, suculenta e macia, com temperos especiais.',
+    category: 'Carne'
+},
+{
+    _id: '13',
+    name: 'Frango Empanado Crocante',
+    image: Meats2,
+    price: 55,
+    description: 'Frango empanado e frito, com crocância por fora e suculento por dentro, acompanhado de molho especial.',
+    category: 'Carne'
+},
+{
+    _id: '14',
+    name: 'Carne de Panela Desfiada',
+    image: Meats3,
+    price: 35,
+    description: 'Carne bovina cozida lentamente e desfiada, ideal para acompanhar arroz e farofa.',
+    category: 'Carne'
+},
+{
+    _id: '15',
+    name: 'Picanha Grelhada',
+    image: Meats4,
+    price: 40,
+    description: 'Picanha suculenta grelhada na brasa, servida com acompanhamentos tradicionais.',
+    category: 'Carne'
+},
+{
+    _id: '16',
+    name: 'Picanha ao Molho Chimichurri',
+    image: Meats5,
+    price: 65,
+    description: 'Picanha grelhada no ponto, acompanhada de um delicioso molho chimichurri.',
+    category: 'Carne'
+},
 
-    /* Almoços >>>>*/
+/* ALMOÇOS >>>>*/
+{
+    _id: '17',
+    name: 'Almoço Bife de Mignon',
+    image: Dinner1,
+    price: 60,
+    description: 'Bife de filé mignon grelhado, acompanhado de arroz, feijão e batata frita.',
+    category: 'Carne'
+},
+{
+    _id: '18',
+    name: 'Almoço Frango Crocante',
+    image: Dinner2,
+    price: 55,
+    description: 'Frango empanado crocante, servido com arroz, salada e purê de batata.',
+    category: 'Carne'
+},
+{
+    _id: '19',
+    name: 'Almoço Frango Grelhado Saudável',
+    image: Dinner3,
+    price: 35,
+    description: 'Peito de frango grelhado, servido com legumes assados e arroz integral.',
+    category: 'Carne'
+},
+{
+    _id: '20',
+    name: 'Almoço Cupim Assado',
+    image: Dinner4,
+    price: 40,
+    description: 'Cupim assado lentamente, servido com arroz, feijão e farofa.',
+    category: 'Carne'
+},
+{
+    _id: '21',
+    name: 'Bife ao Molho com Batata Frita',
+    image: Dinner5,
+    price: 65,
+    description: 'Bife ao molho madeira, acompanhado de batata frita crocante e arroz branco.',
+    category: 'Carne'
+},
 
-    {
-        _id: '17',
-        name: 'Bife de Filé Mignon',
-        image: Dinner1,
-        price: 60,
-        description: 'Delicioso bife de filé mignon grelhado.',
-        category: 'Carne'
-    },
-    {
-        _id: '18',
-        name: 'Costela BBQ',
-        image: Dinner2,
-        price: 55,
-        description: 'Costela suculenta com molho barbecue.',
-        category: 'Carne'
-    },
-    {
-        _id: '19',
-        name: 'Frango Grelhado',
-        image: Dinner3,
-        price: 35,
-        description: 'Peito de frango grelhado servido com acompanhamentos deliciosos.',
-        category: 'Carne'
-    },
-    {
-        _id: '20',
-        name: 'Hambúrguer Clássico',
-        image: Dinner4,
-        price: 40,
-        description: 'Um hambúrguer suculento com todos os acompanhamentos clássicos.',
-        category: 'Carne'
-    },
-    {
-        _id: '21',
-        name: 'Churrasco de Picanha',
-        image: Dinner5,
-        price: 65,
-        description: 'Picanha grelhada no ponto certo, acompanhada de arroz, feijão e farofa.',
-        category: 'Carne'
-    },
-
-    /* Fritas >>>>*/
+/* FRITAS >>>>*/
 
 
     {
