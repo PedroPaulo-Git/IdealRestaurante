@@ -1,8 +1,5 @@
-# React + Vite
+Projeto front end feito para um restaurante 
+Utilizando React,Typescript e Vite
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
-
-Currently, two official plugins are available:
-
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+![ideal](https://github.com/user-attachments/assets/af3147e5-db3e-4010-8376-46fb0f9bcbe2)
+![ideal2](https://github.com/user-attachments/assets/7deab227-9af5-4f80-9e63-673e384be340)
