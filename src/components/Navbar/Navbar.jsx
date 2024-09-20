@@ -6,14 +6,13 @@ import { FaSearch } from "react-icons/fa";
 import { Link } from 'react-router-dom';
 import { StoreContext } from '../../context/StoreContext';
 
-const Navbar = ({ setShowLoginPopup }) => {
+const Navbar = ({ setShowLoginPopup}) => {
 
   const [menu, setMenu] = useState('menu');
   const {getTotalCart} = useContext(StoreContext)
 
   return (
     <div className='navbar'>
-
       <Link to='/'><img className='Logo' src={assets.Logo} alt="" /></Link>
 
       <ul className='navbar-menu'>

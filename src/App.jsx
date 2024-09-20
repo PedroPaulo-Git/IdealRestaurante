@@ -13,10 +13,11 @@ import { Buffer } from 'buffer';
 
 const App = () => {
   const [showLoginPopup, setShowLoginPopup] = useState(false);
+
   window.Buffer = Buffer;
   return (
     <>
-      {showLoginPopup ? <LoginPopup setShowLoginPopup={setShowLoginPopup} /> : <></>}
+      {showLoginPopup ? <LoginPopup setShowLoginPopup={setShowLoginPopup}/> : <></>}
       <div className='app'>
         <Navbar setShowLoginPopup={setShowLoginPopup} />
         <Routes>
