@@ -2,58 +2,14 @@ import React, { useContext, useEffect } from 'react';
 import './Cart.css';
 import { StoreContext } from '../../context/StoreContext';
 import { useNavigate } from 'react-router-dom';
-import { QrCodePix } from 'qrcode-pix';
 
-interface IParameter {
-  version: string;
-  key: string;
-  city: string;
-  name: string;
-  value?: number;
-  transactionId?: string;
-  message?: string;
-  cep?: string;
-  currency?: number; //default: 986 ('R$')
-  countryCode?: string; //default: 'BR'
-}
-
-interface IResponse {
-  payload: () => string; //payload for QrCode
-  base64: (options?) => Promise<string>; //QrCode image base64
-}
 
 
 const Cart = () => {
 
-  const { cartItems, food_list, removeFromCart, getTotalCart } = useContext<any>(StoreContext);
+  const { cartItems, food_list, removeFromCart, getTotalCart } = useContext(StoreContext);
   const navigatte = useNavigate()
-  const [qrCode, setQrCode] = React.useState<string | null>(null);
-
-
-  const generateQrCode = async () => {
-    const qrCodePix = QrCodePix({
-      version: '01',
-      key: 'test@mail.com.br', // Your PIX key
-      name: 'Fulano de Tal',
-      city: 'SAO PAULO',
-      transactionId: 'YOUR_TRANSACTION_ID', // max 25 characters
-      message: 'Pay me :)',
-      cep: '99999999',
-      value: getTotalCart(), // You can set this dynamically
-    });
-
-    const base64QrCode = await qrCodePix.base64();
-    setQrCode(base64QrCode);
-    console.log(qrCodePix.payload()); // '00020101021126510014BR.GOV.BCB.PIX...'
-  };
-
-  const handleConcludePayment = async () => {
-    // Generate QR code when button is clicked
-    await generateQrCode();
-
-    // Redirect or perform additional actions like payment processing here
-    // navigatte('/pedido');
-  };
+ 
 
 
   return (
@@ -69,7 +25,7 @@ const Cart = () => {
         </div>
         <br />
         <hr />
-        {food_list.map((item: any, index: any) => {
+        {food_list.map((item, index) => {
 
           if (cartItems[item._id] > 0) {
             return (
@@ -107,7 +63,7 @@ const Cart = () => {
               R${getTotalCart()}
             </div>
 
-            <button onClick={handleConcludePayment} className='cart-total-details-button'>Concluir Pagamento</button>
+            <button onClick={()=>navigatte('/pedido')} className='cart-total-details-button'>Concluir Pagamento</button>
 
           </div>
           <div className='cart-total-promotion'>
@@ -120,14 +76,7 @@ const Cart = () => {
               </div>
 
             </div>
-            {/* Display the QR Code if it has been generated */}
-            {qrCode ? (
-              <div className='qrcode-container'>
-                <img src={qrCode} alt="QR Code Pix" />
-              </div>
-            ) : (
-              <p>Generating QR code...</p>
-            )}
+          
           </div>
 
         </div>
