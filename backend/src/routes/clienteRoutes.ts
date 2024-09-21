@@ -9,8 +9,6 @@ router.post('/register', async (req, res) => {
     const { username, email, password } = req.body;
     const hashedPassword = await bcrypt.hash(password, 10);
     console.log(req.body);
-   // const { firstName, lastName,username,password,email, phone, address, city, state, zipcode } = req.body;
-  
     try {
       const client_register = await prisma.client.create({
         data: {
@@ -31,7 +29,7 @@ router.post('/register', async (req, res) => {
     } catch (error) {
       res.status(400).json({ error: 'Error creating client' });
     }
-    // Implement your registration logic (e.g., hash the password, save to database)
+
   });
 
 //login router >>>>>>>>>>>>>>>>
@@ -63,6 +61,62 @@ router.post('/login',async (req:Request,res:Response)=>{
   }
 })
 
+router.post('/carrinho', async (req, res) => {
+  const { clientId, productId, quantity } = req.body;
+  try {
+    // Check if an active cart exists for the client
+    const existingCart = await prisma.cart.findFirst({
+      where: {
+        clientId,
+      },
+      include: {
+        items: true, // Optionally include items for further processing
+      },
+    });
+
+    let cart;
+
+    if (existingCart) {
+      // If a cart exists, you can choose to update it
+      cart = await prisma.cart.update({
+        where: { id: existingCart.id },
+        data: {
+          items: {
+            upsert: {
+              where:{ cartId_productId: { cartId: existingCart.id, productId } }, // Check if the item already exists in the cart
+              update: {
+                quantity: {
+                  increment: quantity, // Increment the quantity if it exists
+                },
+              },
+              create: {
+                productId,
+                quantity,
+              },
+            },
+          },
+        },
+      });
+      
+    } else {
+      // If no cart exists, create a new one
+      cart = await prisma.cart.create({
+        data: {
+          clientId,
+          items: {
+            create: {
+              productId,
+              quantity,
+            },
+          },
+        },
+      });
+    }
+    res.json(cart);
+  } catch (error) {
+    res.status(400).json({ error: 'Error updating cart' });
+  }
+});
 
 
 

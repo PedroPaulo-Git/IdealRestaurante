@@ -7,9 +7,35 @@ import { useNavigate } from 'react-router-dom';
 
 const Cart = () => {
 
-  const { cartItems, food_list, removeFromCart, getTotalCart } = useContext(StoreContext);
+  const { cartItems, food_list, removeFromCart, getTotalCart  } = useContext(StoreContext);
   const navigatte = useNavigate()
- 
+  const { clientId } = useContext(StoreContext); 
+
+  const handleAddToCart = (itemId) => {
+
+   
+    if (!clientId) {
+      console.error('Client ID is not defined');
+      return;
+  }
+
+    fetch('/carrinho', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            clientId:clientId,
+            productId: itemId,
+            quantity: quantity,
+        }),
+    })
+    .then(response => response.json())
+    .then(data => {
+        addToCart(itemId);
+    })
+    .catch(error => console.error('Error:', error));
+};
 
 
   return (
@@ -62,9 +88,11 @@ const Cart = () => {
               <p>Total</p>
               R${getTotalCart()}
             </div>
-
-            <button onClick={()=>navigatte('/pedido')} className='cart-total-details-button'>Concluir Pagamento</button>
-
+ 
+            <button onClick={()=>navigatte('/pedido')} className='cart-total-details-button'>Informacoes</button>
+         
+            <button onClick={handleAddToCart} className='cart-total-details-button'>Concluir Pagamento</button>
+            
           </div>
           <div className='cart-total-promotion'>
             <div className='cart-total-right'>

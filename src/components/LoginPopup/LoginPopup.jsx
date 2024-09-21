@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState,useContext} from 'react';
 import './LoginPopup.css';
 import { assets } from '../../assets/assets';
+import { StoreContext } from '../../context/StoreContext';
 
 export const LoginPopup = ({ setShowLoginPopup }) => {
 
@@ -9,14 +10,16 @@ export const LoginPopup = ({ setShowLoginPopup }) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showSuccessMessage, setShowSuccessMessage] = useState(null);
-
+ 
+  const { login } = useContext(StoreContext);
+  const PORT = process.env.REACT_APP_PORT || 3000;
+  const url = currentState === 'Login' ? `http://localhost:${PORT}/api/login` : `http://localhost:${PORT}/api/register`; // Adjust API endpoints
 
   const handleSubmit = async (e) => {
-
-    e.preventDefault(); // Prevent default form submission
-    const PORT = process.env.REACT_APP_PORT || 3000;
-    const url = currentState === 'Login' ? `http://localhost:${PORT}/api/login` : `http://localhost:${PORT}/api/register`; // Adjust API endpoints
-
+    e.preventDefault();
+    const credentials = { username, email, password }; // Collect credentials
+    await handleLogin(credentials); 
+   
     const payload = {
       ...(currentState === 'Registrar-se' && { username }), // Include username for registration
       email,
@@ -58,6 +61,31 @@ export const LoginPopup = ({ setShowLoginPopup }) => {
     console.log('Requesting URL:', url);
 
   };
+
+
+
+  const handleLogin = async (credentials) => {
+
+    const response = await fetch(url, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(credentials),
+    });
+    
+    const data = await response.json();
+    console.log(data)
+    console.log(data.message)
+    if (data.message === 'Login successful') {
+        login(data.client.id); // Call login with client ID
+    }
+};
+
+
+
+
+
 
   return (
     <div className='login-popup'>

@@ -6,6 +6,26 @@ export const StoreContext = createContext(null)
 const StoreContextProvider = (props) => {
 
     const [cartItems, setCartItems] = useState({});
+    const [clientId, setClientId] = useState(null);
+
+    const login = (id) => {
+        setClientId(id);
+    };
+
+    useEffect(() => {
+        console.log("Client ID:", clientId); // Check the value here
+    }, [clientId]);
+
+
+
+
+
+
+
+
+
+
+
 
     const addToCart = (itemId) => {
         if (!cartItems[itemId]) {
@@ -43,7 +63,10 @@ const StoreContextProvider = (props) => {
         setCartItems,
         addToCart,
         removeFromCart,
-        getTotalCart
+        getTotalCart, 
+        login, 
+        clientId,
+      
     };
 
     return (
