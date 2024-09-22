@@ -53,7 +53,8 @@ const StoreContextProvider = (props) => {
                         clientId: clientId,
                         productId: itemId,
                         quantity: newQuantity,
-                    });  
+                    }); 
+                    console.log('Adding item to cart:', { clientId, productId, quantity }); 
                 } else {
                     const result = await response.json();
                     console.log('Item added to cart:', result);

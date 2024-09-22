@@ -120,7 +120,7 @@ router.post('/login',async (req:Request,res:Response)=>{
 router.post('/carrinho/:clientId', async (req, res) => {
   const clientId = parseInt(req.params.clientId, 10);
   const { productId, quantity } = req.body;
-
+  console.log('Received payload:', req.body);
   // Convert productId to a number
   const productIdNum = parseInt(productId, 10);
 
@@ -150,7 +150,36 @@ router.post('/carrinho/:clientId', async (req, res) => {
               include: { items: true },
           });
       } else {
-          // Update the existing cart logic...
+        console.log('UPDATING A CART');
+        // Check if the item already exists in the cart
+        const existingItem = cart.items.find(item => item.productId === productIdNum);
+
+        if (existingItem) {
+            // Update the quantity of the existing item
+            const updatedItem = await prisma.cartItem.update({
+                where: { id: existingItem.id }, // Assuming your item has an id
+                data: { quantity: existingItem.quantity + quantity },
+            });
+            console.log('Updated item:', updatedItem);
+            cart = await prisma.cart.findFirst({
+                where: { clientId },
+                include: { items: true },
+            });
+        } else {
+            // Add the new item to the cart
+            const newItem = await prisma.cartItem.create({
+                data: {
+                    cartId: cart.id, // Assuming you have the cart's ID
+                    productId: productIdNum,
+                    quantity,
+                },
+            });
+            console.log('New item added:', newItem);
+            cart = await prisma.cart.findFirst({
+                where: { clientId },
+                include: { items: true },
+            });
+        }
       }
 
       return res.json(cart);

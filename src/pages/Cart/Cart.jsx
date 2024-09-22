@@ -7,21 +7,28 @@ import { useNavigate } from 'react-router-dom';
 
 const Cart = () => {
   const PORT = process.env.REACT_APP_PORT || 3000;
-  const url = `http://localhost:${PORT}/carrinho`;
 
-  const { cartItems, food_list, removeFromCart, getTotalCart  } = useContext(StoreContext);
+  const { cartItems, food_list, removeFromCart, getTotalCart } = useContext(StoreContext);
   const navigatte = useNavigate()
-  const { clientId } = useContext(StoreContext); 
+  const { clientId } = useContext(StoreContext);
 
   const getItemById = (itemId) => {
     return food_list.find(item => item._id === itemId);
   };
 
-  const handleAddToCart = (itemId) => {
+  const handleAddToCart = async (itemId) => {
     const item = getItemById(itemId);
-    const quantity = cartItems[itemId] || 1;
-  const updatedItem = { ...item, quantity: quantity + 1 }; 
-    if (!itemId || !item){
+    const quantity = cartItems[itemId] || 0;
+
+    const updatedItem = { ...item, quantity: quantity + 1 };
+
+    const payload = {
+      clientId,
+      productId: itemId, // Make sure this matches the type expected by your backend
+      quantity: quantity + 1, // Increase the quantity by 1
+    };
+    console.log(item,quantity)
+    if (!itemId || !item) {
       console.error("No item to add.");
       return;
     }
@@ -29,32 +36,41 @@ const Cart = () => {
     if (!clientId) {
       console.error('Client ID is not defined');
       return;
-  }
-};
+    }
 
-useEffect(() => {
-  const fetchCart = async () => {
-      if (clientId) {
+  
         console.log(clientId)
-          try {
-              const response = await fetch(`http://localhost:3000/api/carrinho/${clientId}`);
-              console.log('Response status:', response.status); // Log the response status
-              console.log('Response:', response); 
-              if (!response.ok) {
-                  const errorMessage = await response.text(); // Get the error message
-                  console.error('Error fetching cart:', errorMessage);
-                  throw new Error('Network response was not ok');
-              }
-              const cartData = await response.json();
-              console.log(cartData);
-          } catch (error) {
-              console.error('Error fetching cart:', error);
-          }
-      }
-  };
+        try {
+          
+          const response = await fetch(`http://localhost:${PORT}/api/carrinho/${clientId}`, {
+            method: 'POST', // Use POST to add items to the cart
+            headers: {
+              'Content-Type': 'application/json', 
+            },
+            body: JSON.stringify(payload),
+            
+          });
+          
+          console.log('Adding item to cart:', { clientId, productId:itemId, quantity });
 
-  fetchCart();
-}, [clientId]);
+          console.log('Response status:', response.status); // Log the response status
+          console.log('Response:', response);
+          if (!response.ok) {
+            const errorMessage = await response.text(); // Get the error message
+            console.error('Error fetching cart:', errorMessage);
+            
+            throw new Error('Network response was not ok');
+            
+          }
+          const cartData = await response.json();
+          console.log(cartData);
+        } catch (error) {
+          console.error('Error fetching cart:', error);
+        }
+   
+ 
+
+  };
 
 
   return (
@@ -85,9 +101,6 @@ useEffect(() => {
                   <p className='cart-items-remove' onClick={() => removeFromCart(item._id)}>x</p>
                 </div>
                 <hr />
-                
-            <button onClick={() => handleAddToCart(item._id)}className='cart-total-details-button'>Concluir Pagamento</button>
-            
               </>
             )
           }
@@ -111,9 +124,11 @@ useEffect(() => {
               <p>Total</p>
               R${getTotalCart()}
             </div>
- 
-            <button onClick={()=>navigatte('/pedido')} className='cart-total-details-button'>Informacoes</button>
-         
+
+            <button onClick={() => navigatte('/pedido')} className='cart-total-details-button'>Informacoes</button>
+
+            <button onClick={() => handleAddToCart(item._id)} className='cart-total-details-button'>Concluir Pagamento</button>
+
           </div>
           <div className='cart-total-promotion'>
             <div className='cart-total-right'>
@@ -125,7 +140,7 @@ useEffect(() => {
               </div>
 
             </div>
-          
+
           </div>
 
         </div>
