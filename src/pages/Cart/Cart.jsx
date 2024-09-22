@@ -6,40 +6,60 @@ import { useNavigate } from 'react-router-dom';
 
 
 const Cart = () => {
+  const PORT = process.env.REACT_APP_PORT || 3000;
+  const url = `http://localhost:${PORT}/carrinho`;
 
   const { cartItems, food_list, removeFromCart, getTotalCart  } = useContext(StoreContext);
   const navigatte = useNavigate()
   const { clientId } = useContext(StoreContext); 
 
-  const handleAddToCart = (itemId) => {
+  const getItemById = (itemId) => {
+    return food_list.find(item => item._id === itemId);
+  };
 
-   
+  const handleAddToCart = (itemId) => {
+    const item = getItemById(itemId);
+    const quantity = cartItems[itemId] || 1;
+  const updatedItem = { ...item, quantity: quantity + 1 }; 
+    if (!itemId || !item){
+      console.error("No item to add.");
+      return;
+    }
+
     if (!clientId) {
       console.error('Client ID is not defined');
       return;
   }
-
-    fetch('/carrinho', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-            clientId:clientId,
-            productId: itemId,
-            quantity: quantity,
-        }),
-    })
-    .then(response => response.json())
-    .then(data => {
-        addToCart(itemId);
-    })
-    .catch(error => console.error('Error:', error));
 };
+
+useEffect(() => {
+  const fetchCart = async () => {
+      if (clientId) {
+        console.log(clientId)
+          try {
+              const response = await fetch(`http://localhost:3000/api/carrinho/${clientId}`);
+              console.log('Response status:', response.status); // Log the response status
+              console.log('Response:', response); 
+              if (!response.ok) {
+                  const errorMessage = await response.text(); // Get the error message
+                  console.error('Error fetching cart:', errorMessage);
+                  throw new Error('Network response was not ok');
+              }
+              const cartData = await response.json();
+              console.log(cartData);
+          } catch (error) {
+              console.error('Error fetching cart:', error);
+          }
+      }
+  };
+
+  fetchCart();
+}, [clientId]);
 
 
   return (
     <div className='cart'>
+      {clientId ? <>Your Client Id : {clientId}</> : <>Non connect</>}
       <div className='cart-items'>
         <div className='cart-items-title'>
           <p>Items</p>
@@ -65,6 +85,9 @@ const Cart = () => {
                   <p className='cart-items-remove' onClick={() => removeFromCart(item._id)}>x</p>
                 </div>
                 <hr />
+                
+            <button onClick={() => handleAddToCart(item._id)}className='cart-total-details-button'>Concluir Pagamento</button>
+            
               </>
             )
           }
@@ -91,8 +114,6 @@ const Cart = () => {
  
             <button onClick={()=>navigatte('/pedido')} className='cart-total-details-button'>Informacoes</button>
          
-            <button onClick={handleAddToCart} className='cart-total-details-button'>Concluir Pagamento</button>
-            
           </div>
           <div className='cart-total-promotion'>
             <div className='cart-total-right'>

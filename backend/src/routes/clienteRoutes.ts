@@ -61,64 +61,124 @@ router.post('/login',async (req:Request,res:Response)=>{
   }
 })
 
-router.post('/carrinho', async (req, res) => {
-  const { clientId, productId, quantity } = req.body;
+// router.post('/carrinho', async (req, res) => {
+//   const { clientId, productId, quantity } = req.body;
+  
+//   try {
+//     // Check if an active cart exists for the client
+//     const existingCart = await prisma.cart.findFirst({
+//       where: { clientId },
+//       include: { items: true },
+//     });
+
+//     let cart;
+
+//     if (existingCart) {
+//       cart = existingCart; // Usa o carrinho existente
+//     } else {
+//       // Se não houver carrinho, cria um novo
+//       cart = await prisma.cart.create({
+//         data: {
+//           clientId,
+//           items: { create: { productId, quantity } },
+//         },
+//       });
+//     }
+
+
+//     const existingItem = await prisma.cartItem.findUnique({
+//       where: { cartId_productId: { cartId: cart.id, productId } },
+//   });
+
+//   if (existingItem) {
+//       // Update the existing item
+//       await prisma.cartItem.update({
+//           where: { id: existingItem.id },
+//           data: { quantity: { increment: quantity } },
+//       });
+//   } else {
+//       // Add a new item to the cart
+//       await prisma.cartItem.create({
+//           data: {
+//               cartId: cart.id,
+//               productId,
+//               quantity,
+//           },
+//       });
+//     }
+//  // Retorna o carrinho atualizado
+//  const updatedCart = await prisma.cart.findFirst({
+//   where: { id: cart.id },
+//   include: { items: true },
+// });
+// res.json(updatedCart);
+
+//   } catch (error) {
+//     res.status(400).json({ error: 'Error updating cart' });
+//   }
+// });
+router.post('/carrinho/:clientId', async (req, res) => {
+  const clientId = parseInt(req.params.clientId, 10);
+  const { productId, quantity } = req.body;
+
+  // Convert productId to a number
+  const productIdNum = parseInt(productId, 10);
+
+  if (isNaN(clientId) || isNaN(productIdNum) || quantity <= 0) {
+      return res.status(400).json({ error: 'Invalid input parameters' });
+  }
+
   try {
-    // Check if an active cart exists for the client
-    const existingCart = await prisma.cart.findFirst({
-      where: {
-        clientId,
-      },
-      include: {
-        items: true, // Optionally include items for further processing
-      },
-    });
-
-    let cart;
-
-    if (existingCart) {
-      // If a cart exists, you can choose to update it
-      cart = await prisma.cart.update({
-        where: { id: existingCart.id },
-        data: {
-          items: {
-            upsert: {
-              where:{ cartId_productId: { cartId: existingCart.id, productId } }, // Check if the item already exists in the cart
-              update: {
-                quantity: {
-                  increment: quantity, // Increment the quantity if it exists
-                },
-              },
-              create: {
-                productId,
-                quantity,
-              },
-            },
-          },
-        },
+      // Check if an active cart exists for the client
+      let cart = await prisma.cart.findFirst({
+          where: { clientId },
+          include: { items: true },
       });
-      
-    } else {
-      // If no cart exists, create a new one
-      cart = await prisma.cart.create({
-        data: {
-          clientId,
-          items: {
-            create: {
-              productId,
-              quantity,
-            },
-          },
-        },
-      });
-    }
-    res.json(cart);
+
+      if (!cart) {
+          console.log('CREATING A CART');
+          cart = await prisma.cart.create({
+              data: {
+                  clientId,
+                  items: {
+                      create: {
+                          productId: productIdNum, // Use the converted number
+                          quantity,
+                      },
+                  },
+              },
+              include: { items: true },
+          });
+      } else {
+          // Update the existing cart logic...
+      }
+
+      return res.json(cart);
   } catch (error) {
-    res.status(400).json({ error: 'Error updating cart' });
+      console.error("Error updating cart:", error);
+      return res.status(400).json({ error: 'Error updating cart' });
   }
 });
 
+router.get('/carrinho/:clientId', async (req, res) => {
 
+  console.log(`Received request for cart with clientId: ${req.params.clientId}`);
+  const { clientId } = req.params;
+  try {
+      const cart = await prisma.cart.findFirst({
+          where: { clientId: Number(clientId) },
+          include: { items: true }, // Inclui os itens do carrinho
+      });
+      
+      if (!cart) {
+          return res.status(404).json({ error: 'Cart not found' });
+      }
+
+      return res.json(cart); // Retorna o carrinho, incluindo a propriedade `items`
+  } catch (error) {
+      return res.status(500).json({ error: 'Error fetching cart' });
+  }
+});
 
 
 router.post('/clients', async (req: Request, res: Response) => {
@@ -146,7 +206,6 @@ router.post('/clients', async (req: Request, res: Response) => {
       res.status(400).json({ error: 'Error creating client' });
     }
   });
-
   router.get('/clients', async (req: Request, res: Response) => {
     try {
       const clients = await prisma.client.findMany();
@@ -157,5 +216,8 @@ router.post('/clients', async (req: Request, res: Response) => {
     }
   });
   
+  router.get('/example', (req, res) => {
+    res.json({ message: 'Hello, world!' });
+});
 
   export default router;
