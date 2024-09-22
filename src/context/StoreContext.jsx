@@ -20,6 +20,33 @@ const StoreContextProvider = (props) => {
     }, [clientId]);
 
 
+
+
+    useEffect(() => {
+        const fetchCartItems = async () => {
+            if (clientId) {
+                try {
+                    const response = await fetch(`http://localhost:3000/api/carrinho/${clientId}`);
+                    if (!response.ok) {
+                        throw new Error('Failed to fetch cart items');
+                    }
+                    const data = await response.json();
+                    const newCartItems = {};
+                    data.items.forEach(item => {
+                        newCartItems[item.productId] = item.quantity; // Adjust based on your API response
+                    });
+                    setCartItems(newCartItems);
+                } catch (error) {
+                    console.error('Error fetching cart items:', error);
+                }
+            }
+        };
+        fetchCartItems();
+    }, [clientId]);
+
+
+
+
     const addToCart = async  (itemId) => {
    
 
@@ -59,6 +86,7 @@ const StoreContextProvider = (props) => {
                     const result = await response.json();
                     console.log('Item added to cart:', result);
                     setCartItems((prev) => ({ ...prev, [itemId]: newQuantity }));
+               
                 }
             } catch (error) {
                 console.error('Error adding to cart ERROR SERVER:', error);
@@ -86,7 +114,12 @@ const StoreContextProvider = (props) => {
         for (const item in cartItems) {
             if (cartItems[item] > 0) {
                 let findItemInfo = food_list.find((product) => product._id === item);
-                totalCart += findItemInfo.price * cartItems[item]
+                if(findItemInfo){
+                    totalCart += findItemInfo.price * cartItems[item];
+                }else{
+                    console.log(`Product not found for ID: ${item}`)
+                }
+             
 
             }
 
