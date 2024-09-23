@@ -14,7 +14,9 @@ const StoreContextProvider = (props) => {
 
     useEffect(() => {
         console.log("Client ID:", clientId); // Check the value here
-          if (clientId) {
+        if (clientId) {
+            fetchCartItems(clientId)
+        } else {
             setCartItems({});
         }
     }, [clientId]);
@@ -22,47 +24,89 @@ const StoreContextProvider = (props) => {
 
 
 
-    useEffect(() => {
-        const fetchCartItems = async () => {
-            if (clientId) {
-                try {
-                    const response = await fetch(`http://localhost:3000/api/carrinho/${clientId}`);
-                    if (!response.ok) {
-                        throw new Error('Failed to fetch cart items');
-                    }
-                    const data = await response.json();
-                    const newCartItems = {};
-                    data.items.forEach(item => {
-                        newCartItems[item.productId] = item.quantity; // Adjust based on your API response
-                    });
-                    setCartItems(newCartItems);
-                } catch (error) {
-                    console.error('Error fetching cart items:', error);
-                }
-            }
-        };
-        fetchCartItems();
-    }, [clientId]);
-
-
-
-
-    const addToCart = async  (itemId) => {
-   
-
-        if (!cartItems[itemId]) {
-            setCartItems((prev) => ({ ...prev, [itemId]: 1 }))
-        }
-        else {
-            setCartItems((prev) => ({ ...prev, [itemId]: prev[itemId] + 1 }))
-        }
-
-        const newQuantity = cartItems[itemId] ? cartItems[itemId] + 1 : 1;
-      
+    const fetchCartItems = async (clientId) => {
         if (clientId) {
             try {
+                const response = await fetch(`http://localhost:3000/api/carrinho/${clientId}`);
+                if (!response.ok) {
+                    throw new Error('Failed to fetch cart items');
+                }
+                const data = await response.json();
+                const newCartItems = {};
+                data.items.forEach(item => {
+                    newCartItems[item.productId] = item.quantity; // Adjust based on your API response
+                });
+                setCartItems(newCartItems);
+            } catch (error) {
+                console.error('Error fetching cart items:', error);
+            }
+        }
+    };
+
+    const addToCart = async (itemId) => {
+        // Update the cart items first
+        setCartItems((prev) => {
+            const newQuantity = (prev[itemId] || 0) + 1; // Increment by 1
+            return { ...prev, [itemId]: newQuantity }; // Return new cart state
+        });
+
+        if (clientId) {
+            try {
+                // Fetch the updated quantity directly from prev
+                const updatedCartItems = await new Promise((resolve) => {
+                    setCartItems((prev) => {
+                        const newQuantity = (prev[itemId] || 0) + 1; // Increment by 1
+                        resolve(newQuantity);
+                        return { ...prev, [itemId]: newQuantity };
+                    });
+                });
+
                 const response = await fetch(`http://localhost:3000/api/carrinho/${clientId}`, {
                     method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        clientId: clientId,
+                        productId: itemId,
+                        quantity: updatedCartItems, // Use the updated quantity
+                    }),
+                });
+
+                if (!response.ok) {
+                    const errorMessage = await response.text();
+                    console.error('Error adding to cart:', errorMessage);
+                } else {
+                    const result = await response.json();
+                    console.log('Item added to cart:', result);
+                }
+            } catch (error) {
+                console.error('Error adding to cart:', error);
+            }
+        } else {
+            console.error('Client ID is not defined');
+        }
+    };
+
+    ////////////////////////////////////
+
+
+    const removeFromCart = async (itemId) => {
+
+        const currentQuantity = cartItems[itemId] || 0;
+
+        const newQuantity = currentQuantity > 1 ? currentQuantity - 1 : 0;
+
+        if (currentQuantity === 0) {
+            console.error('item not in cart')
+            return;
+        }
+
+
+        if (clientId) {
+            try {
+                const response = await fetch(`http://localhost:3000/api/carrinho/${clientId}/${itemId}`, {
+                    method: 'DELETE',
                     headers: {
                         'Content-Type': 'application/json',
                     },
@@ -72,41 +116,39 @@ const StoreContextProvider = (props) => {
                         quantity: newQuantity,// You might want to adjust this to reflect the current quantity
                     }),
                 });
-    
                 if (!response.ok) {
                     const errorMessage = await response.text();
-                    console.error('Error adding to cart:', errorMessage);
+                    console.error('Error Deleting to cart:', errorMessage);
                     console.log({
                         clientId: clientId,
                         productId: itemId,
                         quantity: newQuantity,
-                    }); 
-                    console.log('Adding item to cart:', { clientId, productId, quantity }); 
+                    });
+
                 } else {
                     const result = await response.json();
-                    console.log('Item added to cart:', result);
+                    console.log('ITEM ID :', itemId)
+                    const deletedItem = result.items.find(item => item.quantity === 0 || item.productId === itemId);
+
+                    if (deletedItem) {
+                        console.log(`One this Product ID ${deletedItem.productId} was deleted from the cart.`);
+                    } else {
+                        console.log(`Product ID ${itemId} was deleted.`);
+                    }
                     setCartItems((prev) => ({ ...prev, [itemId]: newQuantity }));
-               
+
                 }
             } catch (error) {
-                console.error('Error adding to cart ERROR SERVER:', error);
+                console.error('Error deleting to cart ERROR SERVER:', error);
             }
         } else {
             console.error('Client ID is not defined');
         }
 
-
-    }
-
-////////////////////////////////////
-
-
-    const removeFromCart = (itemId) => {
-        setCartItems((prev) => ({ ...prev, [itemId]: prev[itemId] - 1 }))
     }
 
 
-///////////////////////////////////////
+    ///////////////////////////////////////
 
 
     const getTotalCart = () => {
@@ -114,12 +156,12 @@ const StoreContextProvider = (props) => {
         for (const item in cartItems) {
             if (cartItems[item] > 0) {
                 let findItemInfo = food_list.find((product) => product._id === item);
-                if(findItemInfo){
+                if (findItemInfo) {
                     totalCart += findItemInfo.price * cartItems[item];
-                }else{
+                } else {
                     console.log(`Product not found for ID: ${item}`)
                 }
-             
+
 
             }
 
@@ -128,9 +170,9 @@ const StoreContextProvider = (props) => {
     }
 
 
-    useEffect(() => {
-        console.log(cartItems);
-    }, [cartItems])
+    // useEffect(() => {
+    //     console.log(cartItems);
+    // }, [cartItems])
 
 
     const contextValue = {
@@ -139,10 +181,11 @@ const StoreContextProvider = (props) => {
         setCartItems,
         addToCart,
         removeFromCart,
-        getTotalCart, 
-        login, 
+        getTotalCart,
+        login,
+        fetchCartItems,
         clientId,
-      
+
     };
 
     return (

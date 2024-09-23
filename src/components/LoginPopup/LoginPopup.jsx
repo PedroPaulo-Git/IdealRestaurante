@@ -11,7 +11,7 @@ export const LoginPopup = ({ setShowLoginPopup }) => {
   const [password, setPassword] = useState('');
   const [showSuccessMessage, setShowSuccessMessage] = useState(null);
 
-  const { login } = useContext(StoreContext);
+  const { login,setCartItems,fetchCartItems } = useContext(StoreContext);
   const PORT = process.env.REACT_APP_PORT || 3000;
   const url = currentState === 'Login' ? `http://localhost:${PORT}/api/login` : `http://localhost:${PORT}/api/register`; // Adjust API endpoints
 
@@ -63,7 +63,6 @@ export const LoginPopup = ({ setShowLoginPopup }) => {
   };
 
 
-
   const handleLogin = async (credentials) => {
     try {
       const response = await fetch(url, {
@@ -79,7 +78,7 @@ export const LoginPopup = ({ setShowLoginPopup }) => {
       
       if (response.ok && data.client) {
         login(data.client.id); // Call the login method from context
-        fetchCart(data.client.id); // Fetch the cart after successful login
+        fetchCartItems(data.client.id); // Fetch the cart after successful login
       } else {
         console.error('Login failed:', data.message || 'Unknown error');
       }
@@ -141,7 +140,7 @@ export const LoginPopup = ({ setShowLoginPopup }) => {
 
           <div className='login-popup-content-condition'>
             <div className='login-popup-content-condition-terms'>
-              <input type="checkbox" name="" id="" required />
+              <input type="checkbox" name="" id="" required checked/>
               <p>Para continuar,eu aceito os termos de uso & política de privacidade.</p>
             </div>
             <div className='login-popup-content-condition-login'>
