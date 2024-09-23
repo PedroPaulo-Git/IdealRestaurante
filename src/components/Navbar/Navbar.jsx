@@ -33,9 +33,10 @@ const Navbar = ({ setShowLoginPopup }) => {
           <div className={getTotalCart() === 0 ? '' : 'dot'}></div>
         </div>
         {clientId ?
-          <span onClick={() => setUserShowInfo(!showUserInfo)} style={{ fontSize: 24, marginTop: 4 }}
+          <span  onMouseLeave={() => setUserShowInfo(false)} 
+          onMouseEnter={() => setUserShowInfo(true)} style={{ fontSize: 24, marginTop: 4 }}
             className='navbar-right-profile-icon'>
-            <FaCircleUser />
+            <FaCircleUser/>
             {showUserInfo && (
               <div className='navbar-right-info-profile'>
                   <ul >

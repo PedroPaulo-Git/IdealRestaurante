@@ -51,19 +51,29 @@
 .navbar-right-info-profile-user{
     font-size:max(0.6vw,14px);
     border-bottom:1px solid #e4e3e3;
-    width: 80%;
+    width: 60%;
     margin: 0 auto;
-    padding-block: 10px;
+    padding-block: 14px;
 }
 .navbar-right-info-profile{
     position: absolute;
     background-color: white;
-    left: -110px;
+    left: -108px;
     width: 240px;
-    margin-top: 1%;
+    margin-top: 10px;
     border-radius: 10px;
     padding-block: 10px;
 }
+.navbar-right-info-profile::before {
+    content: '';
+    position: absolute;
+    top: -10px; /* Posiciona o triângulo acima da div */
+    left: 50%; /* Centraliza o triângulo */
+    transform: translateX(-50%); /* Ajusta para centralizar perfeitamente */
+    border-left: 10px solid transparent; /* Lados do triângulo invisíveis */
+    border-right: 10px solid transparent; 
+    border-bottom: 10px solid white; /* Cor da ponta, igual ao fundo da div */
+  }
 .navbar-right-info-profile li{
     list-style: none;
 
