@@ -74,7 +74,6 @@ export const LoginPopup = ({ setShowLoginPopup }) => {
       });
       
       const data = await response.json();
-      console.log(data);
       
       if (response.ok && data.client) {
         login(data.client.id); // Call the login method from context
@@ -140,7 +139,7 @@ export const LoginPopup = ({ setShowLoginPopup }) => {
 
           <div className='login-popup-content-condition'>
             <div className='login-popup-content-condition-terms'>
-              <input type="checkbox" name="" id="" required checked/>
+              <input type="checkbox" name="" id="" required defaultChecked/>
               <p>Para continuar,eu aceito os termos de uso & política de privacidade.</p>
             </div>
             <div className='login-popup-content-condition-login'>

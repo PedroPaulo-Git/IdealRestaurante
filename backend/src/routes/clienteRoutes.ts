@@ -103,7 +103,7 @@ router.post('/carrinho/:clientId', async (req, res) => {
             // Update the quantity of the existing item
             const updatedItem = await prisma.cartItem.update({
                 where: { id: existingItem.id }, // Assuming your item has an id
-                data: { quantity: existingItem.quantity + quantity },
+                data: { quantity: existingItem.quantity + 1 },
             });
             console.log('Updated item:', updatedItem);
             cart = await prisma.cart.findFirst({
@@ -144,7 +144,7 @@ router.delete('/carrinho/:clientId/:productId', async (req: Request, res: Respon
     return res.status(400).json({ error: 'Invalid input parameters' });
   }
 
-  
+
   try{  
     console.log('Product ID :',productId)
     console.log('quantity :',quantity)
@@ -168,7 +168,7 @@ router.delete('/carrinho/:clientId/:productId', async (req: Request, res: Respon
       // If quantity is specified and greater than 0, reduce the item's quantity
       const updatedItem = await prisma.cartItem.update({
         where: { id: existingItem.id },
-        data: { quantity: existingItem.quantity - quantity },
+        data: { quantity: existingItem.quantity - 1 },
       });
 
       console.log('Item quantity reduced:', updatedItem);

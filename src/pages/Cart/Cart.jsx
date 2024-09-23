@@ -27,11 +27,13 @@ const Cart = () => {
         <br />
         <hr />
         {Object.keys(cartItems).map((itemId) => {
-          if(clientId > 0){
-            console.log('client exist')
-          }
+         
           const quantity = cartItems[itemId];
+         
           const item = food_list.find(product => product._id === itemId);
+          if(clientId > 0){
+            console.log(`${item.name}  : ${quantity}`)
+          }
           if (item && quantity > 0) {
             return (
               <div key={itemId} className='cart-items-title cart-items-item'>

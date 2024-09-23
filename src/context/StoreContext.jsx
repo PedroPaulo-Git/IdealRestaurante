@@ -13,6 +13,7 @@ const StoreContextProvider = (props) => {
     };
 
     useEffect(() => {
+        
         console.log("Client ID:", clientId); // Check the value here
         if (clientId) {
             fetchCartItems(clientId)
@@ -45,10 +46,10 @@ const StoreContextProvider = (props) => {
 
     const addToCart = async (itemId) => {
         // Update the cart items first
-        setCartItems((prev) => {
-            const newQuantity = (prev[itemId] || 0) + 1; // Increment by 1
-            return { ...prev, [itemId]: newQuantity }; // Return new cart state
-        });
+        // setCartItems((prev) => {
+        //     const newQuantity = (prev[itemId] || 0) + 1; // Increment by 1
+        //     return { ...prev, [itemId]: newQuantity }; // Return new cart state
+        // });
 
         if (clientId) {
             try {
@@ -78,7 +79,9 @@ const StoreContextProvider = (props) => {
                     console.error('Error adding to cart:', errorMessage);
                 } else {
                     const result = await response.json();
+        
                     console.log('Item added to cart:', result);
+
                 }
             } catch (error) {
                 console.error('Error adding to cart:', error);
@@ -92,7 +95,7 @@ const StoreContextProvider = (props) => {
 
 
     const removeFromCart = async (itemId) => {
-
+        
         const currentQuantity = cartItems[itemId] || 0;
 
         const newQuantity = currentQuantity > 1 ? currentQuantity - 1 : 0;
@@ -101,8 +104,8 @@ const StoreContextProvider = (props) => {
             console.error('item not in cart')
             return;
         }
-
-
+        console.log(currentQuantity)
+        console.log(newQuantity)
         if (clientId) {
             try {
                 const response = await fetch(`http://localhost:3000/api/carrinho/${clientId}/${itemId}`, {
