@@ -43,6 +43,55 @@
     cursor: pointer;
   /* TAMANHO DIRETO NO CODIGO*/ 
 }
+
+
+/* PROFILE UL 1 */
+.navbar-right-info-profile{
+    position: absolute;
+    background-color: white;
+    right:9vw;
+    margin-top: 1%;
+    border-radius: 10px;
+    padding-inline: 20px;
+    padding-block: 10px;
+}
+.navbar-right-info-profile li{
+    list-style: none;
+
+}
+.navbar-right-info-profile a:hover{
+   background-color: #282d26;
+   color: white;
+}
+.navbar-right-info-profile a{
+    font-size:max(0.6vw,14px);
+    padding-right: 100px;
+
+    border-radius: 5px;
+    display: flex;
+    align-items: center;
+    padding-block: 10px;
+}
+.navbar-right-ul-profile{
+    border-bottom:1px solid #e4e3e3;
+}
+/* PROFILE UL 2 */
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 .navbar .active{
     padding-bottom: 2px ;
     border-bottom: 2px solid #282d26;
