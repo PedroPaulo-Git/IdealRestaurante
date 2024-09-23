@@ -13,7 +13,7 @@ const StoreContextProvider = (props) => {
     };
 
     useEffect(() => {
-        
+
         console.log("Client ID:", clientId); // Check the value here
         if (clientId) {
             fetchCartItems(clientId)
@@ -79,8 +79,15 @@ const StoreContextProvider = (props) => {
                     console.error('Error adding to cart:', errorMessage);
                 } else {
                     const result = await response.json();
-        
-                    console.log('Item added to cart:', result);
+                    const addedItems = result.items; // Array of cart items
+                    console.log(addedItems)
+                    if (addedItems.length > 0) {
+                        const lastAddedItem = addedItems[addedItems.length - 2]; // The last item in the array
+                        console.log('Last item added:', {
+                            productId: lastAddedItem.productId,
+                            quantity: lastAddedItem.quantity,
+                        });
+                    }
 
                 }
             } catch (error) {
@@ -95,7 +102,7 @@ const StoreContextProvider = (props) => {
 
 
     const removeFromCart = async (itemId) => {
-        
+
         const currentQuantity = cartItems[itemId] || 0;
 
         const newQuantity = currentQuantity > 1 ? currentQuantity - 1 : 0;
