@@ -30,6 +30,7 @@
 .cart-items-remove{
     cursor: pointer;
     font-size: max(1vw,12px);
+    margin-left:  max(1vw,15px);
 }
 /* PARTE DE BAIXO DO CARRINHO*/
 

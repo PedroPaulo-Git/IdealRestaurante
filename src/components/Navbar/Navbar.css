@@ -74,13 +74,10 @@ button.button-navbar{
     .Logo{
         max-width: 100px;
     }
-    .button-navbar{
-    
-    }
-    .navbar-right svg{
+    /* .navbar-right svg{
       width: 20px;
       
-    }
+    } */
   
 }
 @media (max-width:750px) {

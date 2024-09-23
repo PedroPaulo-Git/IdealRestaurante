@@ -32,7 +32,10 @@ const Cart = () => {
          
           const item = food_list.find(product => product._id === itemId);
           if(clientId > 0){
-            console.log(`${item.name}  : ${quantity}`)
+            if (item && quantity > 0) {  
+               console.log(`${item.name} : ${quantity}`)
+              }
+         
           }
           if (item && quantity > 0) {
             return (

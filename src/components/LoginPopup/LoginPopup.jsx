@@ -44,7 +44,7 @@ export const LoginPopup = ({ setShowLoginPopup }) => {
         setShowSuccessMessage(false);
         setTimeout(() => {
           setShowSuccessMessage(null);
-        }, 3000);
+        }, 1000);
 
       } else {
         console.log('RESPONSE WORK', data)
@@ -52,7 +52,7 @@ export const LoginPopup = ({ setShowLoginPopup }) => {
         setTimeout(() => {
           setShowSuccessMessage(null);
           setShowLoginPopup(false)
-        }, 3000);
+        }, 1000);
       }
 
     } catch (error) {
