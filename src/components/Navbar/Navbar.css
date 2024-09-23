@@ -44,12 +44,14 @@
   /* TAMANHO DIRETO NO CODIGO*/ 
 }
 
-
+.navbar-right-profile-icon{
+    position: relative;
+}
 /* PROFILE UL 1 */
 .navbar-right-info-profile{
     position: absolute;
     background-color: white;
-    right:9vw;
+    left: -90px;
     margin-top: 1%;
     border-radius: 10px;
     padding-inline: 20px;

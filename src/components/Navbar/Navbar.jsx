@@ -34,7 +34,7 @@ const Navbar = ({ setShowLoginPopup }) => {
         </div>
         {clientId ?
           <span onClick={() => setUserShowInfo(!showUserInfo)} style={{ fontSize: 24, marginTop: 4 }}
-            className='navbar-right-search-icon'>
+            className='navbar-right-profile-icon'>
             <FaCircleUser />
             {showUserInfo && (
               <div className='navbar-right-info-profile'>
