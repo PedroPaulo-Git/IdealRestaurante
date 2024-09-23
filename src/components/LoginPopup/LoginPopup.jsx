@@ -11,7 +11,7 @@ export const LoginPopup = ({ setShowLoginPopup }) => {
   const [password, setPassword] = useState('');
   const [showSuccessMessage, setShowSuccessMessage] = useState(null);
 
-  const { login,setCartItems,fetchCartItems } = useContext(StoreContext);
+  const { login,setCartItems,fetchCartItems,getUsername} = useContext(StoreContext);
   const PORT = process.env.REACT_APP_PORT || 3000;
   const url = currentState === 'Login' ? `http://localhost:${PORT}/api/login` : `http://localhost:${PORT}/api/register`; // Adjust API endpoints
 
@@ -77,6 +77,7 @@ export const LoginPopup = ({ setShowLoginPopup }) => {
       
       if (response.ok && data.client) {
         login(data.client.id); // Call the login method from context
+        getUsername(data.client.username);
         fetchCartItems(data.client.id); // Fetch the cart after successful login
       } else {
         console.error('Login failed:', data.message || 'Unknown error');

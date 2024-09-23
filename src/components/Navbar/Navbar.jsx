@@ -13,7 +13,7 @@ const Navbar = ({ setShowLoginPopup }) => {
 
   const [menu, setMenu] = useState('menu');
   const [showUserInfo, setUserShowInfo] = useState(false);
-  const { getTotalCart, clientId } = useContext(StoreContext)
+  const { getTotalCart, clientId,username } = useContext(StoreContext)
 
   return (
     <div className='navbar'>
@@ -39,91 +39,69 @@ const Navbar = ({ setShowLoginPopup }) => {
             {showUserInfo && (
               <div className='navbar-right-info-profile'>
                   <ul >
+                  <li className="navbar-right-info-profile-user">
+                     <p>Seja Bem-Vindo(a) {username} ! </p>
+                    </li>
                     <li className="navbar-right-ul-profile">
-                      <ul class="space-y-1">
+                      <ul className="space-y-1">
                         <li>
                           <a
                             href="#"
-                            class="block rounded-lg bg-gray-100 px-4 py-2 text-sm font-medium text-gray-700"
+                            className=""
                           >
-                            Profile
+                            Meu Perfil
                           </a>
                         </li>
 
                         <li>
                           <a
                             href="#"
-                            class="block rounded-lg px-4 py-2 text-sm font-medium text-gray-500 hover:bg-gray-100 hover:text-gray-700"
+                            className=""
                           >
-                            Team
+                            Meus Pedidos
                           </a>
                         </li>
 
+                   
                         <li>
                           <a
                             href="#"
-                            class="block rounded-lg px-4 py-2 text-sm font-medium text-gray-500 hover:bg-gray-100 hover:text-gray-700"
+                            className=""
                           >
-                            Projects
-                          </a>
-                        </li>
-
-                        <li>
-                          <a
-                            href="#"
-                            class="block rounded-lg px-4 py-2 text-sm font-medium text-gray-500 hover:bg-gray-100 hover:text-gray-700"
-                          >
-                            Meetings
-                          </a>
-                        </li>
-
-                        <li>
-                          <a
-                            href="#"
-                            class="block rounded-lg px-4 py-2 text-sm font-medium text-gray-500 hover:bg-gray-100 hover:text-gray-700"
-                          >
-                            Calendar
+                            Meus Endereços
                           </a>
                         </li>
                       </ul>
                     </li>
 
-                    <li class="py-2">
-                      <ul class="space-y-1">
+                    <li className="navbar-right-ul-profile">
+                      <ul className="e-y-1">
                         <li>
                           <a
                             href="#"
-                            class="block rounded-lg px-4 py-2 text-sm font-medium text-gray-500 hover:bg-gray-100 hover:text-gray-700"
+                            className=""
                           >
-                            Update
+                            Cupons
                           </a>
                         </li>
 
                         <li>
                           <a
                             href="#"
-                            class="block rounded-lg px-4 py-2 text-sm font-medium text-gray-500 hover:bg-gray-100 hover:text-gray-700"
+                            className=""
                           >
-                            Help
+                            Ajuda
                           </a>
                         </li>
 
-                        <li>
-                          <a
-                            href="#"
-                            class="block rounded-lg px-4 py-2 text-sm font-medium text-gray-500 hover:bg-gray-100 hover:text-gray-700"
-                          >
-                            Settings
-                          </a>
-                        </li>
                       </ul>
                     </li>
 
-                    <li class="py-2">
+                    <li className="">
                       <form action="#">
                         <button
                           type="submit"
-                          class="block w-full rounded-lg px-4 py-2 text-sm font-medium text-gray-500 [text-align:_inherit] hover:bg-gray-100 hover:text-gray-700"
+                          className="button-logout"
                         >
                           Logout
                         </button>

@@ -7,13 +7,18 @@ const StoreContextProvider = (props) => {
 
     const [cartItems, setCartItems] = useState({});
     const [clientId, setClientId] = useState(null);
+    const [username, setUsername] = useState(null);
 
     const login = (id) => {
         setClientId(id);
     };
 
-    useEffect(() => {
+    const getUsername = (username) => {
+        setUsername(username);
+    };
 
+    useEffect(() => {
+        console.log('Username :',username)
         console.log("Client ID:", clientId); // Check the value here
         if (clientId) {
             fetchCartItems(clientId)
@@ -246,6 +251,10 @@ const StoreContextProvider = (props) => {
     const contextValue = {
         food_list,
         cartItems,
+        clientId,
+        username,
+        
+        getUsername,
         setCartItems,
         addToCart,
         removeFromCart,
@@ -253,8 +262,6 @@ const StoreContextProvider = (props) => {
         getTotalCart,
         login,
         fetchCartItems,
-        clientId,
-
     };
 
     return (
