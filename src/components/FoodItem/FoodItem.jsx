@@ -6,7 +6,7 @@ import { StoreContext } from '../../context/StoreContext';
 export const FoodItem = ({id,name,price,description,image}) => {
 
     const [itemCount,setItemCount] = useState(0)
-    const {cartItems,addToCart,removeFromCart}= useContext(StoreContext);
+    const {cartItems,addToCart,ReduceItem}= useContext(StoreContext);
 
   return (
     <div className='food-item'>
@@ -16,7 +16,7 @@ export const FoodItem = ({id,name,price,description,image}) => {
                 ? <img onClick={()=>addToCart(id)} src={assets.Plus} className='food-item-plusbutton'/>
                 :
                 <div className='food-item-counting'>
-                    <img onClick={()=>removeFromCart(id)} src={assets.Less} className='food-item-lessbutton'/>
+                    <img onClick={()=>ReduceItem(id)} src={assets.Less} className='food-item-lessbutton'/>
                     <p>{cartItems[id]}</p>
                     <img onClick={()=>addToCart(id)} src={assets.More} className='food-item-morebutton'/>
                 </div>
