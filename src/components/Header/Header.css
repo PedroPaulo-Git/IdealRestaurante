@@ -31,7 +31,7 @@
 .button-header-contents{
     cursor: pointer;
     background-color: #e22e37;
-    box-shadow: 3px 3px 5px #303030;
+
     color:#eeeaeb ;
     padding: 0.3vw 2.3vw;
     font-size:max(1vw,5px); 
