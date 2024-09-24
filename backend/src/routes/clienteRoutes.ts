@@ -255,14 +255,14 @@ router.get('/carrinho/:clientId', async (req, res) => {
   try {
       const cart = await prisma.cart.findFirst({
           where: { clientId: Number(clientId) },
-          include: { items: true }, // Inclui os itens do carrinho
+          include: { items: true }, 
       });
       
       if (!cart) {
           return res.status(404).json({ error: 'Cart not found' });
       }
 
-      return res.json(cart); // Retorna o carrinho, incluindo a propriedade `items`
+      return res.json(cart);
   } catch (error) {
       return res.status(500).json({ error: 'Error fetching cart' });
   }
@@ -272,23 +272,19 @@ router.delete('/:clientId/:id', async (req, res) => {
   const clientId = parseInt(req.params.id);
 
   try {
-      // Delete associated cart items first (assuming CartItems has a foreign key to Cart)
-      await prisma.cartItem.deleteMany({
+       await prisma.cartItem.deleteMany({
           where: {
               cart: {
-                  clientId: clientId, // Adjust according to your foreign key relationship
+                  clientId: clientId, 
               },
           },
       });
-
-      // Delete the cart associated with the client
       await prisma.cart.deleteMany({
           where: {
               clientId: clientId,
           },
       });
 
-      // Delete the client
       const deletedClient = await prisma.client.delete({
           where: {
               id: clientId,
