@@ -14,7 +14,6 @@ const Cart = () => {
 
   return (
     <div className='cart'>
-      {clientId ? <>Your Client Id : {clientId}</> : <>Non connect</>}
       <div className='cart-items'>
         <div className='cart-items-title'>
           <p>Items</p>
