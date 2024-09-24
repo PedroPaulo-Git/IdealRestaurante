@@ -28,6 +28,7 @@ router.post('/register', async (req, res) => {
       
     } catch (error) {
       res.status(400).json({ error: 'Error creating client' });
+      
     }
 
   });
@@ -233,6 +234,8 @@ router.post('/clients', async (req: Request, res: Response) => {
       res.status(400).json({ error: 'Error creating client' });
     }
   });
+
+
   router.get('/clients', async (req: Request, res: Response) => {
     try {
       const clients = await prisma.client.findMany();
@@ -242,11 +245,6 @@ router.post('/clients', async (req: Request, res: Response) => {
       res.status(500).json({ error: 'Error fetching clients' });
     }
   });
-  
-  router.get('/example', (req, res) => {
-    res.json({ message: 'Hello, world!' });
-});
-
 
 
 
@@ -267,6 +265,40 @@ router.get('/carrinho/:clientId', async (req, res) => {
       return res.json(cart); // Retorna o carrinho, incluindo a propriedade `items`
   } catch (error) {
       return res.status(500).json({ error: 'Error fetching cart' });
+  }
+});
+
+router.delete('/:clientId/:id', async (req, res) => {
+  const clientId = parseInt(req.params.id);
+
+  try {
+      // Delete associated cart items first (assuming CartItems has a foreign key to Cart)
+      await prisma.cartItem.deleteMany({
+          where: {
+              cart: {
+                  clientId: clientId, // Adjust according to your foreign key relationship
+              },
+          },
+      });
+
+      // Delete the cart associated with the client
+      await prisma.cart.deleteMany({
+          where: {
+              clientId: clientId,
+          },
+      });
+
+      // Delete the client
+      const deletedClient = await prisma.client.delete({
+          where: {
+              id: clientId,
+          },
+      });
+
+      res.json({ message: 'Client and associated data deleted successfully', deletedClient });
+  } catch (error) {
+      console.error(error);
+      res.status(500).json({ error: 'Error deleting client and associated data' });
   }
 });
 

@@ -56,6 +56,7 @@
     padding-block: 14px;
 }
 .navbar-right-info-profile{
+    z-index: 1;
     position: absolute;
     background-color: white;
     left: -108px;

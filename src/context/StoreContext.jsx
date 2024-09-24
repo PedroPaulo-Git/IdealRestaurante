@@ -7,26 +7,59 @@ const StoreContextProvider = (props) => {
 
     const [cartItems, setCartItems] = useState({});
     const [clientId, setClientId] = useState(null);
-    const [username, setUsername] = useState(null);
+    const [clientName, setClientname] = useState(null);
 
-    const login = (id) => {
-        setClientId(id);
-    };
-
-    const getUsername = (username) => {
-        setUsername(username);
+    const logout = () => {
+        setClientId(null);
+        setClientname(null);
+        localStorage.removeItem("clientId");
+        localStorage.removeItem("clientName");
+        setCartItems({}); // Optional: Clear cart items on logout
     };
 
     useEffect(() => {
-        console.log('Username :',username)
-        console.log("Client ID:", clientId); // Check the value here
-        if (clientId) {
+        const storedClientId = localStorage.getItem("clientId");
+        const storedUsername = localStorage.getItem("clientName");
+        console.log('Stored Client ID:', storedClientId, 'Stored Username:', storedUsername); // Add this for debugging
+
+        if (storedClientId) {
+            setClientId(storedClientId);
+        }else {
+            console.error("Invalid storedClientId:", storedClientId);
+        }
+
+        if (storedUsername) {
+            setClientname(storedUsername);
+        } else {
+            console.error("Invalid storedUsername:", storedUsername);
+        }
+          if (storedClientId && storedUsername) {
+        login(storedClientId, storedUsername);
+    }
+
+    }, []);
+
+
+    useEffect(() => {
+        console.log('Username :', clientName)
+        console.log("Client ID:", clientId); 
+        if (clientId && clientId) {
             fetchCartItems(clientId)
         } else {
             setCartItems({});
         }
     }, [clientId]);
 
+
+    const login = (id, username) => {
+        setClientId(id);
+        setClientname(username);
+        console.log('Login function - ID:', id, 'Username:', username); 
+        localStorage.setItem("clientId", id);
+        localStorage.setItem("clientName", username);
+        console.log('Stored in localStorage - Client ID:', localStorage.getItem('clientId'), 'Username:', localStorage.getItem('clientName'));
+        console.log("Storing to localStorage:", { id, username });
+    };
 
 
 
@@ -50,11 +83,6 @@ const StoreContextProvider = (props) => {
     };
 
     const addToCart = async (itemId) => {
-        // Update the cart items first
-        // setCartItems((prev) => {
-        //     const newQuantity = (prev[itemId] || 0) + 1; // Increment by 1
-        //     return { ...prev, [itemId]: newQuantity }; // Return new cart state
-        // });
 
         if (clientId) {
             try {
@@ -216,7 +244,7 @@ const StoreContextProvider = (props) => {
         }
 
     }
-    
+
 
 
 
@@ -252,15 +280,14 @@ const StoreContextProvider = (props) => {
         food_list,
         cartItems,
         clientId,
-        username,
-        
-        getUsername,
+        clientName,
         setCartItems,
         addToCart,
         removeFromCart,
         ReduceItem,
         getTotalCart,
         login,
+        logout,
         fetchCartItems,
     };
 

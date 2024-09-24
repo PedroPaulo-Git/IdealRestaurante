@@ -16,10 +16,10 @@ const Footer = () => {
                     <img src={assets.LogoFoooter2} alt="" />
                     <p>Lorem ipsum, dolor sit amet consectetur adipisicing elit. Nobis cumque delectus nemo rem, at earum ea adipisci, praesentium ipsa iusto quibusdam repudiandae eius quasi pariatur accusamus nam enim similique sapiente?</p>
                     <div className='footer-content-left-social'>
-                        <span><FaFacebookF /></span>
-                        <span><FaInstagram /></span>
-                        <span><FaLinkedinIn /></span>
-                        <span><FaWhatsapp /></span>
+                        <span> <a href=""><FaFacebookF /></a></span>
+                        <span><a href=""><FaInstagram /></a></span>
+                        <span><a href=""><FaLinkedinIn /></a></span>
+                        <span><a href=""><FaWhatsapp /></a></span>
                     </div>
                 </div>
                 <div className='footer-content-center'>

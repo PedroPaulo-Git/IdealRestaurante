@@ -13,7 +13,7 @@ const Navbar = ({ setShowLoginPopup }) => {
 
   const [menu, setMenu] = useState('menu');
   const [showUserInfo, setUserShowInfo] = useState(false);
-  const { getTotalCart, clientId,username } = useContext(StoreContext)
+  const { getTotalCart, clientId,clientName,logout } = useContext(StoreContext)
 
   return (
     <div className='navbar'>
@@ -41,7 +41,7 @@ const Navbar = ({ setShowLoginPopup }) => {
               <div className='navbar-right-info-profile'>
                   <ul >
                   <li className="navbar-right-info-profile-user">
-                     <p>Seja Bem-Vindo(a) {username} ! </p>
+                     <p>Seja Bem-Vindo(a) {clientName} ! </p>
                     </li>
                     <li className="navbar-right-ul-profile">
                       <ul className="space-y-1">
@@ -101,6 +101,7 @@ const Navbar = ({ setShowLoginPopup }) => {
                     <li className="">
                       <form action="#">
                         <button
+                        onClick={logout}
                           type="submit"
                           className="button-logout"
                         >
