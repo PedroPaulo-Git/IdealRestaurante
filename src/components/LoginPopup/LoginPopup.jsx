@@ -55,14 +55,14 @@ export const LoginPopup = ({ setShowLoginPopup }) => {
             setShowSuccessMessage(false);
             setTimeout(() => {
                 setShowSuccessMessage(null);
-            }, 3000);
+            }, 1000);
         } else {
             console.log('RESPONSE WORK', data);
             setShowSuccessMessage(true);
             setTimeout(() => {
                 setShowSuccessMessage(null);
                 setShowLoginPopup(false);
-            }, 3000);
+            }, 1000);
         }
     } catch (error) {
         console.error('Error during registration request', error);
@@ -89,14 +89,14 @@ export const LoginPopup = ({ setShowLoginPopup }) => {
         setTimeout(() => {
             setShowSuccessMessage(null);
             setShowLoginPopup(false);
-        }, 3000);
+        }, 1000);
       } else {
         console.error('Login failed:', data.message || 'Unknown error');
         console.error('RESPONSE NOT WORK', data);
         setShowSuccessMessage(false);
         setTimeout(() => {
             setShowSuccessMessage(null);
-        }, 3000);
+        }, 1000);
       }
     } catch (error) {
       console.error('Error during login request', error);
