@@ -135,6 +135,48 @@ router.post('/carrinho/:clientId', async (req, res) => {
   }
 });
 
+
+router.post('/address/:clientId', async (req, res) => {
+  const { firstName,lastName,phone,address,city,state,zipcode } = req.body;
+  console.log('Received payload:', req.body);
+  const { clientId } = req.params
+  try {
+  const savedAddress = await prisma.client.update({
+    where: {
+      id: parseInt(clientId), 
+    },
+    data: {
+      firstName,
+      lastName,
+      phone,
+      address,
+      city,
+      state,
+      zipcode,
+    },
+  });
+  res.status(201).json({
+    message: 'Address saved successfully',
+    address: savedAddress,
+  });
+}catch(error){
+  console.log(error)
+  console.error('Error saving address:', error);
+  res.status(500).json({ error: 'Failed to save address' });
+}
+  
+})
+
+
+
+
+
+
+
+
+
+
+
 router.delete('/carrinho/:clientId/:productId', async (req: Request, res: Response) => {
   const clientId = parseInt(req.params.clientId, 10);
   const productId = parseInt(req.params.productId, 10);
