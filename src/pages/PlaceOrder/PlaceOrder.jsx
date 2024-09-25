@@ -97,19 +97,20 @@ const transactionId = generateTransactionId();
 
 
   const  generateQrCode = async () => {
+    
     const response = await fetch(`http://localhost:${PORT}/api/${clientId}/generate-qr`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          key: '', // Your PIX key
+          pixKey: 'pedroeneww@gmail.com', // Your PIX key
           name: 'Pedro Paulo da Silva Monteiro',
           city: 'Vertentes',
-          transactionId: 'YOUR_TRANSACTION_ID',
+          transactionId: transactionId,
           message: 'Pay me :)',
           cep: '55770000',
-          value: 0.1, // Value set to R$0.10
+          amount: 0.1, // Value set to R$0.10
       }),
     });
   
