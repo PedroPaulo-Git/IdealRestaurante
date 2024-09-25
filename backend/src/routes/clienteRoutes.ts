@@ -9,6 +9,7 @@ import { createInterface } from "readline";
 import bcrypt from 'bcrypt';
 
 
+
 const CPF = '';
 const PASSWORD = '';
 const AUTH_CODE = uuidv4();
