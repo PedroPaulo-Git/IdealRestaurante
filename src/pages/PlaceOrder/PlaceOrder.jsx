@@ -89,28 +89,40 @@ const PlaceOrder = () => {
 
 
 
+  const generateTransactionId = () => {
+    return `TRANS_${Date.now()}_${Math.floor(Math.random() * 10000)}`;
+};
 
-  const generateQrCode = async () => {
-    const qrCodePix = QrCodePix({
-      version: '01',
-      key: 'test@mail.com.br', // Your PIX key
-      name: 'Fulano de Tal',
-      city: 'SAO PAULO',
-      transactionId: 'YOUR_TRANSACTION_ID', // max 25 characters
-      message: 'Pay me :)',
-      cep: '99999999',
-      value: getTotalCart(), // You can set this dynamically
+const transactionId = generateTransactionId();
+
+
+  const  generateQrCode = async () => {
+    const response = await fetch(`http://localhost:${PORT}/api/${clientId}/generate-qr`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          key: '', // Your PIX key
+          name: 'Pedro Paulo da Silva Monteiro',
+          city: 'Vertentes',
+          transactionId: 'YOUR_TRANSACTION_ID',
+          message: 'Pay me :)',
+          cep: '55770000',
+          value: 0.1, // Value set to R$0.10
+      }),
     });
-    const base64QrCode = await qrCodePix.base64();
-    setQrCode(base64QrCode);
-    console.log(qrCodePix.payload()); // '00020101021126510014BR.GOV.BCB.PIX...'
+  
+    const data = await response.json();
+
+    if (response.ok) {
+        setQrCode(data.qrCode); // Set the QR code in the state
+        console.log(data.payload); // Log the QR code payload
+    } else {
+        console.error('Error generating QR code:', data.error);
+    }
   };
-  const handleConcludePayment = async () => {
-    // Generate QR code when button is clicked
-    await generateQrCode();
-    // Redirect or perform additional actions like payment processing here
-    // navigatte('/pedido');
-  };
+
   return (
 
     <div className='delivery-form'>
@@ -290,7 +302,7 @@ const PlaceOrder = () => {
         </div>
 
         <button
-          onClick={handleConcludePayment}
+          onClick={generateQrCode}
           className='cart-total-details-button'>Concluir Pagamento</button>
 
         {qrCode ? (

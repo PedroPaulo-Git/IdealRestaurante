@@ -1,6 +1,9 @@
 import { Router,Request, Response } from 'express';
 import { PrismaClient } from '@prisma/client';
+import { QrCodePix } from 'qrcode-pix';
 import bcrypt from 'bcrypt';
+
+
 
 const prisma = new PrismaClient();
 const router = Router();
@@ -368,6 +371,30 @@ router.delete('/:clientId/:id', async (req, res) => {
   }
 });
 
+//pix code router >>>>>>>>>
+
+router.post('/:clientId/generate-qr', async (req, res) => {
+  const { key, name, city, transactionId, message, cep, value } = req.body;
+
+  try {
+      const qrCodePix = QrCodePix({
+          version: '01',
+          key,
+          name,
+          city,
+          transactionId,
+          message,
+          cep,
+          value,
+      });
+
+      const base64QrCode = await qrCodePix.base64();
+      res.json({ qrCode: base64QrCode, payload: qrCodePix.payload() });
+  } catch (error) {
+      console.error('Error generating QR code:', error);
+      res.status(500).json({ error: 'Failed to generate QR code' });
+  }
+});
 
 
   export default router;
