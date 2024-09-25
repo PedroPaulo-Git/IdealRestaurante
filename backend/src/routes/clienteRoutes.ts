@@ -167,7 +167,35 @@ router.post('/address/:clientId', async (req, res) => {
   
 })
 
+router.get('/address/:clientId', async (req, res) => {
+  const { clientId } = req.params; 
 
+  try {
+    const address = await prisma.client.findUnique({
+      where: {
+        id: parseInt(clientId),
+      },
+      select: {
+        firstName: true,
+        lastName: true,
+        phone: true,
+        address: true,
+        city: true,
+        state: true,
+        zipcode: true,
+      },
+    });
+ 
+    if (!address) {
+      return res.status(404).json({ error: 'Address not found' });
+    }
+
+    return res.status(200).json(address); // Return the fetched address
+  } catch (error) {
+    console.error('Error fetching address:', error);
+    return res.status(500).json({ error: 'Failed to fetch address' });
+  }
+});
 
 
 

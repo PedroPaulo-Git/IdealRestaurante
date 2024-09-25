@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext, useState, useEffect } from 'react';
 import './PlaceOrder.css';
 import { StoreContext } from '../../context/StoreContext';
 import { QrCodePix } from 'qrcode-pix';
@@ -13,7 +13,8 @@ const PlaceOrder = () => {
   const [address, setAddress] = useState('');
   const [city, setCity] = useState('');
   const [zipcode, setZipcode] = useState('');
-
+  const [isEditing, setIsEditing] = useState(false);
+  const [showSuccessMessage, setShowSuccessMessage] = useState(null);
 
   const { getTotalCart, clientId } = useContext(StoreContext);
   const [qrCode, setQrCode] = useState(null);
@@ -21,7 +22,35 @@ const PlaceOrder = () => {
   const url = `http://localhost:${PORT}/api/address/${clientId}`
 
 
-
+  const sucessfullMessage = () => {
+    setIsEditing(false)
+    setShowSuccessMessage(true);
+    setTimeout(() => {
+      setShowSuccessMessage(null);
+    }, 2000);
+  }
+  useEffect(() => {
+    console.log(isEditing)
+    const fetchAddress = async () => {
+      try {
+        const response = await fetch(url);
+        const data = await response.json();
+        if (response.ok) {
+          setFirstName(data.firstName);
+          setLastName(data.lastName);
+          setPhone(data.phone);
+          setAddress(data.address);
+          setCity(data.city);
+          setZipcode(data.zipcode);
+        } else {
+          console.error('Failed to fetch address');
+        }
+      } catch (error) {
+        console.error('Error fetching address:', error);
+      }
+    };
+    fetchAddress();
+  }, [url]);
 
   const addressForm = async (e) => {
     e.preventDefault();
@@ -47,6 +76,7 @@ const PlaceOrder = () => {
       const data = await response.json();
       if (response.ok) {
         console.log(data)
+        sucessfullMessage();
       } else {
         console.log('Error connection')
       }
@@ -57,27 +87,8 @@ const PlaceOrder = () => {
     }
   }
 
-  const SaveInfoClient = async (getInfoClient) => {
-    try {
-      const response = await fetch(url, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(getInfoClient),
-      });
-      const data = await response.json();
-      if (response.ok) {
-        console.log(data)
-      } else {
-        console.log('Error connection')
-      }
 
 
-    } catch (error) {
-      console.log('Error connection CATCH', error)
-    }
-  }
 
   const generateQrCode = async () => {
     const qrCodePix = QrCodePix({
@@ -103,71 +114,164 @@ const PlaceOrder = () => {
   return (
 
     <div className='delivery-form'>
-      <form onSubmit={addressForm} className='form'>
+      {showSuccessMessage && (
+        <div className="addressEdited-success">
+          Endereço alterado com sucesso !
+        </div>
+      )}
+
+      <div className='delivery-left-form-inputs'>
         <div className='delivery-left'>
-          <h1>Informações de Entrega</h1>
           <div className='delivery-left-form'>
 
-            <div className='delivery-left-form-inputs'>
 
-              <input value={firstName}
-                onChange={(e) => setFirstName(e.target.value)}
-                type="text" placeholder='Nome' />
+            {isEditing ? (
 
-              <input type="text" placeholder='Sobrenome'
-                value={lastName}
-                onChange={(e) => setLastName(e.target.value)} />
-            </div>
+              <form onSubmit={addressForm} className='form'>
+                <div className='delivery-left-form-inputs'>
+                  <div className='delivery-left'>
+                    <h1>Editar Informações de Entrega</h1>
+                    <div className='delivery-left-form'>
+                      <input value={firstName}
 
-            <input type="text" placeholder='Rua'
-              value={address}
-              onChange={(e) => setAddress(e.target.value)} />
+                        onChange={(e) => setFirstName(e.target.value)}
+                        type="text" placeholder='Nome' />
 
-            <div className='delivery-left-form-inputs'>
-              <input type="text" placeholder='Cidade'
-                value={city}
-                onChange={(e) => setCity(e.target.value)} />
+                      <input type="text" placeholder='Sobrenome'
+                        value={lastName}
+                        onChange={(e) => setLastName(e.target.value)} />
+                    </div>
 
-              <input type="text" placeholder='CEP'
-                pattern="[0-9]*" inputmode="numeric" 
-                maxlength="9" 
-                value={zipcode}
-                onChange={(e) => {
-                  let value = e.target.value.replace(/\D/g, ''); // Remove any non-numeric characters
-                  if (value.length > 5) {
-                    value = value.replace(/^(\d{5})(\d{1,3})/, '$1-$2'); // Add the dash after the first 5 digits
-                  }
-                  setZipcode(value)}}
-                  />
+                    <input type="text" placeholder='Rua'
+                      value={address}
+                      onChange={(e) => setAddress(e.target.value)} />
 
-            </div>
-            <div className='delivery-left-form-inputs'>
+                    <div className='delivery-left-form-inputs'>
+                      <input type="text" placeholder='Cidade'
+                        value={city}
+                        onChange={(e) => setCity(e.target.value)} />
 
+                      <input
+                        type="text"
+                        placeholder='CEP'
+                        pattern="^\d{5}-\d{3}$"
+                        inputMode="numeric"
+                        maxLength="9"
+                        value={zipcode}
+                        onChange={(e) => {
+                          let value = e.target.value.replace(/\D/g, ''); // Remove non-numeric characters
+                          if (value.length > 5) {
+                            value = value.replace(/^(\d{5})(\d{1,3})/, '$1-$2'); // Format as XXXXX-XXX
+                          }
+                          setZipcode(value);
+                        }}
+                      />
+                    </div>
 
-            </div>
-            <input type='tel' placeholder='Telefone'
-            pattern="[0-9]*" inputmode="numeric" 
-            maxlength="15" 
-            required
-              value={phone}
-              onChange={(e) => {
-                let value = e.target.value.replace(/\D/g, ''); // Remove any non-numeric characters
-                if (value.length > 10) {
-                  value = value.replace(/^(\d{2})(\d{5})(\d{4})/, '($1) $2-$3'); // Format as (XX) XXXXX-XXXX
-                } else if (value.length > 6) {
-                  value = value.replace(/^(\d{2})(\d{4,5})/, '($1) $2'); // Format as (XX) XXXX or (XX) XXXXX
-                } else if (value.length > 2) {
-                  value = value.replace(/^(\d{2})(\d{0,5})/, '($1) $2'); // Format as (XX) XXX
-                } else if (value.length > 0) {
-                  value = value.replace(/^(\d{0,2})/, '($1'); // Format as (XX
-                }
-                setPhone(value);
-              }} />
+                    <input type='tel' placeholder='Telefone'
+                      pattern="^\(\d{2}\) \d{5}-\d{4}$" inputmode="numeric"
+                      maxlength="15"
+                      required
+                      value={phone}
+                      onChange={(e) => {
+                        let value = e.target.value.replace(/\D/g, '');
+                        if (value.length > 10) {
+                          value = value.replace(/^(\d{2})(\d{5})(\d{4})/, '($1) $2-$3');
+                        } else if (value.length > 6) {
+                          value = value.replace(/^(\d{2})(\d{4,5})/, '($1) $2');
+                        } else if (value.length > 2) {
+                          value = value.replace(/^(\d{2})(\d{0,5})/, '($1) $2');
+                        } else if (value.length > 0) {
+                          value = value.replace(/^(\d{0,2})/, '($1');
+                        }
+                        setPhone(value);
+                      }} />
+
+                  </div>
+                </div>
+                <div className='delivery-buttons-form'>
+                  <button type='submit' className='cart-total-details-button' >Editar</button>
+                  <button type='button' className='cart-total-details-button' onClick={() => setIsEditing(false)}>Cancelar</button>
+                </div>
+              </form>
+
+            ) : (
+
+              <div className='form'>
+                <div className='delivery-left-form-inputs'>
+                  <div className='delivery-left'>
+                    <h1>Informações de Entrega</h1>
+                    <div className='delivery-left-form'>
+                      <input value={firstName}
+                        onChange={(e) => setFirstName(e.target.value)}
+                        type="text" placeholder='Nome' readOnly />
+
+                      <input type="text" placeholder='Sobrenome'
+                        value={lastName}
+                        onChange={(e) => setLastName(e.target.value)} readOnly />
+                    </div>
+
+                    <input type="text" placeholder='Rua'
+                      value={address}
+                      onChange={(e) => setAddress(e.target.value)} readOnly />
+
+                    <div className='delivery-left-form-inputs'>
+                      <input type="text" placeholder='Cidade'
+                        value={city}
+                        onChange={(e) => setCity(e.target.value)} readOnly />
+
+                      <input type="text" placeholder='CEP'
+                        readOnly
+                        pattern="[0-9]*" inputmode="numeric"
+                        maxlength="9"
+                        value={zipcode}
+                        onChange={(e) => {
+                          let value = e.target.value.replace(/\D/g, ''); // Remove any non-numeric characters
+                          if (value.length > 5) {
+                            value = value.replace(/^(\d{5})(\d{1,3})/, '$1-$2'); // Add the dash after the first 5 digits
+                          }
+                          setZipcode(value)
+                        }}
+                      />
+
+                    </div>
+                    <input type='tel' placeholder='Telefone'
+                      pattern="[0-9]*" inputmode="numeric"
+                      maxlength="15"
+                      required
+                      readOnly
+                      value={phone}
+                      onChange={(e) => {
+                        let value = e.target.value.replace(/\D/g, ''); // Remove any non-numeric characters
+                        if (value.length > 10) {
+                          value = value.replace(/^(\d{2})(\d{5})(\d{4})/, '($1) $2-$3'); // Format as (XX) XXXXX-XXXX
+                        } else if (value.length > 6) {
+                          value = value.replace(/^(\d{2})(\d{4,5})/, '($1) $2'); // Format as (XX) XXXX or (XX) XXXXX
+                        } else if (value.length > 2) {
+                          value = value.replace(/^(\d{2})(\d{0,5})/, '($1) $2'); // Format as (XX) XXX
+                        } else if (value.length > 0) {
+                          value = value.replace(/^(\d{0,2})/, '($1'); // Format as (XX
+                        }
+                        setPhone(value);
+                      }} />
+                  </div>
+                </div>
+                <button className='cart-total-details-button' onClick={() => setIsEditing(true)}>Editar Endereço</button>
+              </div>
+
+            )}
+
 
           </div>
+          <div className='delivery-left-form-inputs'>
+
+
+          </div>
+
+
         </div>
-        <button type='submit' onClick={SaveInfoClient}>teste</button>
-      </form>
+      </div>
+
       <div className='cart-total-left'>
 
         <h1>Total do Carrinho</h1>
