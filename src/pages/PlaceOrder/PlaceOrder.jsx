@@ -30,7 +30,12 @@ const PlaceOrder = () => {
     }, 2000);
   }
   useEffect(() => {
-    console.log(isEditing)
+    //console.log(isEditing)
+    //console.log(url)
+    if (!url || url.includes('null')) {
+      //console.error('URL is null or invalid');
+      return;
+    }
     const fetchAddress = async () => {
       try {
         const response = await fetch(url);
@@ -114,8 +119,12 @@ const transactionId = generateTransactionId();
       }),
     });
   
-    const data = await response.json();
 
+    if (!response.ok) {
+      throw new Error('Failed to generate QR code');
+    }
+    const data = await response.json();
+    console.log('QR Code generated:', data);
     if (response.ok) {
         setQrCode(data.qrCode); // Set the QR code in the state
         console.log(data.payload); // Log the QR code payload
@@ -182,8 +191,8 @@ const transactionId = generateTransactionId();
                     </div>
 
                     <input type='tel' placeholder='Telefone'
-                      pattern="^\(\d{2}\) \d{5}-\d{4}$" inputmode="numeric"
-                      maxlength="15"
+                      pattern="^\(\d{2}\) \d{5}-\d{4}$" inputMode="numeric"
+                      maxLength="15"
                       required
                       value={phone}
                       onChange={(e) => {
@@ -235,8 +244,8 @@ const transactionId = generateTransactionId();
 
                       <input type="text" placeholder='CEP'
                         readOnly
-                        pattern="[0-9]*" inputmode="numeric"
-                        maxlength="9"
+                        pattern="[0-9]*" inputMode="numeric"
+                        maxLength="9"
                         value={zipcode}
                         onChange={(e) => {
                           let value = e.target.value.replace(/\D/g, ''); // Remove any non-numeric characters
@@ -249,8 +258,8 @@ const transactionId = generateTransactionId();
 
                     </div>
                     <input type='tel' placeholder='Telefone'
-                      pattern="[0-9]*" inputmode="numeric"
-                      maxlength="15"
+                      pattern="[0-9]*" inputMode="numeric"
+                      maxLength="15"
                       required
                       readOnly
                       value={phone}

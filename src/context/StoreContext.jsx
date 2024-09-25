@@ -20,7 +20,7 @@ const StoreContextProvider = (props) => {
     useEffect(() => {
         const storedClientId = localStorage.getItem("clientId");
         const storedUsername = localStorage.getItem("clientName");
-        console.log('Stored Client ID:', storedClientId, 'Stored Username:', storedUsername); // Add this for debugging
+        //console.log('Stored Client ID:', storedClientId, 'Stored Username:', storedUsername); // Add this for debugging
 
         if (storedClientId) {
             setClientId(storedClientId);
@@ -41,8 +41,8 @@ const StoreContextProvider = (props) => {
 
 
     useEffect(() => {
-        console.log('Username :', clientName)
-        console.log("Client ID:", clientId); 
+       // console.log('Username :', clientName)
+       // console.log("Client ID:", clientId); 
         if (clientId && clientId) {
             fetchCartItems(clientId)
         } else {
@@ -54,10 +54,10 @@ const StoreContextProvider = (props) => {
     const login = (id, username) => {
         setClientId(id);
         setClientname(username);
-        console.log('Login function - ID:', id, 'Username:', username); 
+        //console.log('Login function - ID:', id, 'Username:', username); 
         localStorage.setItem("clientId", id);
         localStorage.setItem("clientName", username);
-        console.log('Stored in localStorage - Client ID:', localStorage.getItem('clientId'), 'Username:', localStorage.getItem('clientName'));
+        //console.log('Stored in localStorage - Client ID:', localStorage.getItem('clientId'), 'Username:', localStorage.getItem('clientName'));
         console.log("Storing to localStorage:", { id, username });
     };
 
