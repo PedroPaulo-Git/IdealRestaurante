@@ -1,11 +1,16 @@
 import React, { useContext, useState, useEffect } from 'react';
 import './PlaceOrder.css';
 import { StoreContext } from '../../context/StoreContext';
-import { QrCodePix } from 'qrcode-pix';
+import { Elements } from '@stripe/react-stripe-js';
+import { loadStripe } from '@stripe/stripe-js';
+import PaymentForm from '../../context/StripePayment';
 
 
 const PlaceOrder = () => {
+  console.log("Stripe Publish Key:", process.env.REACT_APP_STRIPE_PUBLISH_KEY);
+  console.log("All environment variables:", process.env);
 
+  const stripePromise = loadStripe(process.env.REACT_APP_STRIPE_PUBLISH_KEY);
 
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
@@ -17,7 +22,6 @@ const PlaceOrder = () => {
   const [showSuccessMessage, setShowSuccessMessage] = useState(null);
 
   const { getTotalCart, clientId } = useContext(StoreContext);
-  const [qrCode, setQrCode] = useState(null);
   const PORT = process.env.REACT_APP_PORT || 3000;
   const url = `http://localhost:${PORT}/api/address/${clientId}`
 
@@ -93,45 +97,6 @@ const PlaceOrder = () => {
   }
 
 
-
-  const generateTransactionId = () => {
-    return `TRANS_${Date.now()}_${Math.floor(Math.random() * 10000)}`;
-};
-
-const transactionId = generateTransactionId();
-
-
-  const  generateQrCode = async () => {
-    
-    const response = await fetch(`http://localhost:${PORT}/api/${clientId}/generate-qr`, {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          pixKey: 'pedroeneww@gmail.com', // Your PIX key
-          name: 'Pedro Paulo da Silva Monteiro',
-          city: 'Vertentes',
-          transactionId: transactionId,
-          message: 'Pay me :)',
-          cep: '55770000',
-          amount: 0.1, // Value set to R$0.10
-      }),
-    });
-  
-
-    if (!response.ok) {
-      throw new Error('Failed to generate QR code');
-    }
-    const data = await response.json();
-    console.log('QR Code generated:', data);
-    if (response.ok) {
-        setQrCode(data.qrCode); // Set the QR code in the state
-        console.log(data.payload); // Log the QR code payload
-    } else {
-        console.error('Error generating QR code:', data.error);
-    }
-  };
 
   return (
 
@@ -312,16 +277,14 @@ const transactionId = generateTransactionId();
         </div>
 
         <button
-          onClick={generateQrCode}
+         
           className='cart-total-details-button'>Concluir Pagamento</button>
 
-        {qrCode ? (
-          <div className='qrcode-container'>
-            <img src={qrCode} alt="QR Code Pix" />
-          </div>
-        ) : (
-          <p>Generating QR code...</p>
-        )}
+
+<Elements stripe={stripePromise}>
+        <PaymentForm/>
+</Elements>
+
 
       </div>
     </div>
