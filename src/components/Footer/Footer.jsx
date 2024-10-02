@@ -22,22 +22,23 @@ const Footer = () => {
                         <span><a href=""><FaWhatsapp /></a></span>
                     </div>
                 </div>
-                <div className='footer-content-center'>
-                    <h2>COMPANIA</h2>
-                    <ul>
-                        <li>Home</li>
-                        <li>Portifolio</li>
-                        <li>Sobre Min</li>
-                        <li>Delivery</li>
-                        <li>Politica de privacidade</li>
-                    </ul>
+                <div  className='footer-content-center' >
+                    <div className='footer-content-center-left'>
+                        <h2>COMPANIA</h2>
+                        <ul>
+                            <li>Home</li>
+                            <li>Portifolio</li>
+                            <li>Sobre Min</li>
+                            <li>Delivery</li>
+                            <li>Politica de privacidade</li>
+                        </ul>
+                    </div>
+                    <div className='footer-content-center-right'>
+                        <h2>ENTRE EM CONTATO</h2>
+                        <p>+55 81 99904-9803</p>
+                        <p>receberpedro 09@gmail.com</p>
+                    </div>
                 </div>
-                <div className='footer-content-right'>
-                    <h2>ENTRE EM CONTATO</h2>
-                    <p>+55 81 99904-9803</p>
-                    <p>receberpedro 09@gmail.com</p>
-                </div>
-
             </div>
             <hr />
             <p className='footer-copyright'>&copy; 2024 Ideal Restaurante . All rights reserved.</p>
