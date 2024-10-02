@@ -121,5 +121,10 @@
 @media (max-width:750px) {
     .cart-total{
         margin-top: 60vw;
+        flex-direction: column;
+    }
+    .cart-total-promotion{
+        margin-top: 20px;
+        width: 80%;
     }
 }

@@ -8,14 +8,6 @@ const StripePayment = () => {
     const [isProcessing, setIsProcessing] = useState(null);
 
 
-    const sucessMessage = () => {
-        setShowSuccessMessage(true);
-        setTimeout(() => {
-            setShowSuccessMessage(null);
-        }, 2000);
-    }
-
-
     const handleStripePayment = async (event) => {
         event.preventDefault();
 
