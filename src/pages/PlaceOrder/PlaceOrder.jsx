@@ -5,12 +5,13 @@ import { Elements } from '@stripe/react-stripe-js';
 import { loadStripe } from '@stripe/stripe-js';
 import PaymentForm from '../../context/StripePayment';
 
-
 const PlaceOrder = () => {
-  console.log("Stripe Publish Key:", process.env.REACT_APP_STRIPE_PUBLISH_KEY);
-  console.log("All environment variables:", process.env);
+ 
+  // const stripePromise = loadStripe(process.env.REACT_APP_STRIPE_PUBLISH_KEY);
 
-  const stripePromise = loadStripe(process.env.REACT_APP_STRIPE_PUBLISH_KEY);
+  //TRYING TO PASS KEY TO STRIPE PROMISE 
+  const stripePromise = loadStripe('');
+
 
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
@@ -25,7 +26,9 @@ const PlaceOrder = () => {
   const PORT = process.env.REACT_APP_PORT || 3000;
   const url = `http://localhost:${PORT}/api/address/${clientId}`
 
-
+  console.log("Stripe Publish Key:", process.env.REACT_APP_STRIPE_PUBLISH_KEY);
+  console.log("All environment variables:", process.env);
+  console.log(PORT)
   const sucessfullMessage = () => {
     setIsEditing(false)
     setShowSuccessMessage(true);

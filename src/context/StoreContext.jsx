@@ -5,6 +5,7 @@ import { food_list } from "../assets/assets";
 export const StoreContext = createContext(null)
 
 const StoreContextProvider = (props) => {
+    //const stripePromise = loadStripe(process.env.REACT_APP_STRIPE_PUBLISH_KEY);
 
     const [cartItems, setCartItems] = useState({});
     const [clientId, setClientId] = useState(null);
@@ -20,6 +21,7 @@ const StoreContextProvider = (props) => {
     };
 
     useEffect(() => {
+        
         const storedClientId = localStorage.getItem("clientId");
         const storedUsername = localStorage.getItem("clientName");
         //console.log('Stored Client ID:', storedClientId, 'Stored Username:', storedUsername); // Add this for debugging
@@ -61,6 +63,13 @@ const StoreContextProvider = (props) => {
         localStorage.setItem("clientName", username);
         //console.log('Stored in localStorage - Client ID:', localStorage.getItem('clientId'), 'Username:', localStorage.getItem('clientName'));
         console.log("Storing to localStorage:", { id, username });
+
+        // if (process.env.REACT_APP_STRIPE_PUBLISH_KEY === String) {
+        //     console.log(process.env.REACT_APP_STRIPE_PUBLISH_KEY);
+        // }
+        // else{
+        //     console.log('isnt string' + process.env.REACT_APP_A)
+        // }
     };
 
 
