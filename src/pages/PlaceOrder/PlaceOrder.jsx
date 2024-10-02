@@ -3,7 +3,7 @@ import './PlaceOrder.css';
 import { StoreContext } from '../../context/StoreContext';
 import { Elements } from '@stripe/react-stripe-js';
 import { loadStripe } from '@stripe/stripe-js';
-import StripeForm from '../../context/StripePayment';
+import StripeForm from '../../components/FormPayment/StripePayment';
 
 
 const PlaceOrder = () => {
