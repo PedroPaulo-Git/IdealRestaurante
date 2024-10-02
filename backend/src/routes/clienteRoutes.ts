@@ -1,47 +1,10 @@
 import { Router, Request, Response } from 'express';
 import { PrismaClient } from '@prisma/client';
-//import { QrCodePix } from 'qrcode-pix';
-// import { NubankApi } from 'nubank-api';
-// import { v4 as uuidv4 } from 'uuid';
-// import { writeFile } from 'fs/promises';
-// import { createInterface } from "readline";
+;
 import { config } from 'dotenv';
 config();
 import bcrypt from 'bcrypt';
 
-
-// const CPF: string = process.env.CPF || "default-cpf";
-// const PASSWORD: string = process.env.PASSWORD || "default-password";
-// const AUTH_CODE = uuidv4();
-
-// const rl = createInterface({
-//   input: process.stdin,
-//   output: process.stdout
-// });
-
-// rl.question('Enter something: ', (answer) => {
-//   console.log(`You entered: ${answer}`);
-//   rl.close(); // Close the readline interface after usage
-// });
-// const apiNubank = new NubankApi();
-
-// const authenticateWithQRCode = async () => {
-//   console.log('CPF:', CPF);
-//   console.log('PASSWORD:', PASSWORD);
-  
-
-//   const AUTH_CODE = uuidv4();
-//   console.log(`Generate a QR code and read it with the app: ${AUTH_CODE}`);
-//   try {
-//     const qrcCodeData = await apiNubank.auth.authenticateWithQrCode(CPF, PASSWORD, AUTH_CODE);
-//     console.log('QRCODE > ',qrcCodeData)
-//     console.log("You are authenticated!");
-//     console.log(apiNubank.authState);
-//     await writeFile("./auth-state.json", JSON.stringify(apiNubank.authState));
-//   } catch (error) {
-//     console.error("Authentication error:", error);
-//   }
-// };
 
 const prisma = new PrismaClient();
 const router = Router();
@@ -418,35 +381,5 @@ router.delete('/:clientId/:id', async (req, res) => {
     res.status(500).json({ error: 'Error deleting client and associated data' });
   }
 });
-
-// //pix code router >>>>>>>>>
-// router.post('/:clientId/generate-qr', async (req: Request, res: Response) => {
-//   const { amount, pixKey } = req.body; // Get both amount and pixKey from the request body
-//   console.log('Request body:', req.body);
-
-//   // Validate that both parameters are provided
-//   if (!amount || !pixKey) {
-//     return res.status(400).json({ error: 'Amount and PixKey are required' });
-//   }
-//   try {
-//     // Assuming you have already authenticated and have the auth context set up
-//     await apiNubank.auth.authenticateWithQrCode(CPF, PASSWORD, AUTH_CODE); // Ensure authentication
-//     console.log("You are authenticated!");
-
-//     // Use the appropriate method from the payment context
-//     const paymentResponse = await apiNubank.payment.createPixPaymentRequest(
-//       pixKey,
-//       amount
-//     );
-
-//     return res.json(paymentResponse);
-//   } catch (error) {
-//     console.error('Error making payment:', error);
-//     return res.status(500).json({ error: 'Error making payment' });
-//   }
-// });
-
-// // Initialize authentication when the server starts
-// authenticateWithQRCode();
 
 export default router;

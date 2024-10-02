@@ -61,15 +61,6 @@ const StoreContextProvider = (props) => {
         //console.log('Login function - ID:', id, 'Username:', username); 
         localStorage.setItem("clientId", id);
         localStorage.setItem("clientName", username);
-        //console.log('Stored in localStorage - Client ID:', localStorage.getItem('clientId'), 'Username:', localStorage.getItem('clientName'));
-        console.log("Storing to localStorage:", { id, username });
-
-        // if (process.env.REACT_APP_STRIPE_PUBLISH_KEY === String) {
-        //     console.log(process.env.REACT_APP_STRIPE_PUBLISH_KEY);
-        // }
-        // else{
-        //     console.log('isnt string' + process.env.REACT_APP_A)
-        // }
     };
 
 

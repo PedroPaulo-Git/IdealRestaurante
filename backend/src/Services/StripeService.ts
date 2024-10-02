@@ -1,5 +1,5 @@
 
-import { Router,Request, Response } from 'express';
+import { Router, Request, Response } from 'express';
 import { PrismaClient } from '@prisma/client';
 
 const prisma = new PrismaClient();
@@ -9,8 +9,8 @@ import Stripe from 'stripe';
 
 // const stripe = new Stripe(process.env.REACT_APP_STRIPE_PUBLISH_KEY as string);
 
-const stripe = new Stripe(process.env.REACT_APP_STRIPE_SECRET_KEY as string);
-console.log(process.env.REACT_APP_STRIPE_SECRET_KEY)
+const stripe = new Stripe(process.env.REACT_APP_STRIPE_SECRET_KEY_TEST as string);
+console.log(process.env.REACT_APP_STRIPE_SECRET_KEY_TEST)
 // const stripe = require('stripe')('');
 
 // const paymentIntent = await stripe.paymentIntents.create({
@@ -20,41 +20,37 @@ console.log(process.env.REACT_APP_STRIPE_SECRET_KEY)
 //     enabled: true,
 //   },
 // });
-router.get('/config',async(req: Request, res: Response)=>{
+router.get('/config', async (req: Request, res: Response) => {
     res.send({
-        stripePublishKey:process.env.REACT_APP_STRIPE_PUBLISH_KEY,
+        stripePublishKey: process.env.REACT_APP_STRIPE_PUBLISH_KEY,
     })
 })
-router.post('/create-payment-intent',async (req: Request, res: Response) => {
-    try{
+router.post('/create-payment-intent', async (req: Request, res: Response) => {
+    try {
         const paymentIntent = await stripe.paymentIntents.create({
             amount: 2000,
             currency: 'usd',
             automatic_payment_methods: {
-              enabled: true,
+                enabled: true,
             },
-          });
-      
-      
-console.log( paymentIntent.client_secret)
-          return res.send({clientSecret: paymentIntent.client_secret });
-      
+        });
 
+        return res.send({ clientSecret: paymentIntent.client_secret });
 
-    }catch(e:any){
-         return res.status(400).send({
-            error:{
+    } catch (e: any) {
+        return res.status(400).send({
+            error: {
                 message: e.message,
             },
         });
-        
+
     }
 })
 router.post('/create-customer/:clientId', async (req: Request, res: Response) => {
     const { clientId } = req.params;
 
     try {
-       
+
         const client = await prisma.client.findUnique({
             where: {
                 id: parseInt(clientId, 10),
@@ -72,22 +68,22 @@ router.post('/create-customer/:clientId', async (req: Request, res: Response) =>
             name: `${client.firstName} ${client.lastName}`,
             phone: client.phone,
             address: {
-              line1: client.address,
-              city: client.city,
-              state: client.state,
-              postal_code: client.zipcode
-              }
+                line1: client.address,
+                city: client.city,
+                state: client.state,
+                postal_code: client.zipcode
+            }
         });
-       
+
         // Optionally, you can store the Stripe customer ID in your database
         // await prisma.client.update({
         //     where: { id: client.id },
         //     data: { stripeCustomerId: customer.id }, // Assuming you have this field in your client model
         // });
-      
+
         console.log('Stripe customer created:', customer);
         return res.json({ customer });// Return Stripe customer ID
-     
+
     } catch (error) {
         console.error('Error creating Stripe customer:', error);
         return res.status(500).json({ error: 'Error creating Stripe customer' });
@@ -96,7 +92,7 @@ router.post('/create-customer/:clientId', async (req: Request, res: Response) =>
 router.post('/create-card-token/:clientId', async (req: Request, res: Response) => {
     const { number, exp_month, exp_year, cvc } = req.body;
     const { clientId } = req.params;
-    console.log( number, exp_month, exp_year, cvc)
+    console.log(number, exp_month, exp_year, cvc)
     console.log(clientId)
     try {
         const token = await stripe.tokens.create({
