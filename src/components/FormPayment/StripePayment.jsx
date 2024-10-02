@@ -9,7 +9,6 @@ const StripePayment = () => {
 
 
     const sucessMessage = () => {
-        setIsEditing(false)
         setShowSuccessMessage(true);
         setTimeout(() => {
             setShowSuccessMessage(null);
@@ -25,27 +24,37 @@ const StripePayment = () => {
         }
 
        setIsProcessing(true)
-        const error = await stripe.confirmPayment({
+        const {error,paymentIntent} = await stripe.confirmPayment({
             elements,
             confirmParams:{
                 return_url: `${window.location.origin}/completion`
             },
+            redirect:'if_required',
         })
         if(error){
             setShowSuccessMessage(error.message)
+        }else if(paymentIntent && paymentIntent.status === 'succeeded'){
+                console.log(paymentIntent.status)
+                setShowSuccessMessage('Pagamento concluído com sucesso !  ');
+                setTimeout(() => {
+                    setShowSuccessMessage(null);
+                }, 2000);
+        }else{
+            setShowSuccessMessage('Erro inesperado...')
         }
         setIsProcessing(false)
     };
     return (
         <div>
             <form id='form-payment-stripe' onSubmit={handleStripePayment}>
+                <h1>Formas de Pagamento</h1>
                 <PaymentElement />
                 <button className='cart-total-details-button' type="submit" disabled={isProcessing}>
-                    {isProcessing ? 'Processando...' : 'Completar Pagamento'}
+                    {isProcessing ? 'Processando...' : 'Concluir Pagamento'}
                 </button>
+                {showSuccessMessage && <div className="addressEdited-success" >{showSuccessMessage}</div>}
             </form>
-            {showSuccessMessage && <div>{showSuccessMessage}</div>}
-        </div>
+   </div>
     )
 }
 export default StripePayment;

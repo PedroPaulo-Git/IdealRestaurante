@@ -308,9 +308,9 @@ const PlaceOrder = () => {
           R${getTotalCart()}
         </div>
 
-        <button
-
-          className='cart-total-details-button'>Concluir Pagamento</button>
+       
+         
+  {/* <button className='cart-total-details-button'>Concluir Pagamento</button> */}
 
         {stripePromise && clientSecret && (
           <Elements stripe={stripePromise} options={{ clientSecret }}>

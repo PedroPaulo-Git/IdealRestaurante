@@ -5,6 +5,12 @@
     margin-bottom: 18vw;
     gap: 50px;
 }
+form#form-payment-stripe{
+    margin-top: 5vw;
+}
+
+
+
 
 .addressEdited-success {
     position: fixed;
@@ -54,10 +60,22 @@ form.form{
     .delivery-form{
         margin-bottom: 40vw;
         margin-top: 10vw;
+        flex-direction: column;
+        align-items: center;
     }
     .cart-total-details-button{
         align-items: center;
         justify-content: center;
         display: flex;
     }
+    .cart-total-left {
+        width: 100%;
+    }
+    .delivery-left{
+        width: 100%;
+    }
+    .delivery-left-form-inputs {
+        width: 100%;
+    }
+ 
 }
