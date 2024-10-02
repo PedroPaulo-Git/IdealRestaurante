@@ -5,9 +5,51 @@ import { PrismaClient } from '@prisma/client';
 const prisma = new PrismaClient();
 const router = Router();
 import Stripe from 'stripe';
-console.log(process.env.REACT_APP_STRIPE_PUBLISH_KEY)
-const stripe = new Stripe(process.env.REACT_APP_STRIPE_PUBLISH_KEY as string);
 
+
+// const stripe = new Stripe(process.env.REACT_APP_STRIPE_PUBLISH_KEY as string);
+
+const stripe = new Stripe(process.env.REACT_APP_STRIPE_SECRET_KEY as string);
+console.log(process.env.REACT_APP_STRIPE_SECRET_KEY)
+// const stripe = require('stripe')('');
+
+// const paymentIntent = await stripe.paymentIntents.create({
+//   amount: 2000,
+//   currency: 'usd',
+//   automatic_payment_methods: {
+//     enabled: true,
+//   },
+// });
+router.get('/config',async(req: Request, res: Response)=>{
+    res.send({
+        stripePublishKey:process.env.REACT_APP_STRIPE_PUBLISH_KEY,
+    })
+})
+router.post('/create-payment-intent',async (req: Request, res: Response) => {
+    try{
+        const paymentIntent = await stripe.paymentIntents.create({
+            amount: 2000,
+            currency: 'usd',
+            automatic_payment_methods: {
+              enabled: true,
+            },
+          });
+      
+      
+console.log( paymentIntent.client_secret)
+          return res.send({clientSecret: paymentIntent.client_secret });
+      
+
+
+    }catch(e:any){
+         return res.status(400).send({
+            error:{
+                message: e.message,
+            },
+        });
+        
+    }
+})
 router.post('/create-customer/:clientId', async (req: Request, res: Response) => {
     const { clientId } = req.params;
 

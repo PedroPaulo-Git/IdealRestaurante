@@ -6,12 +6,13 @@ import { loadStripe } from '@stripe/stripe-js';
 import PaymentForm from '../../context/StripePayment';
 
 const PlaceOrder = () => {
- 
+
   // const stripePromise = loadStripe(process.env.REACT_APP_STRIPE_PUBLISH_KEY);
 
   //TRYING TO PASS KEY TO STRIPE PROMISE 
-  const stripePromise = loadStripe('');
-
+  // 
+  const [stripePromise, setStripePromise] = useState(null);
+  const [clientSecret,setClientSecret] = useState('');
 
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
@@ -26,9 +27,43 @@ const PlaceOrder = () => {
   const PORT = process.env.REACT_APP_PORT || 3000;
   const url = `http://localhost:${PORT}/api/address/${clientId}`
 
-  console.log("Stripe Publish Key:", process.env.REACT_APP_STRIPE_PUBLISH_KEY);
-  console.log("All environment variables:", process.env);
-  console.log(PORT)
+  // console.log("Stripe Publish Key:", process.env.REACT_APP_STRIPE_PUBLISH_KEY);
+  // console.log("All environment variables:", process.env);
+  // console.log(PORT)
+
+  useEffect(()=>{
+    fetch(`http://localhost:${PORT}/api/config`).then(async (r) => {
+      const {stripePublishKey}= await r.json();
+      console.log('Publish key > ', stripePublishKey)
+      setStripePromise(loadStripe(stripePublishKey))
+    })
+  },[])
+
+  useEffect(()=>{
+    fetch(`http://localhost:${PORT}/api/create-payment-intent`,{
+      method:"POST",
+      body: JSON.stringify({})
+    }).then(async (r) => {
+      const {clientSecret} = await r.json();
+      console.log('secret key > ', clientSecret)
+    })
+  },[])
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
   const sucessfullMessage = () => {
     setIsEditing(false)
     setShowSuccessMessage(true);
@@ -280,13 +315,13 @@ const PlaceOrder = () => {
         </div>
 
         <button
-         
+
           className='cart-total-details-button'>Concluir Pagamento</button>
 
 
-<Elements stripe={stripePromise}>
-        <PaymentForm/>
-</Elements>
+        <Elements stripe={stripePromise}>
+          <PaymentForm />
+        </Elements>
 
 
       </div>
