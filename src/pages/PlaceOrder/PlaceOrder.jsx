@@ -24,7 +24,7 @@ const PlaceOrder = () => {
   const [isEditing, setIsEditing] = useState(false);
   const [showSuccessMessage, setShowSuccessMessage] = useState(null);
 
-  const { getTotalCart, clientId } = useContext(StoreContext);
+  const { getTotalCart, clientId, cartItems } = useContext(StoreContext);
   const PORT = process.env.REACT_APP_PORT || 3000;
   const url = `http://localhost:${PORT}/api/address/${clientId}`
 
@@ -41,15 +41,23 @@ const PlaceOrder = () => {
   }, [])
 
   useEffect(() => {
-    fetch(`http://localhost:${PORT}/api/create-payment-intent`, {
-      method: "POST",
-      body: JSON.stringify({})
-    }).then(async (r) => {
-      const { clientSecret } = await r.json();
-      console.log('secret key > ', clientSecret)
-      setClientSecret(clientSecret);
-    })
-  }, [])
+
+    const totalAmount = getTotalCart();
+    console.log('fetch amount :', totalAmount)
+    if (totalAmount > 0){
+      fetch(`http://localhost:${PORT}/api/create-payment-intent`, {
+        method: "POST",
+        headers: {
+          'Content-Type': 'application/json', // Set the content type to application/json
+        },
+        body: JSON.stringify({ amount: totalAmount * 100 })
+      }).then(async (r) => {
+        const { clientSecret } = await r.json();
+        console.log('secret key > ', clientSecret)
+        setClientSecret(clientSecret);
+      })
+    }
+  }, [cartItems])
 
 
 
@@ -308,9 +316,9 @@ const PlaceOrder = () => {
           R${getTotalCart()}
         </div>
 
-       
-         
-  {/* <button className='cart-total-details-button'>Concluir Pagamento</button> */}
+
+
+        {/* <button className='cart-total-details-button'>Concluir Pagamento</button> */}
 
         {stripePromise && clientSecret && (
           <Elements stripe={stripePromise} options={{ clientSecret }}>

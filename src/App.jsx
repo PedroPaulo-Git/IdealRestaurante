@@ -7,6 +7,7 @@ import Cart from './pages/Cart/Cart';
 import PlaceOrder from './pages/PlaceOrder/PlaceOrder';
 import Footer from './components/Footer/Footer'
 import LoginPopup from './components/LoginPopup/LoginPopup';
+import StoreContextProvider from './context/StoreContext';
 import { Buffer } from 'buffer';
 
 
@@ -17,6 +18,7 @@ const App = () => {
   window.Buffer = Buffer;
   return (
     <>
+     <StoreContextProvider setShowLoginPopup={setShowLoginPopup}>
       {showLoginPopup ? <LoginPopup setShowLoginPopup={setShowLoginPopup}/> : <></>}
       <div className='app'>
         <Navbar setShowLoginPopup={setShowLoginPopup} />
@@ -27,6 +29,7 @@ const App = () => {
         </Routes>
       </div>
       <Footer />
+      </StoreContextProvider>
     </>
   )
 }

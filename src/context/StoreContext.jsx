@@ -1,10 +1,11 @@
 import { createContext, useEffect, useState } from "react";
 import { food_list } from "../assets/assets";
+import LoginPopup from "../components/LoginPopup/LoginPopup";
 
 
 export const StoreContext = createContext(null)
 
-const StoreContextProvider = (props) => {
+const StoreContextProvider = ({ setShowLoginPopup, children }) => {
     //const stripePromise = loadStripe(process.env.REACT_APP_STRIPE_PUBLISH_KEY);
 
     const [cartItems, setCartItems] = useState({});
@@ -17,18 +18,21 @@ const StoreContextProvider = (props) => {
         setClientname(null);
         localStorage.removeItem("clientId");
         localStorage.removeItem("clientName");
+        localStorage.removeItem("cartItems");
         setCartItems({}); // Optional: Clear cart items on logout
     };
 
     useEffect(() => {
-        
+
         const storedClientId = localStorage.getItem("clientId");
         const storedUsername = localStorage.getItem("clientName");
+        const storedCartItems = JSON.parse(localStorage.getItem("cartItems"));
+        console.log(storedCartItems)
         //console.log('Stored Client ID:', storedClientId, 'Stored Username:', storedUsername); // Add this for debugging
 
         if (storedClientId) {
             setClientId(storedClientId);
-        }else {
+        } else {
             console.error("Invalid storedClientId:", storedClientId);
         }
 
@@ -37,16 +41,17 @@ const StoreContextProvider = (props) => {
         } else {
             console.error("Invalid storedUsername:", storedUsername);
         }
-          if (storedClientId && storedUsername) {
-        login(storedClientId, storedUsername);
-    }
+        if (storedClientId && storedUsername) {
+            login(storedClientId, storedUsername);
+        }
+        setCartItems(storedCartItems);
 
     }, []);
 
 
     useEffect(() => {
-       // console.log('Username :', clientName)
-       // console.log("Client ID:", clientId); 
+        // console.log('Username :', clientName)
+        // console.log("Client ID:", clientId); 
         if (clientId && clientId) {
             fetchCartItems(clientId)
         } else {
@@ -54,7 +59,16 @@ const StoreContextProvider = (props) => {
         }
     }, [clientId]);
 
-
+    useEffect(() => {
+        
+        localStorage.setItem("cartItems", JSON.stringify(cartItems));
+        console.log(cartItems)
+    }, [cartItems]); 
+    useEffect(() => {
+        localStorage.setItem("cartItems", JSON.stringify(cartItems));
+        console.log('Updated Cart Items:', cartItems);
+    }, [cartItems]);
+    
     const login = (id, username) => {
         setClientId(id);
         setClientname(username);
@@ -95,6 +109,7 @@ const StoreContextProvider = (props) => {
                         resolve(newQuantity);
                         return { ...prev, [itemId]: newQuantity };
                     });
+                    
                 });
 
                 const response = await fetch(`http://localhost:3000/api/carrinho/${clientId}`, {
@@ -130,6 +145,8 @@ const StoreContextProvider = (props) => {
             }
         } else {
             console.error('Client ID is not defined');
+            setShowLoginPopup(true)
+
         }
     };
 
@@ -290,11 +307,12 @@ const StoreContextProvider = (props) => {
         login,
         logout,
         fetchCartItems,
+
     };
 
     return (
         <StoreContext.Provider value={contextValue}>
-            {props.children}
+            {children}
         </StoreContext.Provider>
     )
 }
