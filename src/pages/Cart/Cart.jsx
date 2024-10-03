@@ -2,14 +2,13 @@ import React, { useContext, useEffect } from 'react';
 import './Cart.css';
 import { StoreContext } from '../../context/StoreContext';
 import { useNavigate } from 'react-router-dom';
+import { assets } from '../../assets/assets';
 
 
-
-const Cart = () => {
+const Cart = ({ id }) => {
   const PORT = process.env.REACT_APP_PORT || 3000;
+  const { cartItems, food_list, removeFromCart, getTotalCart, clientId, addToCart, ReduceItem } = useContext(StoreContext);
 
-  const { cartItems, food_list, removeFromCart, getTotalCart, addToCart, clientId, setCartItems } = useContext(StoreContext);
-  
   const navigatte = useNavigate()
 
   return (
@@ -26,15 +25,15 @@ const Cart = () => {
         <br />
         <hr />
         {Object.keys(cartItems).map((itemId) => {
-         
+
           const quantity = cartItems[itemId];
-         
+
           const item = food_list.find(product => product._id === itemId);
-          if(clientId > 0){
-            if (item && quantity > 0) {  
-               console.log(`${item.name} : ${quantity}`)
-              }
-         
+          if (clientId > 0) {
+            if (item && quantity > 0) {
+              console.log(`${item.name} : ${quantity}`)
+            }
+
           }
           if (item && quantity > 0) {
             return (
@@ -42,7 +41,14 @@ const Cart = () => {
                 <img className='cart-items-image' src={item.image} alt="" />
                 <p className='cart-items-name'>{item.name}</p>
                 <p className='cart-items-price'>R${item.price}</p>
-                <p className='cart-items-quantity'>{quantity}</p>
+
+
+                <div className='cart-items-quantity-container'>
+                  <img onClick={() => addToCart(itemId)} src={assets.More} className='food-item-morebutton' />
+                  <p className='cart-items-quantity'>{quantity}</p>
+                  <img onClick={() => ReduceItem(itemId)} src={assets.Less} className='food-item-lessbutton' />
+                </div>
+
                 <p className='cart-items-total'>R${item.price * quantity}</p>
                 <p className='cart-items-remove' onClick={() => removeFromCart(itemId)}>x</p>
               </div>
@@ -72,7 +78,7 @@ const Cart = () => {
 
             {/* <button onClick={() => navigatte('/pedido')} className='cart-total-details-button'>Informacoes</button> */}
 
-            <button onClick={() => navigatte('/pedido')}className='cart-total-details-button'>Concluir Pagamento</button>
+            <button onClick={() => navigatte('/pedido')} className='cart-total-details-button'>Concluir Pagamento</button>
 
           </div>
           <div className='cart-total-promotion'>

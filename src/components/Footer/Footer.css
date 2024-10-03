@@ -4,6 +4,8 @@
     margin-top: 8vw;
     color: #eeeaeb;
     max-width:100%;
+    position: absolute;
+    bottom: 100;
 }
 .footer-content{
     width: 100%;
