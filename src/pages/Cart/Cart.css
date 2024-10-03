@@ -23,9 +23,11 @@
     font-weight: 550;
     color: rgb(97, 97, 97);
 }
-.cart-items-item{
-    color: #282d26;
-   
+.cart-items-item {
+    margin-bottom: 1vw;
+    margin-top: 1vw;
+    border-bottom: 1px solid #d4d4d4;
+    padding-bottom: 1vw;
 }
 
 .cart-items-item{
@@ -42,6 +44,9 @@
     font-size: max(1vw,12px);
     margin-left:  max(1vw,15px);
     margin: auto;
+}
+.cart-items-remove:hover{
+    color: rgb(255, 74, 74);
 }
 
 

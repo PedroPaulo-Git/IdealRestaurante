@@ -264,7 +264,11 @@ const StoreContextProvider = ({ setShowLoginPopup, children }) => {
 
     }
 
-
+    const clearCart = () => {
+        setCartItems({});
+        localStorage.removeItem("cartItems"); // Clear cart from localStorage
+    };
+    
 
 
 
@@ -307,7 +311,7 @@ const StoreContextProvider = ({ setShowLoginPopup, children }) => {
         login,
         logout,
         fetchCartItems,
-
+        clearCart,
     };
 
     return (

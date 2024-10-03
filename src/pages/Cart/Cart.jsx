@@ -3,7 +3,7 @@ import './Cart.css';
 import { StoreContext } from '../../context/StoreContext';
 import { useNavigate } from 'react-router-dom';
 import { assets } from '../../assets/assets';
-
+import { FaTrashCan } from "react-icons/fa6";
 
 const Cart = ({ id }) => {
   const PORT = process.env.REACT_APP_PORT || 3000;
@@ -50,7 +50,7 @@ const Cart = ({ id }) => {
                 </div>
 
                 <p className='cart-items-total'>R${item.price * quantity}</p>
-                <p className='cart-items-remove' onClick={() => removeFromCart(itemId)}>x</p>
+                <p className='cart-items-remove' onClick={() => removeFromCart(itemId)}><FaTrashCan /></p>
               </div>
             );
           }

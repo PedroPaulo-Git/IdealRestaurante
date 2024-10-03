@@ -1,12 +1,16 @@
-import { useState } from 'react'
+import { useState,useContext } from 'react'
 import { CardElement, useStripe, useElements } from '@stripe/react-stripe-js';
 import { PaymentElement } from '@stripe/react-stripe-js';
+import { StoreContext } from '../../context/StoreContext';
+import { useNavigate } from 'react-router-dom';
 const StripePayment = () => {
+
     const stripe = useStripe();
     const elements = useElements();
     const [showSuccessMessage, setShowSuccessMessage] = useState(null);
     const [isProcessing, setIsProcessing] = useState(null);
-    
+    const navigate = useNavigate();
+    const {clearCart} = useContext(StoreContext);
 
     const handleStripePayment = async (event) => {
         event.preventDefault();
@@ -28,8 +32,10 @@ const StripePayment = () => {
         } else if (paymentIntent && paymentIntent.status === 'succeeded') {
             console.log(paymentIntent.status)
             setShowSuccessMessage('Pagamento concluído com sucesso !  ');
+            clearCart()
             setTimeout(() => {
                 setShowSuccessMessage(null);
+                navigate('/');
             }, 2000);
         } else {
             setShowSuccessMessage('Erro inesperado...')

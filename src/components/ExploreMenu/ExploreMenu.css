@@ -59,9 +59,9 @@
     border-radius: 50%;
 }
 .explore-menu hr{
-    height: 2px;
+    height: 1px;
     border: none;
-    background-color: #60615f;
+    background-color: #b8b8b8;
     margin-bottom: 2vw;
     margin-top: 2vw;
 }
@@ -69,5 +69,8 @@
     .explore-menu-list-item img{
         width:12vw;
         height:12vw;
+    }
+    .explore-menu-p {
+        max-width: 80%;
     }
 }
