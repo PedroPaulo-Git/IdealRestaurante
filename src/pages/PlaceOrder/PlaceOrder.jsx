@@ -60,7 +60,7 @@ const PlaceOrder = () => {
     // }
     console.log('ADDRESS > ',addressData)
     const totalAmount = getTotalCart();
-    if (totalAmount > 0) {
+    if (totalAmount > 0 && firstName && lastName && clientEmail)  {
       fetch(`http://localhost:${PORT}/api/create-customer/${clientId}`, {
         method: "POST",
         headers: {

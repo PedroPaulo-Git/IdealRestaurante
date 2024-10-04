@@ -1,10 +1,8 @@
 import { Router, Request, Response } from 'express';
 import { PrismaClient } from '@prisma/client';
-;
 import { config } from 'dotenv';
 config();
 import bcrypt from 'bcrypt';
-
 
 const prisma = new PrismaClient();
 const router = Router();
@@ -215,8 +213,39 @@ router.get('/address/:clientId', async (req, res) => {
 
 
 
+router.delete('/carrinho/:clientId', async (req: Request, res: Response) => {
+  const clientId = parseInt(req.params.clientId, 10);
 
+  if (isNaN(clientId)) {
+    return res.status(400).json({ error: 'Invalid clientId' });
+  }
 
+  try {
+    // Encontra o carrinho ativo do cliente
+    const cart = await prisma.cart.findFirst({
+      where: { clientId },
+      include: { items: true },
+    });
+
+    if (!cart) {
+      return res.status(404).json({ error: 'Cart not found' });
+    }
+
+    // Deleta todos os itens do carrinho
+    await prisma.cartItem.deleteMany({
+      where: { cartId: cart.id },
+    });
+
+    // Retorna o carrinho vazio
+    return res.status(200).json({
+      message: 'Cart cleared successfully',
+      cart: { ...cart, items: [] },  // Retorna o carrinho sem os itens
+    });
+  } catch (error) {
+    console.error('Error clearing cart:', error);
+    return res.status(500).json({ error: 'Error clearing cart' });
+  }
+});
 
 
 router.delete('/carrinho/:clientId/:productId', async (req: Request, res: Response) => {

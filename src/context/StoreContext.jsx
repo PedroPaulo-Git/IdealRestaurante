@@ -284,15 +284,32 @@ const StoreContextProvider = ({ setShowLoginPopup, children }) => {
         }
 
     }
-
     const clearCart = async () => {
-
-        setCartItems({}); // Clear cart in state
-        localStorage.removeItem("cartItems"); // Clear cart from localStorage
-
+        if (!clientId) {
+            console.error('Client ID is not defined');
+            return;
+        }
+    
+        try {
+            const response = await fetch(`http://localhost:3000/api/carrinho/${clientId}`, {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            });
+    
+            if (!response.ok) {
+                const errorMessage = await response.text();
+                console.error('Error clearing cart:', errorMessage);
+            } else {
+                setCartItems({});
+                console.log('Cart cleared successfully.');
+            }
+        } catch (error) {
+            console.error('Error clearing cart:', error);
+        }
     };
-
-
+    
 
 
     ///////////////////////////////////////
