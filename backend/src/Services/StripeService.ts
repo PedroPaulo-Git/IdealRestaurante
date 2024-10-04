@@ -25,15 +25,28 @@ router.get('/config', async (req: Request, res: Response) => {
         stripePublishKey: process.env.REACT_APP_STRIPE_PUBLISH_KEY,
     })
 })
+
 router.post('/create-payment-intent', async (req: Request, res: Response) => {
     try {
-        const { amount } = req.body;
+        const { amount, address } = req.body;
         console.log('post amount :',amount)
+        console.log('address: ' ,address)
         const paymentIntent = await stripe.paymentIntents.create({
             amount: amount,
             currency: 'usd',
             automatic_payment_methods: {
                 enabled: true,
+            },
+            metadata: {
+                address_city: address.city,
+                address_country: address.country,
+                address_line1: address.line1, // Add this
+                address_line2: address.line2 || '', // Optional
+                address_postal_code: address.postal_code,
+                address_state: address.state,
+                customer_name: `${address.firstName} ${address.lastName}`, // Full name
+                customer_email: address.email || '', // If you have this
+                customer_phone: address.phone || '', // If you have this
             },
         });
 
@@ -52,7 +65,6 @@ router.post('/create-customer/:clientId', async (req: Request, res: Response) =>
     const { clientId } = req.params;
 
     try {
-
         const client = await prisma.client.findUnique({
             where: {
                 id: parseInt(clientId, 10),

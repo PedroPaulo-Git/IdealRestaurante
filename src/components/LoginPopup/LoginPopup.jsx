@@ -82,7 +82,7 @@ export const LoginPopup = ({ setShowLoginPopup }) => {
       const data = await response.json();
       
       if (response.ok && data.client) {
-        login(data.client.id,data.client.username); // Call the login method from context
+        login(data.client.id,data.client.username,data.client.email); // Call the login method from context
         fetchCartItems(data.client.id); 
         console.log('RESPONSE WORK', data);
         setShowSuccessMessage(true);

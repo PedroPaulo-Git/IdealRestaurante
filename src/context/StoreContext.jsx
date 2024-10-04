@@ -1,31 +1,22 @@
 import { createContext, useEffect, useState } from "react";
 import { food_list } from "../assets/assets";
-import LoginPopup from "../components/LoginPopup/LoginPopup";
 
 
 export const StoreContext = createContext(null)
 
 const StoreContextProvider = ({ setShowLoginPopup, children }) => {
-    //const stripePromise = loadStripe(process.env.REACT_APP_STRIPE_PUBLISH_KEY);
-
     const [cartItems, setCartItems] = useState({});
     const [clientId, setClientId] = useState(null);
-    const [clientName, setClientname] = useState(null);
-    //stripe const >
+    const [clientName, setClientName] = useState(null);
+    const [clientEmail, setClientEmail] = useState(null); 
 
-    const logout = () => {
-        setClientId(null);
-        setClientname(null);
-        localStorage.removeItem("clientId");
-        localStorage.removeItem("clientName");
-        localStorage.removeItem("cartItems");
-        setCartItems({}); // Optional: Clear cart items on logout
-    };
 
     useEffect(() => {
 
         const storedClientId = localStorage.getItem("clientId");
         const storedUsername = localStorage.getItem("clientName");
+        const storedEmail = localStorage.getItem("clientEmail");
+        
         const storedCartItems = JSON.parse(localStorage.getItem("cartItems"));
         console.log(storedCartItems)
         //console.log('Stored Client ID:', storedClientId, 'Stored Username:', storedUsername); // Add this for debugging
@@ -37,12 +28,18 @@ const StoreContextProvider = ({ setShowLoginPopup, children }) => {
         }
 
         if (storedUsername) {
-            setClientname(storedUsername);
+            setClientName(storedUsername);
         } else {
             console.error("Invalid storedUsername:", storedUsername);
         }
+        
+        if (storedEmail) {
+            setClientEmail(storedEmail);
+        } else {
+            console.error("Invalid storedEmail:", storedEmail);
+        }
         if (storedClientId && storedUsername) {
-            login(storedClientId, storedUsername);
+            login(storedClientId, storedUsername,storedEmail);
         }
         setCartItems(storedCartItems);
 
@@ -60,24 +57,32 @@ const StoreContextProvider = ({ setShowLoginPopup, children }) => {
     }, [clientId]);
 
     useEffect(() => {
-        
         localStorage.setItem("cartItems", JSON.stringify(cartItems));
-        console.log(cartItems)
     }, [cartItems]); 
-    useEffect(() => {
-        localStorage.setItem("cartItems", JSON.stringify(cartItems));
-        console.log('Updated Cart Items:', cartItems);
-    }, [cartItems]);
-    
-    const login = (id, username) => {
+
+
+
+    const login = (id, username,email) => {
         setClientId(id);
-        setClientname(username);
+        setClientName(username);
+        setClientEmail(email);
         //console.log('Login function - ID:', id, 'Username:', username); 
         localStorage.setItem("clientId", id);
         localStorage.setItem("clientName", username);
+        localStorage.setItem("clientEmail", email); 
     };
 
 
+    const logout = () => {
+        setClientId(null);
+        setClientName(null);
+        setClientEmail(null);
+        localStorage.removeItem("clientId");
+        localStorage.removeItem("clientName");
+        localStorage.removeItem("clientEmail");
+        localStorage.removeItem("cartItems");
+        setCartItems({}); 
+    };
 
     const fetchCartItems = async (clientId) => {
         if (clientId) {
@@ -89,7 +94,7 @@ const StoreContextProvider = ({ setShowLoginPopup, children }) => {
                 const data = await response.json();
                 const newCartItems = {};
                 data.items.forEach(item => {
-                    newCartItems[item.productId] = item.quantity; // Adjust based on your API response
+                    newCartItems[item.productId] = item.quantity; 
                 });
                 setCartItems(newCartItems);
             } catch (error) {
@@ -303,6 +308,7 @@ const StoreContextProvider = ({ setShowLoginPopup, children }) => {
         cartItems,
         clientId,
         clientName,
+        clientEmail,
         setCartItems,
         addToCart,
         removeFromCart,

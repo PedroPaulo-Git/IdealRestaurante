@@ -30,11 +30,11 @@ const StripePayment = () => {
         if (error) {
             setShowSuccessMessage(error.message)
         } else if (paymentIntent && paymentIntent.status === 'succeeded') {
-            console.log(paymentIntent.status)
+            console.log(paymentIntent.status)    
             setShowSuccessMessage('Pagamento concluído com sucesso !  ');
-            clearCart()
             setTimeout(() => {
                 setShowSuccessMessage(null);
+                clearCart()    
                 navigate('/');
             }, 2000);
         } else {

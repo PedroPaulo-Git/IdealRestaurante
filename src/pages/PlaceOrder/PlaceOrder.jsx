@@ -24,36 +24,49 @@ const PlaceOrder = () => {
   const [isEditing, setIsEditing] = useState(false);
   const [showSuccessMessage, setShowSuccessMessage] = useState(null);
 
-  const { getTotalCart, clientId, cartItems } = useContext(StoreContext);
+  const { getTotalCart, clientId, cartItems,clientEmail } = useContext(StoreContext);
   const PORT = process.env.REACT_APP_PORT || 3000;
   const url = `http://localhost:${PORT}/api/address/${clientId}`
 
   // console.log("Stripe Publish Key:", process.env.REACT_APP_STRIPE_PUBLISH_KEY);
   // console.log("All environment variables:", process.env);
   // console.log(PORT)
-
+  
   useEffect(() => {
     fetch(`http://localhost:${PORT}/api/config`).then(async (r) => {
       const { stripePublishKey } = await r.json();
-      console.log('Publish key > ', stripePublishKey)
+      //console.log('Publish key > ', stripePublishKey)
       setStripePromise(loadStripe(stripePublishKey))
     })
   }, [])
 
+
   useEffect(() => {
 
+    const addressData = {
+      line1: address,
+      line2: "", // Optional
+      city: city,
+      postal_code: zipcode,
+      country: "BR", // Adjust as necessary
+      firstName: firstName,
+      lastName: lastName,
+      email: clientEmail,
+      phone: phone,
+    };
+  
+    console.log(addressData)
     const totalAmount = getTotalCart();
-    console.log('fetch amount :', totalAmount)
     if (totalAmount > 0){
       fetch(`http://localhost:${PORT}/api/create-payment-intent`, {
         method: "POST",
         headers: {
           'Content-Type': 'application/json', // Set the content type to application/json
         },
-        body: JSON.stringify({ amount: totalAmount * 100 })
+        body: JSON.stringify({ amount: totalAmount * 100 ,  address: addressData})
       }).then(async (r) => {
         const { clientSecret } = await r.json();
-        console.log('secret key > ', clientSecret)
+        //console.log('secret key > ', clientSecret)
         setClientSecret(clientSecret);
       })
     }
@@ -227,7 +240,7 @@ const PlaceOrder = () => {
               <div className='form'>
                 <div className='delivery-left-form-inputs'>
                   <div className='delivery-left'>
-                    <h1>Informações de Entrega</h1>
+                    <h1>Informações de Entrega</h1>{clientEmail}
                     <div className='delivery-left-form'>
                       <input value={firstName}
                         onChange={(e) => setFirstName(e.target.value)}
