@@ -8,7 +8,7 @@ const StoreContextProvider = ({ setShowLoginPopup, children }) => {
     const [cartItems, setCartItems] = useState({});
     const [clientId, setClientId] = useState(null);
     const [clientName, setClientName] = useState(null);
-    const [clientEmail, setClientEmail] = useState(null); 
+    const [clientEmail, setClientEmail] = useState(null);
 
 
     useEffect(() => {
@@ -16,10 +16,16 @@ const StoreContextProvider = ({ setShowLoginPopup, children }) => {
         const storedClientId = localStorage.getItem("clientId");
         const storedUsername = localStorage.getItem("clientName");
         const storedEmail = localStorage.getItem("clientEmail");
-        
+
         const storedCartItems = JSON.parse(localStorage.getItem("cartItems"));
-        console.log(storedCartItems)
+        //console.log(storedCartItems)
         //console.log('Stored Client ID:', storedClientId, 'Stored Username:', storedUsername); // Add this for debugging
+        setCartItems(storedCartItems);
+        if (storedCartItems && Object.keys(storedCartItems).length > 0) {
+            setCartItems(storedCartItems);
+        } else {
+            setCartItems({}); // Initialize to empty if no stored items
+        }
 
         if (storedClientId) {
             setClientId(storedClientId);
@@ -32,24 +38,31 @@ const StoreContextProvider = ({ setShowLoginPopup, children }) => {
         } else {
             console.error("Invalid storedUsername:", storedUsername);
         }
-        
+
         if (storedEmail) {
             setClientEmail(storedEmail);
         } else {
             console.error("Invalid storedEmail:", storedEmail);
         }
         if (storedClientId && storedUsername) {
-            login(storedClientId, storedUsername,storedEmail);
+            login(storedClientId, storedUsername, storedEmail);
         }
-        setCartItems(storedCartItems);
 
     }, []);
 
+    useEffect(() => {
+        const storedCartItems = JSON.parse(localStorage.getItem("cartItems"));
+        if (storedCartItems) {
+            setCartItems(storedCartItems);
+        } else {
+            setCartItems({});
+        }
+    }, []);
 
     useEffect(() => {
         // console.log('Username :', clientName)
         // console.log("Client ID:", clientId); 
-        if (clientId && clientId) {
+        if (clientId) {
             fetchCartItems(clientId)
         } else {
             setCartItems({});
@@ -58,18 +71,18 @@ const StoreContextProvider = ({ setShowLoginPopup, children }) => {
 
     useEffect(() => {
         localStorage.setItem("cartItems", JSON.stringify(cartItems));
-    }, [cartItems]); 
+    }, [cartItems]);
 
 
 
-    const login = (id, username,email) => {
+    const login = (id, username, email) => {
         setClientId(id);
         setClientName(username);
         setClientEmail(email);
         //console.log('Login function - ID:', id, 'Username:', username); 
         localStorage.setItem("clientId", id);
         localStorage.setItem("clientName", username);
-        localStorage.setItem("clientEmail", email); 
+        localStorage.setItem("clientEmail", email);
     };
 
 
@@ -81,7 +94,7 @@ const StoreContextProvider = ({ setShowLoginPopup, children }) => {
         localStorage.removeItem("clientName");
         localStorage.removeItem("clientEmail");
         localStorage.removeItem("cartItems");
-        setCartItems({}); 
+        setCartItems({});
     };
 
     const fetchCartItems = async (clientId) => {
@@ -93,10 +106,13 @@ const StoreContextProvider = ({ setShowLoginPopup, children }) => {
                 }
                 const data = await response.json();
                 const newCartItems = {};
-                data.items.forEach(item => {
-                    newCartItems[item.productId] = item.quantity; 
-                });
+                if (data.items) {
+                    data.items.forEach(item => {
+                        newCartItems[item.productId] = item.quantity;
+                    });
+                }
                 setCartItems(newCartItems);
+                localStorage.setItem("cartItems", JSON.stringify(newCartItems));
             } catch (error) {
                 console.error('Error fetching cart items:', error);
             }
@@ -107,14 +123,14 @@ const StoreContextProvider = ({ setShowLoginPopup, children }) => {
 
         if (clientId) {
             try {
-                // Fetch the updated quantity directly from prev
+
                 const updatedCartItems = await new Promise((resolve) => {
                     setCartItems((prev) => {
                         const newQuantity = (prev[itemId] || 0) + 1; // Increment by 1
                         resolve(newQuantity);
                         return { ...prev, [itemId]: newQuantity };
                     });
-                    
+
                 });
 
                 const response = await fetch(`http://localhost:3000/api/carrinho/${clientId}`, {
@@ -269,11 +285,13 @@ const StoreContextProvider = ({ setShowLoginPopup, children }) => {
 
     }
 
-    const clearCart = () => {
-        setCartItems({});
+    const clearCart = async () => {
+
+        setCartItems({}); // Clear cart in state
         localStorage.removeItem("cartItems"); // Clear cart from localStorage
+
     };
-    
+
 
 
 

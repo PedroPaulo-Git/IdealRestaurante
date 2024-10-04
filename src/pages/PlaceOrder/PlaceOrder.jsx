@@ -24,14 +24,14 @@ const PlaceOrder = () => {
   const [isEditing, setIsEditing] = useState(false);
   const [showSuccessMessage, setShowSuccessMessage] = useState(null);
 
-  const { getTotalCart, clientId, cartItems,clientEmail } = useContext(StoreContext);
+  const { getTotalCart, clientId, cartItems, clientEmail } = useContext(StoreContext);
   const PORT = process.env.REACT_APP_PORT || 3000;
   const url = `http://localhost:${PORT}/api/address/${clientId}`
 
   // console.log("Stripe Publish Key:", process.env.REACT_APP_STRIPE_PUBLISH_KEY);
   // console.log("All environment variables:", process.env);
   // console.log(PORT)
-  
+
   useEffect(() => {
     fetch(`http://localhost:${PORT}/api/config`).then(async (r) => {
       const { stripePublishKey } = await r.json();
@@ -54,25 +54,53 @@ const PlaceOrder = () => {
       email: clientEmail,
       phone: phone,
     };
-    if (!addressData.firstName || !addressData.lastName ) {
-      console.log('Missing required address data');
-      console.log(addressData.firstName)
-      return;
-    }
-    console.log(addressData)
+    // if (!addressData.firstName || !addressData.lastName || !addressData.email) {
+    //   console.log('Missing required address data', addressData);
+    //   return;
+    // }
+    console.log('ADDRESS > ',addressData)
     const totalAmount = getTotalCart();
-    if (totalAmount > 0){
-      fetch(`http://localhost:${PORT}/api/create-payment-intent`, {
+    if (totalAmount > 0) {
+      fetch(`http://localhost:${PORT}/api/create-customer/${clientId}`, {
         method: "POST",
         headers: {
-          'Content-Type': 'application/json', // Set the content type to application/json
+          'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ amount: totalAmount * 100 ,  address: addressData})
-      }).then(async (r) => {
-        const { clientSecret } = await r.json();
-        //console.log('secret key > ', clientSecret)
-        setClientSecret(clientSecret);
+        body: JSON.stringify({
+          email: clientEmail,
+          name: `${firstName} ${lastName}`,
+          phone: phone,
+          address: addressData,
+        }),
       })
+
+        .then(async (response) => {
+          if (!response.ok) {
+            throw new Error("Failed to create customer");
+          }
+          //console.log(customerId)
+          const { customerId } = await response.json(); // Get customer ID from response
+          console.log(customerId)
+          // Step 2: Create Payment Intent with the customer ID
+          return fetch(`http://localhost:${PORT}/api/create-payment-intent`, {
+            method: "POST",
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              amount: totalAmount * 100,
+              address: addressData,
+              customerId: customerId, // Include customer ID here
+            }),
+          });
+        }).then(async (r) => {
+          const { clientSecret } = await r.json();
+          //console.log('secret key > ', clientSecret)
+          setClientSecret(clientSecret);
+        }).catch(error => {
+          console.error('Error during payment process:', error);
+        });
+
     }
   }, [cartItems, firstName, lastName, phone, address, city, zipcode, clientEmail])
 
@@ -138,8 +166,8 @@ const PlaceOrder = () => {
       });
       const data = await response.json();
       if (response.ok) {
-        await handleSubmit(); 
-        console.log("Address updated successfully:", await response.json());
+        //await handleSubmit();
+        console.log("Address updated successfully:", data);
         // You can trigger a new fetch here to update payment intent
         console.log(data)
         sucessfullMessage();

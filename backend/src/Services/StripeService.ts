@@ -28,25 +28,44 @@ router.get('/config', async (req: Request, res: Response) => {
 
 router.post('/create-payment-intent', async (req: Request, res: Response) => {
     try {
-        const { amount, address } = req.body;
+        const { amount, address,customerId } = req.body;
         console.log('post amount :',amount)
         console.log('address: ' ,address)
+        console.log('customer > ',customerId)
         const paymentIntent = await stripe.paymentIntents.create({
             amount: amount,
             currency: 'usd',
+            customer: customerId, 
             automatic_payment_methods: {
                 enabled: true,
-            },
+            },  
             metadata: {
                 address_city: address.city,
                 address_country: address.country,
-                address_line1: address.line1, // Add this
-                address_line2: address.line2 || '', // Optional
+                address_line1: address.line1, 
+                address_line2: address.line2 || '', 
                 address_postal_code: address.postal_code,
                 address_state: address.state,
-                customer_name: `${address.firstName} ${address.lastName}`, // Full name
-                customer_email: address.email || '', // If you have this
-                customer_phone: address.phone || '', // If you have this
+                customer_name: `${address.firstName} ${address.lastName}`, 
+                customer_email: address.email || '', 
+                customer_phone: address.phone || '', 
+            },
+        });
+        console.log('Payment Intent Data:', {
+            amount: amount,
+            customer: customerId,
+            billing_details: {
+                address: {
+                    line1: address.line1,
+                    line2: address.line2 || '',
+                    city: address.city,
+                    state: address.state || '',
+                    postal_code: address.postal_code,
+                    country: address.country,
+                },
+                email: address.email,
+                name: `${address.firstName} ${address.lastName}`,
+                phone: address.phone,
             },
         });
 
@@ -63,7 +82,7 @@ router.post('/create-payment-intent', async (req: Request, res: Response) => {
 })
 router.post('/create-customer/:clientId', async (req: Request, res: Response) => {
     const { clientId } = req.params;
-
+    const { email, name, phone,address} = req.body;
     try {
         const client = await prisma.client.findUnique({
             where: {
@@ -77,26 +96,27 @@ router.post('/create-customer/:clientId', async (req: Request, res: Response) =>
 
         // Create a Stripe customer using the client's email
         const customer = await stripe.customers.create({
-            email: client.email,
-            description: 'test customer',
-            name: `${client.firstName} ${client.lastName}`,
-            phone: client.phone,
-            address: {
-                line1: client.address,
-                city: client.city,
-                state: client.state,
-                postal_code: client.zipcode
-            }
+            email: email,
+            name: name,
+            phone: phone,
+            address: {  // Include address here
+                line1: address.line1,
+                line2: address.line2 || '',
+                city: address.city,
+                state: address.state || '', // Optional, if applicable
+                postal_code: address.postal_code,
+                country: address.country,
+            },
         });
-
-        // Optionally, you can store the Stripe customer ID in your database
+        
         // await prisma.client.update({
         //     where: { id: client.id },
         //     data: { stripeCustomerId: customer.id }, // Assuming you have this field in your client model
         // });
 
         console.log('Stripe customer created:', customer);
-        return res.json({ customer });// Return Stripe customer ID
+        console.log('address post > ',address)
+        return res.json({ customerId: customer.id });
 
     } catch (error) {
         console.error('Error creating Stripe customer:', error);
