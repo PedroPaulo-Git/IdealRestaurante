@@ -54,7 +54,11 @@ const PlaceOrder = () => {
       email: clientEmail,
       phone: phone,
     };
-  
+    if (!addressData.firstName || !addressData.lastName ) {
+      console.log('Missing required address data');
+      console.log(addressData.firstName)
+      return;
+    }
     console.log(addressData)
     const totalAmount = getTotalCart();
     if (totalAmount > 0){
@@ -70,13 +74,7 @@ const PlaceOrder = () => {
         setClientSecret(clientSecret);
       })
     }
-  }, [cartItems])
-
-
-
-
-
-
+  }, [cartItems, firstName, lastName, phone, address, city, zipcode, clientEmail])
 
 
   const sucessfullMessage = () => {
@@ -86,6 +84,9 @@ const PlaceOrder = () => {
       setShowSuccessMessage(null);
     }, 2000);
   }
+
+
+
   useEffect(() => {
     //console.log(isEditing)
     //console.log(url)
@@ -137,12 +138,14 @@ const PlaceOrder = () => {
       });
       const data = await response.json();
       if (response.ok) {
+        await handleSubmit(); 
+        console.log("Address updated successfully:", await response.json());
+        // You can trigger a new fetch here to update payment intent
         console.log(data)
         sucessfullMessage();
       } else {
-        console.log('Error connection')
+        console.error('Error updating address:', response);
       }
-
 
     } catch (error) {
       console.log('Error connection CATCH', error)
