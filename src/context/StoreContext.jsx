@@ -150,28 +150,23 @@ const StoreContextProvider = ({ setShowLoginPopup, children }) => {
                     console.error('Error adding to cart:', errorMessage);
                 } else {
                     const result = await response.json();
-                    const addedItems =  result.items; // Array of cart items
-                  
+                    const addedItems = result.items; // Array of cart items
+    
                     if (addedItems.length > 0) {
-                         let lastAddedItem;
-                        console.log('last item' ,lastAddedItem)
-                        console.log('Last item added:', {
-                            productId: lastAddedItem.productId,
-                            quantity: lastAddedItem.quantity,
-                        });
+                        let lastAddedItem;
                         if (addedItems.length === 1) {
                             // If there's only one item, use the first item
                             lastAddedItem = addedItems[0];
                         } else {
-                            // Otherwise, access the second-to-last item
-                            lastAddedItem = addedItems[addedItems.length - 2];
-                            
+                            // Otherwise, access the most recently added item
+                            lastAddedItem = addedItems[addedItems.length - 1];
                         }
-                       
-                       
+    
+                        console.log('Last item added:', {
+                            productId: lastAddedItem.productId,
+                            quantity: lastAddedItem.quantity,
+                        });
                     }
-                   
-
                 }
             } catch (error) {
                 console.error('Error adding to cart:', error);
