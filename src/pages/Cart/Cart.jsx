@@ -5,7 +5,7 @@ import { useNavigate } from 'react-router-dom';
 import { assets } from '../../assets/assets';
 import { FaTrashCan } from "react-icons/fa6";
 
-const Cart = ({ id }) => {
+const Cart = ({ id,fetchStripeConfig }) => {
   const PORT = process.env.REACT_APP_PORT || 3000;
   const { cartItems, food_list, removeFromCart, getTotalCart, clientId, addToCart, ReduceItem } = useContext(StoreContext);
 

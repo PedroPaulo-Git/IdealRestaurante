@@ -4,7 +4,7 @@ import { StoreContext } from '../../context/StoreContext';
 import { Elements } from '@stripe/react-stripe-js';
 import { loadStripe } from '@stripe/stripe-js';
 import StripeForm from '../../components/FormPayment/StripePayment';
-
+import ReactLoading from 'react-loading';
 
 const PlaceOrder = () => {
 
@@ -23,7 +23,7 @@ const PlaceOrder = () => {
   const [zipcode, setZipcode] = useState('');
   const [isEditing, setIsEditing] = useState(false);
   const [showSuccessMessage, setShowSuccessMessage] = useState(null);
-
+  const [loadingPayment, setLoadingPayment] = useState(false)
   const { getTotalCart, clientId, cartItems, clientEmail } = useContext(StoreContext);
   const PORT = process.env.REACT_APP_PORT || 3000;
   const url = `http://localhost:${PORT}/api/address/${clientId}`
@@ -32,17 +32,34 @@ const PlaceOrder = () => {
   // console.log("All environment variables:", process.env);
   // console.log(PORT)
 
-  useEffect(() => {
-    fetch(`http://localhost:${PORT}/api/config`).then(async (r) => {
-      const { stripePublishKey } = await r.json();
-      //console.log('Publish key > ', stripePublishKey)
-      setStripePromise(loadStripe(stripePublishKey))
-    })
-  }, [])
+
+  const fetchStripeConfig = async ({ type, color }) => {
+    try {
+      setLoadingPayment(true) 
+     
+      const response = await fetch(`http://localhost:${PORT}/api/config`);
+      const { stripePublishKey } = await response.json();
+      console.log('Publish Key from config:', stripePublishKey);
+      setStripePromise(loadStripe(stripePublishKey));
+
+      // Only call handlePayment after the Stripe config is fetched
+      await handlePayment();
+      if(response.ok){
+        setTimeout(() => {
+          setLoadingPayment(false) 
+        }, 1000);
+      }else{
+        setLoadingPayment(true) 
+      }
+        
+    } catch (error) {
+      console.error('Error fetching Stripe publishable key:', error);
+    }
+  
+  };
 
 
-  useEffect(() => {
-
+  const handlePayment = async () => {
     const addressData = {
       line1: address,
       line2: "", // Optional
@@ -54,56 +71,63 @@ const PlaceOrder = () => {
       email: clientEmail,
       phone: phone,
     };
-    // if (!addressData.firstName || !addressData.lastName || !addressData.email) {
-    //   console.log('Missing required address data', addressData);
-    //   return;
-    // }
-    console.log('ADDRESS > ',addressData)
-    const totalAmount = getTotalCart();
-    if (totalAmount > 0 && firstName && lastName && clientEmail)  {
-      fetch(`http://localhost:${PORT}/api/create-customer/${clientId}`, {
-        method: "POST",
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          email: clientEmail,
-          name: `${firstName} ${lastName}`,
-          phone: phone,
-          address: addressData,
-        }),
-      })
 
-        .then(async (response) => {
-          if (!response.ok) {
-            throw new Error("Failed to create customer");
-          }
-          //console.log(customerId)
-          const { customerId } = await response.json(); // Get customer ID from response
-          console.log(customerId)
-          // Step 2: Create Payment Intent with the customer ID
-          return fetch(`http://localhost:${PORT}/api/create-payment-intent`, {
-            method: "POST",
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-              amount: totalAmount * 100,
-              address: addressData,
-              customerId: customerId, // Include customer ID here
-            }),
-          });
-        }).then(async (r) => {
-          const { clientSecret } = await r.json();
-          //console.log('secret key > ', clientSecret)
-          setClientSecret(clientSecret);
-        }).catch(error => {
-          console.error('Error during payment process:', error);
+    console.log('ADDRESS > ', addressData);
+    const totalAmount = getTotalCart();
+
+    if (totalAmount > 0 && firstName && lastName && clientEmail) {
+      try {
+        // Create customer
+        const response = await fetch(`http://localhost:${PORT}/api/create-customer/${clientId}`, {
+          method: "POST",
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            email: clientEmail,
+            name: `${firstName} ${lastName}`,
+            phone: phone,
+            address: addressData,
+          }),
         });
 
-    }
-  }, [cartItems, firstName, lastName, phone, address, city, zipcode, clientEmail])
+        if (!response.ok) {
+          throw new Error("Failed to create customer");
+        }
 
+        const { customerId } = await response.json(); // Get customer ID from response
+        console.log('Customer ID:', customerId);
+
+        // Create payment intent
+        const paymentIntentResponse = await fetch(`http://localhost:${PORT}/api/create-payment-intent`, {
+          method: "POST",
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            amount: totalAmount * 100, // Stripe expects amount in cents
+            address: addressData,
+            customerId: customerId,
+          }),
+        });
+
+        if (!paymentIntentResponse.ok) {
+          throw new Error("Failed to create payment intent");
+        }
+
+        const { clientSecret } = await paymentIntentResponse.json();
+        setClientSecret(clientSecret); // Set the client secret for Stripe
+        console.log('Client Secret:', clientSecret);
+
+      } catch (error) {
+        console.error('Error during payment process:', error);
+      }
+    }
+  };
+
+  // useEffect(() => {
+  //   fetchStripeConfig(); // Call the function when the component mounts
+  // }, []);
 
   const sucessfullMessage = () => {
     setIsEditing(false)
@@ -141,6 +165,7 @@ const PlaceOrder = () => {
       }
     };
     fetchAddress();
+
   }, [url]);
 
   const addressForm = async (e) => {
@@ -185,6 +210,7 @@ const PlaceOrder = () => {
   return (
 
     <div className='delivery-form'>
+
       {showSuccessMessage && (
         <div className="addressEdited-success">
           Endereço alterado com sucesso !
@@ -359,6 +385,16 @@ const PlaceOrder = () => {
           <p>Total</p>
           R${getTotalCart()}
         </div>
+        {loadingPayment ?
+
+          <button className='cart-total-details-button' onClick={fetchStripeConfig}>
+            <ReactLoading margin={'auto'} type={'spin'} color={'#FFFFFF'} height={'1vw'} width={'1vw'} />
+          </button>
+          :
+          <button className='cart-total-details-button' onClick={fetchStripeConfig}>
+            Pagar com cartão
+          </button>}
+
 
 
 
@@ -366,7 +402,7 @@ const PlaceOrder = () => {
 
         {stripePromise && clientSecret && (
           <Elements stripe={stripePromise} options={{ clientSecret }}>
-            <StripeForm />
+            <StripeForm handlePayment={handlePayment} />
           </Elements>
         )}
 
