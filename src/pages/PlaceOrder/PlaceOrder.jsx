@@ -24,6 +24,9 @@ const PlaceOrder = () => {
   const [isEditing, setIsEditing] = useState(false);
   const [showSuccessMessage, setShowSuccessMessage] = useState(null);
   const [loadingPayment, setLoadingPayment] = useState(false)
+
+  const [costumer,setCostumer] = useState('')
+
   const { getTotalCart, clientId, cartItems, clientEmail } = useContext(StoreContext);
   const PORT = process.env.REACT_APP_PORT || 3000;
   const url = `http://localhost:${PORT}/api/address/${clientId}`
@@ -94,9 +97,23 @@ const PlaceOrder = () => {
         if (!response.ok) {
           throw new Error("Failed to create customer");
         }
+        const { customerId } = await response.json(); 
+        console.log('Customer ID FIRST:', customerId);
+        console.log(costumer.length)
+        if (costumer.length <= 0){
+          // Get customer ID from response
+          setCostumer(customerId)
+        }
+        else if(costumer.length > 0 ){
+          console.log('Customer ID ALREADY EXIST:', costumer);
+        }
+        else{
+          console.log('something wrong',costumer)
+        }
 
-        const { customerId } = await response.json(); // Get customer ID from response
-        console.log('Customer ID:', customerId);
+        console.log('Customer ID SECOND:', costumer);
+        console.log(' after pay costumer finily >',customerId)
+        
 
         // Create payment intent
         const paymentIntentResponse = await fetch(`http://localhost:${PORT}/api/create-payment-intent`, {
@@ -123,8 +140,10 @@ const PlaceOrder = () => {
         console.error('Error during payment process:', error);
       }
     }
+    else if(totalAmount <= 0){
+      console.log('Added some items in your cart',)
+    }
   };
-
   // useEffect(() => {
   //   fetchStripeConfig(); // Call the function when the component mounts
   // }, []);

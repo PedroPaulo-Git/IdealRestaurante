@@ -24,6 +24,7 @@ const StripePayment = ({ handlePayment }) => {
             console.error('Stripe elements have not loaded properly.');
         }
     }, [stripe, elements]);
+    
     const handleStripePayment = async (event) => {
         event.preventDefault();
 

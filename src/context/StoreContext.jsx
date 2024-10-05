@@ -150,15 +150,27 @@ const StoreContextProvider = ({ setShowLoginPopup, children }) => {
                     console.error('Error adding to cart:', errorMessage);
                 } else {
                     const result = await response.json();
-                    const addedItems = result.items; // Array of cart items
-                    console.log(addedItems)
+                    const addedItems =  result.items; // Array of cart items
+                  
                     if (addedItems.length > 0) {
-                        const lastAddedItem = addedItems[addedItems.length - 2]; // The last item in the array
+                         let lastAddedItem;
+                        console.log('last item' ,lastAddedItem)
                         console.log('Last item added:', {
                             productId: lastAddedItem.productId,
                             quantity: lastAddedItem.quantity,
                         });
+                        if (addedItems.length === 1) {
+                            // If there's only one item, use the first item
+                            lastAddedItem = addedItems[0];
+                        } else {
+                            // Otherwise, access the second-to-last item
+                            lastAddedItem = addedItems[addedItems.length - 2];
+                            
+                        }
+                       
+                       
                     }
+                   
 
                 }
             } catch (error) {
@@ -289,7 +301,7 @@ const StoreContextProvider = ({ setShowLoginPopup, children }) => {
             console.error('Client ID is not defined');
             return;
         }
-    
+
         try {
             const response = await fetch(`http://localhost:3000/api/carrinho/${clientId}`, {
                 method: 'DELETE',
@@ -297,7 +309,7 @@ const StoreContextProvider = ({ setShowLoginPopup, children }) => {
                     'Content-Type': 'application/json',
                 },
             });
-    
+
             if (!response.ok) {
                 const errorMessage = await response.text();
                 console.error('Error clearing cart:', errorMessage);
@@ -309,7 +321,7 @@ const StoreContextProvider = ({ setShowLoginPopup, children }) => {
             console.error('Error clearing cart:', error);
         }
     };
-    
+
 
 
     ///////////////////////////////////////
