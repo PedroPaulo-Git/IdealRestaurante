@@ -9,8 +9,9 @@ import Stripe from 'stripe';
 
 // const stripe = new Stripe(process.env.REACT_APP_STRIPE_PUBLISH_KEY as string);
 
-const stripe = new Stripe(process.env.REACT_APP_STRIPE_SECRET_KEY_TEST as string);
-console.log(process.env.REACT_APP_STRIPE_SECRET_KEY_TEST)
+const stripe = new Stripe(process.env.REACT_APP_STRIPE_SECRET_KEY as string);
+console.log(process.env.REACT_APP_STRIPE_SECRET_KEY)
+console.log(process.env.REACT_APP_STRIPE_PUBLISH_KEY)
 // const stripe = require('stripe')('');
 
 // const paymentIntent = await stripe.paymentIntents.create({

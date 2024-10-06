@@ -1,0 +1,25 @@
+
+.payment-message-successful {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    background-color: rgb(0, 165, 0);
+    color: white;
+    text-align: center;
+    padding: 15px 0;
+    font-size: 16px;
+    z-index: 1000; /* Ensure it stays on top of other content */
+  }
+  .payment-message-error {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    background-color: rgb(255, 8, 8);
+    color: white;
+    text-align: center;
+    padding: 15px 0;
+    font-size: 16px;
+    z-index: 1000; /* Ensure it stays on top of other content */
+  }
