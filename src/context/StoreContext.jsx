@@ -95,6 +95,7 @@ const StoreContextProvider = ({ setShowLoginPopup, children }) => {
         localStorage.removeItem("clientEmail");
         localStorage.removeItem("cartItems");
         setCartItems({});
+        window.location.reload(); 
     };
 
     const fetchCartItems = async (clientId) => {
