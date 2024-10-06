@@ -56,15 +56,19 @@ const StripePayment = ({ handlePayment }) => {
                 console.error('Payment error:', error.message);
                 setIsFailureMessage(error.message);
                 setShowPaymentMessage(true)
+
                 setTimeout(() => {
                     setShowPaymentMessage(false)
-                }, 2000);
+                    setIsFailureMessage('')
+                }, 4000);
+                console.log(showPaymentMessage)
             } else if (paymentIntent && paymentIntent.status === 'succeeded') {
                 console.log('Payment succeeded:', paymentIntent.status);
                 setIsSuccessMessage('Pagamento concluído com sucesso !');
                 setShowPaymentMessage(true)
                 setTimeout(() => {
                     setShowPaymentMessage(false);
+                    setIsSuccessMessage('')
                     clearCart(); // Clear cart after success
                     navigate('/');
                 }, 2000);
@@ -88,17 +92,16 @@ const StripePayment = ({ handlePayment }) => {
                 <button className='cart-total-details-button' type="submit" >
                     {isProcessing ? 'Processando...' : 'Concluir Pagamento'}
                 </button>
-                {showPaymentMessage && <div className={showPaymentMessage
-                    ?
-                    'payment-message-error' : 'payment-message-successful'} >
-                    {showPaymentMessage ?
+                {(isSuccessMessage || isFailureMessage) && (
+    <div className={isSuccessMessage ? 'payment-message-successful' : 'payment-message-error'}>
+        {isSuccessMessage ? (
+            <div>{isSuccessMessage}</div>
+        ) : (
+            <div>{isFailureMessage}</div>
+        )}
+    </div>
+)}
 
-                        <div> {isFailureMessage} </div>
-
-                        :
-
-                        <div>{isSuccessMessage}</div>}
-                </div>}
             </form>
         </div>
     )

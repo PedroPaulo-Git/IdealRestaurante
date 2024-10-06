@@ -9,7 +9,7 @@ import Stripe from 'stripe';
 
 // const stripe = new Stripe(process.env.REACT_APP_STRIPE_PUBLISH_KEY as string);
 
-const stripe = new Stripe(process.env.REACT_APP_STRIPE_SECRET_KEY as string);
+const stripe = new Stripe(process.env.REACT_APP_STRIPE_SECRET_KEY_TEST as string);
 console.log(process.env.REACT_APP_STRIPE_SECRET_KEY)
 console.log(process.env.REACT_APP_STRIPE_PUBLISH_KEY)
 // const stripe = require('stripe')('');
@@ -23,7 +23,7 @@ console.log(process.env.REACT_APP_STRIPE_PUBLISH_KEY)
 // });
 router.get('/config', async (req: Request, res: Response) => {
     res.send({
-        stripePublishKey: process.env.REACT_APP_STRIPE_PUBLISH_KEY,
+        stripePublishKey: process.env.REACT_APP_STRIPE_PUBLISH_KEY_TEST,
     })
 })
 
@@ -35,7 +35,7 @@ router.post('/create-payment-intent', async (req: Request, res: Response) => {
         console.log('customer > ',customerId)
         const paymentIntent = await stripe.paymentIntents.create({
             amount: amount,
-            currency: 'usd',
+            currency: 'BRL',
             customer: customerId, 
             automatic_payment_methods: {
                 enabled: true,
