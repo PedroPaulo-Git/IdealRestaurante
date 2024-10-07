@@ -112,8 +112,7 @@ const PlaceOrder = () => {
         }
 
         console.log('Customer ID SECOND:', costumer);
-        console.log(' after pay costumer finily >',customerId)
-        
+   
 
         // Create payment intent
         const paymentIntentResponse = await fetch(`http://localhost:${PORT}/api/create-payment-intent`, {
@@ -135,6 +134,7 @@ const PlaceOrder = () => {
         const { clientSecret } = await paymentIntentResponse.json();
         setClientSecret(clientSecret); // Set the client secret for Stripe
         console.log('Client Secret:', clientSecret);
+        console.log('Finally costumer id > ',costumer)
 
       } catch (error) {
         console.error('Error during payment process:', error);

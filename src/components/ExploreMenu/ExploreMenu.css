@@ -73,4 +73,7 @@
     .explore-menu-p {
         max-width: 80%;
     }
+    .explore-menu-list {
+        gap: 20px;
+    }
 }
