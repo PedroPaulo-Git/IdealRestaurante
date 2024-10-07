@@ -133,5 +133,19 @@ height: 100%;
     }
 }
 @media (max-width:400px) {
-   
+    .food-item-info-container{
+        height: 24vw;
+        padding-top: 0;
+        font-size: max(0.7vw, 10px);
+    } 
+}
+@media (max-width:340px) {
+    .food-item-info-container{
+        height: 30vw;
+        padding-top: 0;
+        font-size: max(0.7vw, 10px);
+    } 
+    .food-item-image{
+        height: 40vw;
+    }
 }
