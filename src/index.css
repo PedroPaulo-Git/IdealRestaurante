@@ -1,7 +1,7 @@
 @import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap');
-:root {
-  --p-spacing3: 0.20rem;
-}
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
 
 *{
@@ -22,11 +22,13 @@ a{
   text-decoration: none;
   color: inherit;
 }
+.admin-page {
+  width: 100%;
+}
 .app{
   width: 80%;
   margin: auto; 
   scroll-behavior:smooth;
-
 }
 
 @keyframes fadeIn {

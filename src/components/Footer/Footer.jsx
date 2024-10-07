@@ -30,7 +30,7 @@ const Footer = () => {
                             <li>Portifolio</li>
                             <li>Sobre Min</li>
                             <li>Delivery</li>
-                            <li>Politica de privacidade</li>
+                           <a href="/admin"> <li>Politica de privacidade</li></a>
                         </ul>
                     </div>
                     <div className='footer-content-center-right'>
