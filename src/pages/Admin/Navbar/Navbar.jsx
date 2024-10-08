@@ -49,7 +49,7 @@ import React from 'react'
               />
             </button>
   
-            <div
+            {/* <div
               className="absolute end-0 z-10 mt-0.5 w-56 divide-y divide-gray-100 rounded-md border border-gray-100 bg-white shadow-lg"
               role="menu"
             >
@@ -105,7 +105,7 @@ import React from 'react'
                   </button>
                 </form>
               </div>
-            </div>
+            </div> */}
           </div>
   
           <div className="block md:hidden">

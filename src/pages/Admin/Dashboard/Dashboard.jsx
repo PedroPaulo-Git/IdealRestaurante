@@ -124,8 +124,11 @@ const Dashboard = () => {
 
 
                 {/* CHART AND ORDER*/}
-                <div className="flex justify-between">
+                <div className="flex">
+                    <div className="charts flex flex-col gap-10">
                     <ChartComponent />
+                    <ChartComponent />
+                    </div>
                     <Order />
                 </div>
 

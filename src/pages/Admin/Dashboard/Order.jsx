@@ -1,15 +1,15 @@
-import React from 'react'
-import { assets_menuList } from '../../../assets/assets';
+import React, { useContext } from 'react'
+import { assets } from '../../../assets/assets';
+import { StoreContext } from '../../../context/StoreContext';
+
+
+
 const Order = () => {
+
+    const { food_list } = useContext(StoreContext)
     return (
         <div>
-            {/*
-  Heads up! 👋
-
-  This component comes with some `rtl` classes. Please remove them if they are not needed in your project.
-*/}
-
-            <div className="overflow-x-auto w-[64vw] rounded-lg">
+            <div className="overflow-x-auto w-[100%] rounded-lg lg:min-w-[60vw] ml-5">
                 <table className="min-w-full divide-y-2 divide-gray-200 bg-white text-sm">
                     <thead className="ltr:text-left rtl:text-right">
                         <tr>
@@ -22,14 +22,14 @@ const Order = () => {
                     </thead>
 
                     <tbody className="divide-y divide-gray-200">
-                        {assets_menuList.map((item, index) => (
+                        {food_list.map((item, index) => (
                             <tr key={index}>
 
 
-                                <td className="whitespace-nowrap px-4 py-2 font-medium text-gray-900 flex">
-                                    <img src={item.menu_image} alt={item.menu_name} className="w-16 h-16 object-cover" />
+                                <td className="whitespace-nowrap px-4 py-2 font-medium text-gray-900 flex ">
+                                    <img src={item.image} alt={item.name} className="w-16 h-16 object-cover" />
                                     <div className='flex flex-col pl-5 justify-evenly'>
-                                        {item.menu_name}
+                                        {item.name}
                                         <p>id:#2198319</p>
                                     </div>
 

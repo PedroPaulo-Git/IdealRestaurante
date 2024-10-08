@@ -5,7 +5,7 @@ import Dashboard from './Dashboard/Dashboard';
 
 const Admin = () => {
   return (
-    <div className='admin h-[100vw]'>
+    <div className='admin h-[100%]'>
 
       <Navside />
       <Navbar />
