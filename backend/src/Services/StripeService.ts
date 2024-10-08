@@ -106,28 +106,7 @@ router.post('/create-customer/:clientId', async (req: Request, res: Response) =>
         return res.status(500).json({ error: 'Error creating Stripe customer' });
     }
 });
-router.post('/create-card-token/:clientId', async (req: Request, res: Response) => {
-    const { number, exp_month, exp_year, cvc } = req.body;
-    const { clientId } = req.params;
-    console.log(number, exp_month, exp_year, cvc)
-    console.log(clientId)
-    try {
-        const token = await stripe.tokens.create({
-            card: {
-                number,
-                exp_month,
-                exp_year,
-                cvc,
-            },
-        });
 
-        console.log('Card token created:', clientId, token);
-        return res.json({ token });
-    } catch (error) {
-        console.error('Error creating card token:', error);
-        return res.status(500).json({ error: 'Error creating card token' });
-    }
-});
 
 // // Example usage (in your client or testing tool)
 // const createCardToken = async () => {

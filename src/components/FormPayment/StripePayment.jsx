@@ -15,7 +15,7 @@ const StripePayment = ({ handlePayment }) => {
 
     const [isProcessing, setIsProcessing] = useState(null);
     const navigate = useNavigate();
-    const { clearCart } = useContext(StoreContext);
+    const { createOrder } = useContext(StoreContext);
 
     useEffect(() => {
         // Check if Stripe and elements are initialized
@@ -69,7 +69,7 @@ const StripePayment = ({ handlePayment }) => {
                 setTimeout(() => {
                     setShowPaymentMessage(false);
                     setIsSuccessMessage('')
-                    clearCart(); // Clear cart after success
+                    createOrder(); // Clear cart after success
                     navigate('/');
                 }, 2000);
             } else {

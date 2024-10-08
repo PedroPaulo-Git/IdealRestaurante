@@ -292,30 +292,57 @@ const StoreContextProvider = ({ setShowLoginPopup, children }) => {
         }
 
     }
-    const clearCart = async () => {
+    const createOrder = async () => {
+        
+        const getProductDetailsById = (productId) => {
+            const product = food_list.find(item => item._id === productId);
+            return product ? { name: product.name, price: product.price } : { name: '', price: 0 }; // Return default values if product not found
+        };
+    
         if (!clientId) {
             console.error('Client ID is not defined');
             return;
         }
-
+        const itemsArray = Object.entries(cartItems).map(([productId, quantity]) => {
+            const { name, price } = getProductDetailsById(productId); // Get product details
+            return {
+                productId: Number(productId), // Ensure productId is a number
+                quantity,
+                price,
+                name, // Include product name in the item object
+            };
+        });
+        console.log('creating order... |',clientId, itemsArray)
         try {
-            const response = await fetch(`http://localhost:3000/api/cart/${clientId}`, {
-                method: 'DELETE',
+            const response = await fetch(`http://localhost:3000/api/createorder`, {
+                method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
+                body: JSON.stringify({
+                    clientId: Number(clientId), // Assuming you have this in your context or props
+                    items: itemsArray, // Ensure this contains the items from the cart
+                }),
             });
 
             if (!response.ok) {
-                const errorMessage = await response.text();
-                console.error('Error clearing cart:', errorMessage);
-            } else {
-                setCartItems({});
-                console.log('Cart cleared successfully.');
+                throw new Error('Failed to create order');
             }
+            console.log('Payload being sent:', {
+                clientId: Number(clientId),
+                items: itemsArray,
+            });
+            
+            const orderData = await response.json();
+            console.log('Order created successfully:', orderData);
         } catch (error) {
-            console.error('Error clearing cart:', error);
+            console.error('Error create order:', error);
         }
+        console.log('Payload being sent:', {
+            clientId: Number(clientId),
+            items: itemsArray,
+        });
+        
     };
 
 
@@ -360,7 +387,7 @@ const StoreContextProvider = ({ setShowLoginPopup, children }) => {
         login,
         logout,
         fetchCartItems,
-        clearCart,
+        createOrder,
     };
 
     return (

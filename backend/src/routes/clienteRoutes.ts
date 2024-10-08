@@ -161,7 +161,106 @@ router.post('/cart/:clientId', async (req, res) => {
     return res.status(400).json({ error: 'Error updating cart' });
   }
 });
+// type CartItem = {
+//   productId: number;
+//   price: number;
+//   quantity: number;
+// };
 
+async function getProductById(productId:number) {
+  try {
+    const product = await prisma.product.findUnique({
+      where: { id: productId },
+    });
+    return product;
+  } catch (error) {
+    console.error('Error fetching product:', error);
+    throw new Error('Could not fetch product');
+  }
+}
+
+
+router.post('/createorder', async (req: Request, res: Response) => {
+  const { items, clientId } = req.body;
+
+  console.log('Received payload:', req.body);
+  console.log('Creating new order for clientId:', clientId, 'with items:', items);
+
+  // Validate input
+  if (!clientId || !Array.isArray(items) || items.length === 0) {
+    console.log("Validation failed:", { clientId, items });
+    return res.status(400).json({ error: "Invalid input parameters" });
+  }
+
+  try {
+    // Check if product exists in the product table or add new product if not
+    const itemPromises = items.map(async (item) => {
+      let product = await getProductById(item.productId);
+
+      // If the product doesn't exist, add it to the product table
+      if (!product) {
+        product = await prisma.product.create({
+          data: {
+            id: item.productId,
+            name: item.name, // Assuming you have this in your payload
+            price: item.price, // Assuming price is sent from frontend
+          },
+        });
+      }
+
+      return product;
+    });
+
+    const products = await Promise.all(itemPromises);
+
+    // Calculate total from items using fetched products
+    const total = items.reduce((acc, item, index) => {
+      const product = products[index];
+      if (product) {
+        console.log(`Product price for productId ${item.productId}:`, product.price); // Add this line
+        return acc + (product.price * item.quantity);
+      }
+      return acc; // If product not found, don't add to total
+    }, 0);
+
+    const newOrder = await prisma.order.create({
+      data: {
+        total,
+        status: 'completed',
+        items: {
+          create: items.map((item, index) => ({
+            productId: item.productId,
+            quantity: item.quantity,
+            price:products[index]?.price ?? 0,
+          })),
+        },
+        client: { // Assuming you need to connect the client
+          connect: { id: clientId },
+        },
+      },
+    });
+
+    console.log("Items array:", items);
+    return res.status(201).json(newOrder);
+  } catch (error) {
+    console.error('Error saving cart:', error);
+    return res.status(500).json({ error: 'Failed to save cart' });
+  }
+});
+
+router.get('/orders', async (req: Request, res: Response) => {
+  try {
+      const orders = await prisma.order.findMany({
+          include: {
+              items: true, // Include related items
+          },
+      });
+      return res.status(200).json(orders);
+  } catch (error) {
+      console.error('Error fetching orders:', error);
+      return res.status(500).json({ error: 'Failed to fetch orders' });
+  }
+});
 
 router.post('/address/:clientId', async (req, res) => {
   const { firstName, lastName, phone, address, city, state, zipcode } = req.body;
@@ -193,6 +292,11 @@ router.post('/address/:clientId', async (req, res) => {
   }
 
 })
+
+
+
+
+
 router.get('/clients/:clientId', async (req: Request, res: Response) => {
   const clientId = parseInt(req.params.clientId, 10);
   console.log(clientId);
