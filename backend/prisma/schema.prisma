@@ -21,6 +21,7 @@ model Client {
   zipcode   String
   createdAt DateTime @default(now())
   carts     Cart[] 
+  orders    Order[]
 }
 model Cart {
   id        Int       @id @default(autoincrement())
@@ -40,4 +41,26 @@ model CartItem {
   updatedAt DateTime @updatedAt
   
   @@unique([cartId, productId])
+}
+model Order {
+  id        Int      @id @default(autoincrement())
+  clientId  Int      // Foreign key to the Client
+  client    Client   @relation(fields: [clientId], references: [id]) // Connects to the Client model
+  total     Float    // Total amount for the order
+  status    String   // Status of the order (e.g., pending, completed)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  items     OrderItem[] // One-to-many relationship with OrderItem
+}
+
+model OrderItem {
+  id        Int      @id @default(autoincrement())
+  orderId   Int      // Foreign key to the Order
+  order     Order    @relation(fields: [orderId], references: [id]) // Connects to the Order model
+  productId Int      // Reference to the Product (not shown, but assumed)
+  quantity  Int      // Number of this item in the order
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  
+  @@unique([orderId, productId]) // Unique constraint to prevent duplicate items in the same order
 }

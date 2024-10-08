@@ -64,7 +64,33 @@ router.post('/login', async (req: Request, res: Response) => {
 })
 
 
-router.post('/carrinho/:clientId', async (req, res) => {
+router.post('/clients', async (req: Request, res: Response) => {
+  console.log(req.body);
+  const { firstName, lastName, username, password, email, phone, address, city, state, zipcode } = req.body;
+
+  try {
+    const client = await prisma.client.create({
+      data: {
+        firstName,
+        lastName,
+        username,
+        password,
+        email,
+        phone,
+        address,
+        city,
+        state,
+        zipcode,
+      },
+    });
+    res.json(client); // Return the created client
+
+  } catch (error) {
+    res.status(400).json({ error: 'Error creating client' });
+  }
+});
+
+router.post('/cart/:clientId', async (req, res) => {
   const clientId = parseInt(req.params.clientId, 10);
   const { productId, quantity } = req.body;
   console.log('Received payload:', req.body);
@@ -213,7 +239,70 @@ router.get('/address/:clientId', async (req, res) => {
 
 
 
-router.delete('/carrinho/:clientId', async (req: Request, res: Response) => {
+router.get('/clients', async (req: Request, res: Response) => {
+  try {
+    const clients = await prisma.client.findMany();
+    res.json(clients);
+    console.log(clients) // Return all clients
+  } catch (error) {
+    res.status(500).json({ error: 'Error fetching clients' });
+  }
+});
+
+
+
+router.get('/cart/:clientId', async (req, res) => {
+
+  console.log(`Received request for cart with clientId: ${req.params.clientId}`);
+  const { clientId } = req.params;
+  try {
+    const cart = await prisma.cart.findFirst({
+      where: { clientId: Number(clientId) },
+      include: { items: true },
+    });
+
+    if (!cart) {
+      return res.status(404).json({ error: 'Cart not found' });
+    }
+
+    return res.json(cart);
+  } catch (error) {
+    return res.status(500).json({ error: 'Error fetching cart' });
+  }
+});
+
+
+router.get('/carts', async (req, res) => {
+  try {
+    const carts = await prisma.cart.findMany({
+      include: { items: true }, // Include items in each cart
+    });
+
+    if (carts.length === 0) {
+      return res.status(404).json({ error: 'No carts found' });
+    }
+
+    return res.json(carts); // Return all carts
+  } catch (error) {
+    console.error('Error fetching carts:', error);
+    return res.status(500).json({ error: 'Error fetching carts' });
+  }
+});
+
+
+
+
+
+
+
+
+
+
+
+
+
+// DELETE CART CLIENT
+router.delete('/cart/:clientId', async (req: Request, res: Response) => {
   const clientId = parseInt(req.params.clientId, 10);
 
   if (isNaN(clientId)) {
@@ -221,7 +310,7 @@ router.delete('/carrinho/:clientId', async (req: Request, res: Response) => {
   }
 
   try {
-    // Encontra o carrinho ativo do cliente
+    // Encontra o cart ativo do cliente
     const cart = await prisma.cart.findFirst({
       where: { clientId },
       include: { items: true },
@@ -231,15 +320,15 @@ router.delete('/carrinho/:clientId', async (req: Request, res: Response) => {
       return res.status(404).json({ error: 'Cart not found' });
     }
 
-    // Deleta todos os itens do carrinho
+    // Deleta todos os itens do cart
     await prisma.cartItem.deleteMany({
       where: { cartId: cart.id },
     });
 
-    // Retorna o carrinho vazio
+    // Retorna o cart vazio
     return res.status(200).json({
       message: 'Cart cleared successfully',
-      cart: { ...cart, items: [] },  // Retorna o carrinho sem os itens
+      cart: { ...cart, items: [] },  // Retorna o cart sem os itens
     });
   } catch (error) {
     console.error('Error clearing cart:', error);
@@ -248,7 +337,7 @@ router.delete('/carrinho/:clientId', async (req: Request, res: Response) => {
 });
 
 
-router.delete('/carrinho/:clientId/:productId', async (req: Request, res: Response) => {
+router.delete('/cart/:clientId/:productId', async (req: Request, res: Response) => {
   const clientId = parseInt(req.params.clientId, 10);
   const productId = parseInt(req.params.productId, 10);
   const { quantity } = req.body;
@@ -322,64 +411,6 @@ router.delete('/carrinho/:clientId/:productId', async (req: Request, res: Respon
 })
 
 
-router.post('/clients', async (req: Request, res: Response) => {
-  console.log(req.body);
-  const { firstName, lastName, username, password, email, phone, address, city, state, zipcode } = req.body;
-
-  try {
-    const client = await prisma.client.create({
-      data: {
-        firstName,
-        lastName,
-        username,
-        password,
-        email,
-        phone,
-        address,
-        city,
-        state,
-        zipcode,
-      },
-    });
-    res.json(client); // Return the created client
-
-  } catch (error) {
-    res.status(400).json({ error: 'Error creating client' });
-  }
-});
-
-
-router.get('/clients', async (req: Request, res: Response) => {
-  try {
-    const clients = await prisma.client.findMany();
-    res.json(clients);
-    console.log(clients) // Return all clients
-  } catch (error) {
-    res.status(500).json({ error: 'Error fetching clients' });
-  }
-});
-
-
-
-router.get('/carrinho/:clientId', async (req, res) => {
-
-  console.log(`Received request for cart with clientId: ${req.params.clientId}`);
-  const { clientId } = req.params;
-  try {
-    const cart = await prisma.cart.findFirst({
-      where: { clientId: Number(clientId) },
-      include: { items: true },
-    });
-
-    if (!cart) {
-      return res.status(404).json({ error: 'Cart not found' });
-    }
-
-    return res.json(cart);
-  } catch (error) {
-    return res.status(500).json({ error: 'Error fetching cart' });
-  }
-});
 
 router.delete('/:clientId/:id', async (req, res) => {
   const clientId = parseInt(req.params.id);

@@ -24,6 +24,11 @@
     color: rgb(97, 97, 97);
   
 }
+.cart-items hr{
+    height: 2px;
+    background-color: #8b8b8b;
+  
+}
 .cart-items-item {
     margin-bottom: 1vw;
     margin-top: 1vw;

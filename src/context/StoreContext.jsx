@@ -101,7 +101,7 @@ const StoreContextProvider = ({ setShowLoginPopup, children }) => {
     const fetchCartItems = async (clientId) => {
         if (clientId) {
             try {
-                const response = await fetch(`http://localhost:3000/api/carrinho/${clientId}`);
+                const response = await fetch(`http://localhost:3000/api/cart/${clientId}`);
                 if (!response.ok) {
                     throw new Error('Failed to fetch cart items');
                 }
@@ -134,7 +134,7 @@ const StoreContextProvider = ({ setShowLoginPopup, children }) => {
 
                 });
 
-                const response = await fetch(`http://localhost:3000/api/carrinho/${clientId}`, {
+                const response = await fetch(`http://localhost:3000/api/cart/${clientId}`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -193,7 +193,7 @@ const StoreContextProvider = ({ setShowLoginPopup, children }) => {
         console.log(newQuantity)
         if (clientId) {
             try {
-                const response = await fetch(`http://localhost:3000/api/carrinho/${clientId}/${itemId}`, {
+                const response = await fetch(`http://localhost:3000/api/cart/${clientId}/${itemId}`, {
                     method: 'DELETE',
                     headers: {
                         'Content-Type': 'application/json',
@@ -251,7 +251,7 @@ const StoreContextProvider = ({ setShowLoginPopup, children }) => {
         console.log(newQuantity)
         if (clientId) {
             try {
-                const response = await fetch(`http://localhost:3000/api/carrinho/${clientId}/${itemId}`, {
+                const response = await fetch(`http://localhost:3000/api/cart/${clientId}/${itemId}`, {
                     method: 'DELETE',
                     headers: {
                         'Content-Type': 'application/json',
@@ -299,7 +299,7 @@ const StoreContextProvider = ({ setShowLoginPopup, children }) => {
         }
 
         try {
-            const response = await fetch(`http://localhost:3000/api/carrinho/${clientId}`, {
+            const response = await fetch(`http://localhost:3000/api/cart/${clientId}`, {
                 method: 'DELETE',
                 headers: {
                     'Content-Type': 'application/json',

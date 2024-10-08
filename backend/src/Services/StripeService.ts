@@ -52,24 +52,6 @@ router.post('/create-payment-intent', async (req: Request, res: Response) => {
                 customer_phone: address.phone || '', 
             },
         });
-        console.log('Payment Intent Data:', {
-            amount: amount,
-            customer: customerId,
-            billing_details: {
-                address: {
-                    line1: address.line1,
-                    line2: address.line2 || '',
-                    city: address.city,
-                    state: address.state || '',
-                    postal_code: address.postal_code,
-                    country: address.country,
-                },
-                email: address.email,
-                name: `${address.firstName} ${address.lastName}`,
-                phone: address.phone,
-            },
-        });
-
         return res.send({ clientSecret: paymentIntent.client_secret });
 
     } catch (e: any) {

@@ -8,6 +8,6 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 app.use('/api', clientRoutes);
-app.use('/api',stripeRoutes)
+app.use('/api', stripeRoutes)
 
 export default app;
