@@ -84,9 +84,9 @@ const Cart = ({ id,fetchStripeConfig }) => {
           <div className='cart-total-promotion'>
             <div className='cart-total-right'>
 
-              <p className='cart-total-right-title'>Se vc tiver um código promocional,Adicione aqui !</p>
+              <p className='cart-total-right-title '>Se vc tiver um código promocional,Adicione aqui !</p>
               <div className='cart-total-right-inputs'>
-                <input placeholder='Código Promocional' className='cart-total-right-input' type="text" />
+                <input placeholder='Código Promocional' className='cart-total-right-input text-sm' type="text" />
                 <button className='cart-total-right-button'>Aplicar</button>
               </div>
 

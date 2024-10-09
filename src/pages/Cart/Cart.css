@@ -36,9 +36,6 @@
     padding-bottom: 1vw;
 }
 
-.cart-items-item{
-    margin-block: 0.5vw;
-}
 .cart-items-image{
     width: max(5vw,50px);
     height: max(5vw,50px);
@@ -125,9 +122,9 @@
     height: 100%;
     border: none;
     padding: max(0.8vw,8px);
-    font-size: max(0.7vw,10px);
-    border: 1px solid #d3d3d3;
-    outline: black;
+    font-size: max(0.1vw,10px)!;
+    border: 4px solid #000000;
+
 }
 .cart-total-right-button{
     display: flex;
