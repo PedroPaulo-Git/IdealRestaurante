@@ -95,7 +95,7 @@ const StoreContextProvider = ({ setShowLoginPopup, children }) => {
         localStorage.removeItem("clientEmail");
         localStorage.removeItem("cartItems");
         setCartItems({});
-        window.location.reload(); 
+        window.location.reload();
     };
 
     const fetchCartItems = async (clientId) => {
@@ -152,7 +152,7 @@ const StoreContextProvider = ({ setShowLoginPopup, children }) => {
                 } else {
                     const result = await response.json();
                     const addedItems = result.items; // Array of cart items
-    
+
                     if (addedItems.length > 0) {
                         let lastAddedItem;
                         if (addedItems.length === 1) {
@@ -162,7 +162,7 @@ const StoreContextProvider = ({ setShowLoginPopup, children }) => {
                             // Otherwise, access the most recently added item
                             lastAddedItem = addedItems[addedItems.length - 1];
                         }
-    
+
                         console.log('Last item added:', {
                             productId: lastAddedItem.productId,
                             quantity: lastAddedItem.quantity,
@@ -292,13 +292,25 @@ const StoreContextProvider = ({ setShowLoginPopup, children }) => {
         }
 
     }
+
+
+
+
+    const clearCart = async () => {
+        setCartItems({});
+        localStorage.removeItem('cartItems');
+    }
+
+
+
+
     const createOrder = async () => {
-        
+
         const getProductDetailsById = (productId) => {
             const product = food_list.find(item => item._id === productId);
             return product ? { name: product.name, price: product.price } : { name: '', price: 0 }; // Return default values if product not found
         };
-    
+
         if (!clientId) {
             console.error('Client ID is not defined');
             return;
@@ -306,13 +318,13 @@ const StoreContextProvider = ({ setShowLoginPopup, children }) => {
         const itemsArray = Object.entries(cartItems).map(([productId, quantity]) => {
             const { name, price } = getProductDetailsById(productId); // Get product details
             return {
-                productId: Number(productId), // Ensure productId is a number
+                productId: Number(productId), 
                 quantity,
                 price,
-                name, // Include product name in the item object
+                name, 
             };
         });
-        console.log('creating order... |',clientId, itemsArray)
+        console.log('creating order... ', clientId, itemsArray)
         try {
             const response = await fetch(`http://localhost:3000/api/createorder`, {
                 method: 'POST',
@@ -332,9 +344,14 @@ const StoreContextProvider = ({ setShowLoginPopup, children }) => {
                 clientId: Number(clientId),
                 items: itemsArray,
             });
-            
+
             const orderData = await response.json();
             console.log('Order created successfully:', orderData);
+
+
+            clearCart()
+
+
         } catch (error) {
             console.error('Error create order:', error);
         }
@@ -342,7 +359,7 @@ const StoreContextProvider = ({ setShowLoginPopup, children }) => {
             clientId: Number(clientId),
             items: itemsArray,
         });
-        
+
     };
 
 

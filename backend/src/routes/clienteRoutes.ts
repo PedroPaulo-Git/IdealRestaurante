@@ -167,7 +167,7 @@ router.post('/cart/:clientId', async (req, res) => {
 //   quantity: number;
 // };
 
-async function getProductById(productId:number) {
+async function getProductById(productId: number) {
   try {
     const product = await prisma.product.findUnique({
       where: { id: productId },
@@ -226,12 +226,12 @@ router.post('/createorder', async (req: Request, res: Response) => {
     const newOrder = await prisma.order.create({
       data: {
         total,
-        status: 'completed',
+        status: 'pendente',
         items: {
           create: items.map((item, index) => ({
             productId: item.productId,
             quantity: item.quantity,
-            price:products[index]?.price ?? 0,
+            price: products[index]?.price ?? 0,
           })),
         },
         client: { // Assuming you need to connect the client
@@ -240,7 +240,15 @@ router.post('/createorder', async (req: Request, res: Response) => {
       },
     });
 
-    console.log("Items array:", items);
+    console.log("Order was created:", items);
+    await prisma.cartItem.deleteMany({
+      where: {
+        cart: { clientId }
+      }
+    });
+
+    console.log("Cart cleared for client:", clientId);
+
     return res.status(201).json(newOrder);
   } catch (error) {
     console.error('Error saving cart:', error);
@@ -250,17 +258,36 @@ router.post('/createorder', async (req: Request, res: Response) => {
 
 router.get('/orders', async (req: Request, res: Response) => {
   try {
+    const orders = await prisma.order.findMany({
+      include: {
+        items: true, // Include related items
+      },
+    });
+    return res.status(200).json(orders);
+  } catch (error) {
+    console.error('Error fetching orders:', error);
+    return res.status(500).json({ error: 'Failed to fetch orders' });
+  }
+});
+
+
+
+router.get('/orders/:clientId', async (req, res) => {
+  const { clientId } = req.params;
+
+  try {
       const orders = await prisma.order.findMany({
-          include: {
-              items: true, // Include related items
-          },
+          where: { clientId: parseInt(clientId) },
+          include: { items: true }, // Include items in the order
       });
-      return res.status(200).json(orders);
+      return res.json(orders);
   } catch (error) {
       console.error('Error fetching orders:', error);
       return res.status(500).json({ error: 'Failed to fetch orders' });
   }
 });
+
+
 
 router.post('/address/:clientId', async (req, res) => {
   const { firstName, lastName, phone, address, city, state, zipcode } = req.body;
@@ -301,14 +328,14 @@ router.get('/clients/:clientId', async (req: Request, res: Response) => {
   const clientId = parseInt(req.params.clientId, 10);
   console.log(clientId);
   try {
-      const client = await prisma.client.findUnique({
-          where: {
-              id: clientId,
-          },
-      });
-      res.json(client);
+    const client = await prisma.client.findUnique({
+      where: {
+        id: clientId,
+      },
+    });
+    res.json(client);
   } catch (error) {
-      res.status(500).json({ error: 'Error fetching client' });
+    res.status(500).json({ error: 'Error fetching client' });
   }
 });
 router.get('/address/:clientId', async (req, res) => {

@@ -69,7 +69,7 @@ const StripePayment = ({ handlePayment }) => {
                 setTimeout(() => {
                     setShowPaymentMessage(false);
                     setIsSuccessMessage('')
-                    createOrder(); // Clear cart after success
+                    createOrder(); //create and clear cart sending to order
                     navigate('/');
                 }, 2000);
             } else {
