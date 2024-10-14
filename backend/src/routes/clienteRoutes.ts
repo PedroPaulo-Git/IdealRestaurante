@@ -256,37 +256,6 @@ router.post('/createorder', async (req: Request, res: Response) => {
   }
 });
 
-router.get('/orders', async (req: Request, res: Response) => {
-  try {
-    const orders = await prisma.order.findMany({
-      include: {
-        items: true, // Include related items
-      },
-    });
-    return res.status(200).json(orders);
-  } catch (error) {
-    console.error('Error fetching orders:', error);
-    return res.status(500).json({ error: 'Failed to fetch orders' });
-  }
-});
-
-
-
-router.get('/orders/:clientId', async (req, res) => {
-  const { clientId } = req.params;
-
-  try {
-      const orders = await prisma.order.findMany({
-          where: { clientId: parseInt(clientId) },
-          include: { items: true }, // Include items in the order
-      });
-      return res.json(orders);
-  } catch (error) {
-      console.error('Error fetching orders:', error);
-      return res.status(500).json({ error: 'Failed to fetch orders' });
-  }
-});
-
 
 
 router.post('/address/:clientId', async (req, res) => {

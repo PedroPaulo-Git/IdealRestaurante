@@ -6,17 +6,16 @@ import { BsThreeDotsVertical } from "react-icons/bs";
 const Order = () => {
   const [orders, setOrders] = useState([]); // Rename state to orders
   const { food_list } = useContext(StoreContext);
-  const [openDropdownId, setOpenDropdownId] = useState(null); 
+  const [openDropdownId, setOpenDropdownId] = useState(null);
 
   const toggleDropdown = (id) => {
-    
     setOpenDropdownId((prevId) => (prevId === id ? null : id));
   };
 
   useEffect(() => {
     const fetchOrders = async () => {
       try {
-        const response = await fetch("http://localhost:3000/api/orders"); // Adjust the URL as needed
+        const response = await fetch("http://localhost:3000/admin/orders"); // Adjust the URL as needed
         if (!response.ok) {
           throw new Error("Failed to fetch orders");
         }
@@ -29,6 +28,31 @@ const Order = () => {
 
     fetchOrders();
   }, []);
+
+  const updateOrderStatus = async (orderId, newStatus) => {
+    try {
+      const response = await fetch(
+        `http://localhost:3000/admin/orders/${orderId}/status`,
+        {
+          method: "PATCH",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ status: newStatus }),
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error("Failed to update order status");
+      }
+
+      const updatedOrder = await response.json();
+      console.log("Order status updated:", updatedOrder);
+      // Optionally, update the UI with the new status or refetch the orders
+    } catch (error) {
+      console.error("Error updating order status:", error);
+    }
+  };
 
   return (
     <div>
@@ -101,9 +125,9 @@ const Order = () => {
                         <p>{order.status}</p> {/* Displaying order status */}
                       </div>
                     </td>
-                    
+
                     <td className="whitespace-nowrap px-4 py-2 text-gray-700">
-                    <BsThreeDotsVertical
+                      <BsThreeDotsVertical
                         className="cursor-pointer text-lg"
                         onClick={() => toggleDropdown(order.id)}
                       />
@@ -113,40 +137,38 @@ const Order = () => {
                           openDropdownId === order.id ? "block" : "hidden"
                         } bg-white divide-y absolute right-32 divide-gray-100 rounded-lg shadow w-44 dark:bg-gray-700`}
                       >
-                        <ul
-                          class="py-2 text-sm text-gray-700 dark:text-gray-200"
-                          aria-labelledby="dropdownDefaultButton"
-                        >
+                        <ul className="py-2 text-sm text-gray-700 dark:text-gray-200">
                           <li>
                             <a
                               href="#"
-                              class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
+                              className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
+                              onClick={() =>
+                                updateOrderStatus(order.id, "completed")
+                              }
                             >
-                              Dashboard
+                              Mark as Completed
                             </a>
                           </li>
                           <li>
                             <a
                               href="#"
-                              class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
+                              className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
+                              onClick={() =>
+                                updateOrderStatus(order.id, "pending")
+                              }
                             >
-                              Settings
+                              Mark as Pending
                             </a>
                           </li>
                           <li>
                             <a
                               href="#"
-                              class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
+                              className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
+                              onClick={() =>
+                                updateOrderStatus(order.id, "cancelled")
+                              }
                             >
-                              Earnings
-                            </a>
-                          </li>
-                          <li>
-                            <a
-                              href="#"
-                              class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
-                            >
-                              Sign out
+                              Mark as Cancelled
                             </a>
                           </li>
                         </ul>
