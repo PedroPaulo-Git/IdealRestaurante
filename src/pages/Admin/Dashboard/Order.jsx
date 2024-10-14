@@ -2,6 +2,7 @@ import React, { useContext, useEffect, useState } from "react";
 import { assets } from "../../../assets/assets";
 import { StoreContext } from "../../../context/StoreContext";
 import { BsThreeDotsVertical } from "react-icons/bs";
+import { GoDotFill } from "react-icons/go";
 
 const Order = () => {
   const [orders, setOrders] = useState([]); // Rename state to orders
@@ -49,10 +50,20 @@ const Order = () => {
       const updatedOrder = await response.json();
       console.log("Order status updated:", updatedOrder);
       // Optionally, update the UI with the new status or refetch the orders
+      setOrders((prevOrders) =>
+        prevOrders.map((order) =>
+          order.id === orderId ? { ...order, status: newStatus } : order
+        )
+      );
     } catch (error) {
       console.error("Error updating order status:", error);
     }
   };
+  const capitalizeFirstLetter = (string) => {
+    if (!string) return ""; // Verifica se a string é vazia
+    return string.charAt(0).toUpperCase() + string.slice(1);
+  };
+
 
   return (
     <div>
@@ -77,8 +88,10 @@ const Order = () => {
 
           <tbody className="divide-y divide-gray-200">
             {orders.length > 0 ? (
-              orders.map((order) => {
-                const totalPrice = order.total.toFixed(2); // Total from the order data
+             [...orders.filter(order => order.status === "pendente").sort((a, b) => new Date(b.date) - new Date(a.date)),
+                ...orders.filter(order => order.status !== "pendente")]
+              .map((order) => {
+                const totalPrice = order.total.toFixed(2) // Total from the order data
 
                 return (
                   <tr key={order.id}>
@@ -122,7 +135,13 @@ const Order = () => {
 
                     <td className="whitespace-nowrap px-4 py-2 text-gray-700">
                       <div className="flex justify-center">
-                        <p>{order.status}</p> {/* Displaying order status */}
+                      {capitalizeFirstLetter(order.status)} 
+                            <p className="flex items-center"> <GoDotFill className={ ` ${
+                            order.status === 'pendente' ? 'text-yellow-300' 
+                            : order.status === 'completo' ? 'text-green-500'
+                            : order.status === 'cancelado' ? 'text-red-500' : ''} text-xl`}/>
+                        
+                            </p> {/* Displaying order status */}
                       </div>
                     </td>
 
@@ -140,35 +159,35 @@ const Order = () => {
                         <ul className="py-2 text-sm text-gray-700 dark:text-gray-200">
                           <li>
                             <a
-                              href="#"
+                              
                               className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
                               onClick={() =>
-                                updateOrderStatus(order.id, "completed")
+                                updateOrderStatus(order.id, "completo")
                               }
                             >
-                              Mark as Completed
+                              Completo 
                             </a>
                           </li>
                           <li>
                             <a
-                              href="#"
+                              
                               className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
                               onClick={() =>
-                                updateOrderStatus(order.id, "pending")
+                                updateOrderStatus(order.id, "pendente")
                               }
                             >
-                              Mark as Pending
+                              Pendente 
                             </a>
                           </li>
                           <li>
                             <a
-                              href="#"
+                              
                               className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
                               onClick={() =>
-                                updateOrderStatus(order.id, "cancelled")
+                                updateOrderStatus(order.id, "cancelado")
                               }
                             >
-                              Mark as Cancelled
+                              Cancelar  
                             </a>
                           </li>
                         </ul>

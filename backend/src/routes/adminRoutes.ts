@@ -42,7 +42,7 @@ router.get('/orders', async (req: Request, res: Response) => {
     const { status } = req.body;
   
     // Validate status value
-    const validStatuses = ['completed', 'pending', 'cancelled'];
+    const validStatuses = ['completo', 'pendente', 'cancelado'];
     if (!validStatuses.includes(status)) {
       return res.status(400).json({ error: 'Invalid order status' });
     }
