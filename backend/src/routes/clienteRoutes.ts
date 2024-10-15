@@ -397,7 +397,33 @@ router.get('/carts', async (req, res) => {
 
 
 
+router.put('/clients/:id', async (req, res) => {
+  const clientId = parseInt(req.params.id);
+  const { username, email, isAdmin } = req.body; // Destructure the data from the request body
 
+  try {
+      // Validate incoming data (add more validation as needed)
+      if (!username || !email) {
+          return res.status(400).json({ error: 'Name and email are required' });
+      }
+
+      // Update the client information in the database
+      const updatedClient = await prisma.client.update({
+          where: { id: Number(clientId) }, // Find the client by ID
+          data: {
+              username,
+              email,
+              isAdmin, // Optional: update isAdmin if provided
+          },
+      });
+
+      // Send the updated client as the response
+      return res.json(updatedClient);
+  } catch (error) {
+      console.error('Error updating client:', error);
+      return res.status(500).json({ error: 'Failed to update client' });
+  }
+});
 
 
 

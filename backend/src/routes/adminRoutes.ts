@@ -1,12 +1,14 @@
 import { Router, Request, Response } from 'express';
 import { PrismaClient } from '@prisma/client';
 import { config } from 'dotenv';
+import isAdmin from '../Auth/middleware';
 config();
 
 const prisma = new PrismaClient();
-const router = Router();
+const adminRouter = Router();
 
-router.get('/orders', async (req: Request, res: Response) => {
+adminRouter.use(isAdmin);
+adminRouter.get('/orders', async (req: Request, res: Response) => {
     try {
       const orders = await prisma.order.findMany({
         include: {
@@ -22,7 +24,7 @@ router.get('/orders', async (req: Request, res: Response) => {
   
   
   
-  router.get('/orders/:clientId', async (req, res) => {
+  adminRouter.get('/orders/:clientId', async (req, res) => {
     const { clientId } = req.params;
   
     try {
@@ -37,7 +39,7 @@ router.get('/orders', async (req: Request, res: Response) => {
     }
   });
   
-  router.patch('/orders/:orderId/status', async (req: Request, res: Response) => {
+  adminRouter.patch('/orders/:orderId/status', async (req: Request, res: Response) => {
     const { orderId } = req.params;
     const { status } = req.body;
   
@@ -60,4 +62,4 @@ router.get('/orders', async (req: Request, res: Response) => {
     }
   });
   
-export default router;
+export default adminRouter;
