@@ -8,6 +8,10 @@ export default defineConfig({
       buffer: 'buffer',
     },
   },
+  server: {
+    host: '0.0.0.0', // Adiciona essa linha
+    port: 5173, // A porta que você quer usar
+  },
   define: {
     'process.env': {},
   },
