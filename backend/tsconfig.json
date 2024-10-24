@@ -10,6 +10,6 @@
     "esModuleInterop": true
   },
   "compileOnSave": true,
-  "include": ["src/**/*", "../../nubank-api/src/utils", "../../nubank-api/src/account.ts", "../../nubank-api/src/auth.ts", "../../nubank-api/src/card.ts", "../../nubank-api/src/constants.ts", "../../nubank-api/src/context.ts", "../../nubank-api/src/index.ts", "../../nubank-api/src/models.ts", "../../nubank-api/src/payment.ts"],
+  "include": ["src/**/*"],
   "exclude": ["node_modules", "lib"]
 }
