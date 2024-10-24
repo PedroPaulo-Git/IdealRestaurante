@@ -1,0 +1,71 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model Client {
+  id        Int      @id @default(autoincrement())
+  firstName String
+  lastName  String
+  username  String @unique
+  email     String   @unique
+  password  String
+  phone     String
+  address   String
+  city      String
+  state     String
+  zipcode   String
+  createdAt DateTime @default(now())
+  carts     Cart[] 
+  orders    Order[]
+  isAdmin   Boolean  @default(false) 
+}
+model Cart {
+  id        Int       @id @default(autoincrement())
+  clientId  Int       // Foreign key to the Client
+  client    Client    @relation(fields: [clientId], references: [id]) // Connects to the Client model
+  items     CartItem[] // One-to-many relationship with CartItem
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+}
+model Product {
+    id        Int      @id @default(autoincrement())
+    name      String
+    price     Float
+    // Add other fields as necessary
+}
+
+model CartItem {
+  id        Int      @id @default(autoincrement())
+  cartId    Int      // Foreign key to the Cart
+  cart      Cart     @relation(fields: [cartId], references: [id]) // Connects to the Cart model
+  productId Int      // Reference to the Product (not shown, but assumed)
+  quantity  Int      // Number of this item in the cart
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  
+  @@unique([cartId, productId])
+}
+model Order {
+  id        Int      @id @default(autoincrement())
+  clientId  Int      // Foreign key to the Client
+  client    Client   @relation(fields: [clientId], references: [id]) // Connects to the Client model
+  total     Float    // Total amount for the order
+  status    String   // Status of the order (e.g., pending, completed)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  items     OrderItem[] // One-to-many relationship with OrderItem
+}
+
+model OrderItem {
+  id        Int    @id @default(autoincrement())
+  productId Int
+  quantity  Int
+  price     Float  // Add this field
+  order     Order  @relation(fields: [orderId], references: [id])
+  orderId   Int
+}
