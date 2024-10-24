@@ -1,6 +1,6 @@
 import express from 'express';
-import clientRoutes from './Routes/clienteRoutes'; 
-import adminRouter from './Routes/adminRoutes';
+import clientRoutes from './routes/clienteRoutes'; 
+import adminRouter from './routes/adminRoutes';
 import stripeRoutes from './Services/StripeService'
 import cors from 'cors';
 
