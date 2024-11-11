@@ -102,14 +102,14 @@ export const assets_menuList = [
 ]
 
 export const food_list = [
-    {
-        _id: '99',
-        name: 'teste',
-        image: Pizza1,
-        price: 0.50,
-        description: 'Uma seleção incrível de pizzas tradicionais com sabores clássicos.',
-        category: 'Pizza'
-    },
+    // {
+    //     _id: '99',
+    //     name: 'teste',
+    //     image: Pizza1,
+    //     price: 0.50,
+    //     description: 'Uma seleção incrível de pizzas tradicionais com sabores clássicos.',
+    //     category: 'Pizza'
+    // },
     {
         _id: '1',
         name: 'Pizzas Tradicionais',
