@@ -47,7 +47,7 @@ export const LoginPopup = ({ setShowLoginPopup }) => {
     });
 
     if (currentState === "Login") {
-      await handleLogin({ username, email, password }); // Assuming you want to send these for login
+      await handleLogin({ username, email, password }); 
     }
      else {
       await handleRegister(payload);

@@ -124,6 +124,7 @@ const StoreContextProvider = ({ setShowLoginPopup, children }) => {
   };
 
   const addToCart = async (itemId) => {
+
     if (clientId) {
       try {
         const updatedCartItems = await new Promise((resolve) => {
