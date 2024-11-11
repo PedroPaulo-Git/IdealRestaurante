@@ -6,7 +6,8 @@ export const StoreContext = createContext(null);
 
 const StoreContextProvider = ({ setShowLoginPopup, children }) => {
   const [cartItems, setCartItems] = useState({});
-  const [clientId, setClientId] = useState(null);
+   // const [clientId, setClientId] = useState(null);CORRECT CLIENT ID IN PRODUCTION DEVELOPMENT 
+   const [clientId, setClientId] = useState(99999);// PREVIOUS CLIEND ID ONLY TO DEVELOPMENT 
   const [clientName, setClientName] = useState(null);
   const [clientEmail, setClientEmail] = useState(null);
   const [isAdmin, setIsAdmin] = useState(false); 
@@ -124,7 +125,7 @@ const StoreContextProvider = ({ setShowLoginPopup, children }) => {
   };
 
   const addToCart = async (itemId) => {
-
+    
     if (clientId) {
       try {
         const updatedCartItems = await new Promise((resolve) => {
@@ -193,6 +194,8 @@ const StoreContextProvider = ({ setShowLoginPopup, children }) => {
     }
     console.log(currentQuantity);
     console.log(newQuantity);
+    setCartItems((prev) => ({ ...prev, [itemId]: newQuantity }));// ONLY DEVELOPMENT 
+    console.log(cartItems)
     if (clientId) {
       try {
         const response = await fetch(
@@ -231,7 +234,7 @@ const StoreContextProvider = ({ setShowLoginPopup, children }) => {
           } else {
             console.log(`Product ID ${itemId} was deleted.`);
           }
-          setCartItems((prev) => ({ ...prev, [itemId]: newQuantity }));
+          // setCartItems((prev) => ({ ...prev, [itemId]: newQuantity })); // CORRECT WAY IN PRODUCTION 
         }
       } catch (error) {
         console.error("Error deleting to cart ERROR SERVER:", error);
@@ -255,6 +258,7 @@ const StoreContextProvider = ({ setShowLoginPopup, children }) => {
     console.log(currentQuantity);
     console.log(newQuantity);
     if (clientId) {
+      setCartItems((prev) => ({ ...prev, [itemId]: newQuantity })); // ONLY DEVELOPMENT 
       try {
         const response = await fetch(
           `http://localhost:3000/api/cart/${clientId}/${itemId}`,
@@ -292,7 +296,7 @@ const StoreContextProvider = ({ setShowLoginPopup, children }) => {
           } else {
             console.log(`Product ID ${itemId} was deleted.`);
           }
-          setCartItems((prev) => ({ ...prev, [itemId]: newQuantity }));
+          // setCartItems((prev) => ({ ...prev, [itemId]: newQuantity })); // CORRECT WAY IN PRODUCTION 
         }
       } catch (error) {
         console.error("Error deleting to cart ERROR SERVER:", error);
