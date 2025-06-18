@@ -43,6 +43,92 @@
     cursor: pointer;
   /* TAMANHO DIRETO NO CODIGO*/ 
 }
+
+.navbar-right-profile-icon{
+    position: relative;
+}
+/* PROFILE UL 1 */
+.navbar-right-info-profile-user{
+    font-size:max(0.6vw,14px);
+    border-bottom:1px solid #e4e3e3;
+    width: 60%;
+    margin: 0 auto;
+    padding-block: 14px;
+}
+.navbar-right-info-profile{
+    z-index: 1;
+    position: absolute;
+    background-color: white;
+    left: -108px;
+    width: 240px;
+    margin-top: 10px;
+    border-radius: 10px;
+    padding-block: 10px;
+}
+.navbar-right-info-profile::before {
+    content: '';
+    position: absolute;
+    top: -10px; /* Posiciona o triângulo acima da div */
+    left: 50%; /* Centraliza o triângulo */
+    transform: translateX(-50%); /* Ajusta para centralizar perfeitamente */
+    border-left: 10px solid transparent; /* Lados do triângulo invisíveis */
+    border-right: 10px solid transparent; 
+    border-bottom: 10px solid white; /* Cor da ponta, igual ao fundo da div */
+  }
+.navbar-right-info-profile li{
+    list-style: none;
+
+}
+.navbar-right-info-profile a:hover{
+   background-color: #282d26;
+   color: white;
+}
+.navbar-right-info-profile a{
+    font-size:max(0.6vw,14px);
+    display: flex;
+    padding-left: 5px;
+    border-radius: 5px;
+    padding-block: 15px;
+    margin-bottom: 4px;
+}
+.navbar-right-ul-profile{
+    border-bottom:1px solid #e4e3e3;
+    width: 80%;
+    margin: 0 auto;
+}
+/* PROFILE UL 2 */
+
+.button-logout {
+    margin-top: 20px;
+    background-color: #e22e37; 
+    color: white; 
+    padding: 8px 22px; 
+    border: none; 
+    border-radius: 5px;
+    font-size:max(0.6vw,14px);
+    cursor: pointer; 
+    transition: background-color 0.3s ease, transform 0.2s; 
+}
+
+.button-logout:hover {
+    background-color: #ca2c2c; 
+    transform: scale(1.05);
+}
+
+.button-logout:active {
+    transform: scale(0.95); 
+}
+
+
+
+
+
+
+
+
+
+
+
 .navbar .active{
     padding-bottom: 2px ;
     border-bottom: 2px solid #282d26;
@@ -74,20 +160,76 @@ button.button-navbar{
     .Logo{
         max-width: 100px;
     }
-    .button-navbar{
-    
-    }
-    .navbar-right svg{
+    /* .navbar-right svg{
       width: 20px;
       
-    }
+    } */
   
 }
 @media (max-width:750px) {
+    .navbar-right-info-profile-user{
+    
+        border-bottom:1px solid #e4e3e3;
+        width: 60%;
+        margin: 0 auto;
+        padding-block: 14px;
+    }
+    .navbar-right-info-profile-user p {
+        font-size:max(0.6vw,8px);
+    }
+    .navbar-right-info-profile{
+        z-index: 1;
+        position: absolute;
+        background-color: white;
+        left: -38px;
+        width: 100px;
+        margin-top: 10px;
+        border-radius: 10px;
+        padding-block: 10px;
+    }
+    ul.space-y-1 a{
+        font-size:max(0.6vw,8px);
+    }
+    ul.e-y-1 a{
+        font-size:max(0.6vw,8px);
+    }
     .navbar-menu{
         display: none;
     }
     .navbar-right{
         gap: 3vw;
+    }
+    .button-logout {
+        margin-top: 20px;
+        background-color: #e22e37;
+        color: white;
+        padding: 4px 15px;
+        border: none;
+        border-radius: 5px;
+        font-size: max(0.6vw, 10px);
+        cursor: pointer;
+        transition: background-color 0.3s ease, transform 0.2s;
+    }
+    .navbar-right-info-profile a {
+        padding-block: 5px;
+    }
+}
+@media (max-width:450px) {
+    .navbar-right-info-profile-user{
+        font-size:max(0.6vw,14px);
+        border-bottom:1px solid #e4e3e3;
+        width: 60%;
+        margin: 0 auto;
+        padding-block: 14px;
+    }
+    .navbar-right-info-profile{
+        z-index: 1;
+        position: absolute;
+        background-color: white;
+        left: -38px;
+        width: 100px;
+        margin-top: 10px;
+        border-radius: 10px;
+        padding-block: 10px;
     }
 }

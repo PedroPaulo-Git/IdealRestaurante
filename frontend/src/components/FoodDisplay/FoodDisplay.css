@@ -5,6 +5,7 @@
     font-size: max(2vw,24px);
     margin-bottom: 2vw;
     color: #282d26;
+    font-weight: 700;
 }
 .food-display-list{
     margin-top: 5vw;
@@ -13,9 +14,32 @@
     gap: 30px;
     row-gap: 50px;
 }
-@media (max-width:600px) {
+@media (max-width:650px) {
     .food-display-list{
         margin-top: 10vw;
+    }
+   
+    .food-display-list{
+        margin-top: 5vw;
+        display: grid;
+        grid-template-columns: repeat(auto-fill,minmax(170px,2fr));
+        gap: 10px;
+        row-gap: 20px;
+    }
+   
+}
+
+@media (max-width:450px) {
+    .food-display-list{
+        margin-top: 10vw;
+    }
+   
+    .food-display-list{
+        margin-top: 5vw;
+        display: grid;
+        grid-template-columns: repeat(auto-fill,minmax(130px,2fr));
+        gap: 10px;
+        row-gap: 20px;
     }
    
 }
