@@ -18,7 +18,6 @@ const StoreContextProvider = ({ setShowLoginPopup, children }) => {
     const storedUsername = localStorage.getItem("clientName");
     const storedEmail = localStorage.getItem("clientEmail");
     const storedIsAdmin = localStorage.getItem("isAdmin") === "true"; // Parse as boolean
-    setToken(localStorage.getItem("token"));
     setIsAdmin(storedIsAdmin);
     const storedCartItems = JSON.parse(localStorage.getItem("cartItems"));
     //console.log(storedCartItems)
@@ -75,8 +74,8 @@ const StoreContextProvider = ({ setShowLoginPopup, children }) => {
 
   useEffect(() => {
     setToken(localStorage.getItem("token"));
-    console.log(token);
-  }, [token]);
+    console.log("TOKEN :",token);
+  }, [clientId]);
 
   useEffect(() => {
     localStorage.setItem("cartItems", JSON.stringify(cartItems));

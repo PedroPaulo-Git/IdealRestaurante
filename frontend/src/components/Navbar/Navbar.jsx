@@ -11,8 +11,7 @@ import { StoreContext } from "../../context/StoreContext";
 const Navbar = ({ setShowLoginPopup }) => {
   const [menu, setMenu] = useState("menu");
   const [showUserInfo, setUserShowInfo] = useState(false);
-  const { getTotalCart, clientId, clientName, logout, token } =
-    useContext(StoreContext);
+  const { getTotalCart, clientId, clientName, logout, token } = useContext(StoreContext);
   useEffect(() => {
     console.log("TOKEN AND CLIENT ID:")
     console.log(token, clientId);
