@@ -2,17 +2,35 @@ import express from "express";
 import clientRoutes from "./routes/clienteRoutes";
 import adminRouter from "./routes/adminRoutes";
 import stripeRoutes from "./Services/StripeService";
-import cors from "cors";
+import cors,{ CorsOptions } from "cors";
 
 const app = express();
-// const corsOptions = {
-//   origin: "https://ideal-restaurante.vercel.app", // Substitua pela origem permitida
-//   methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"], // Inclua 'OPTIONS' aqui
-//   allowedHeaders: ["Content-Type", "Authorization"], // Inclua cabeçalhos permitidos se necessário
-// };
+const allowedOrigins = [
+  "https://ideal-restaurante.vercel.app",
+  "http://localhost:5173",
+  "http://localhost:3000",
+];
 
-// Aplicar o middleware CORS com as opções configuradas
-app.use(cors());
+// O tipo do origin é string | undefined
+const corsOptions: CorsOptions = {
+  origin: (origin: string | undefined, callback: (err: Error | null, allow?: boolean) => void) => {
+    if (!origin) {
+      callback(null, true);
+      return;
+    }
+
+    if (allowedOrigins.includes(origin)) {
+      callback(null, true);
+      return;
+    }
+
+    callback(new Error("Not allowed by CORS"));
+  },
+  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+  allowedHeaders: ["Content-Type", "Authorization"],
+};
+
+app.use(cors(corsOptions));
 app.use(express.json());
 app.use("/api", clientRoutes);
 app.use("/api", stripeRoutes);
