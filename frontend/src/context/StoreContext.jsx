@@ -20,6 +20,12 @@ const StoreContextProvider = ({ setShowLoginPopup, children }) => {
     const storedIsAdmin = localStorage.getItem("isAdmin") === "true"; // Parse as boolean
     setIsAdmin(storedIsAdmin);
     const storedCartItems = JSON.parse(localStorage.getItem("cartItems"));
+    const storedToken = localStorage.getItem("token");
+    if (storedToken) {
+      setToken(storedToken);
+    } else {
+      console.error("Token não encontrado no localStorage");
+    }
     //console.log(storedCartItems)
     //console.log('Stored Client ID:', storedClientId, 'Stored Username:', storedUsername); // Add this for debugging
     setCartItems(storedCartItems);
@@ -73,7 +79,7 @@ const StoreContextProvider = ({ setShowLoginPopup, children }) => {
   }, [clientId]);
 
   // useEffect(() => {
-   
+
   //   console.log("TOKEN :", token);
   // }, [clientId]);
 
@@ -81,7 +87,7 @@ const StoreContextProvider = ({ setShowLoginPopup, children }) => {
     localStorage.setItem("cartItems", JSON.stringify(cartItems));
   }, [cartItems]);
 
-  const login = (id, username, email, adminStatus,tokenValue) => {
+  const login = (id, username, email, adminStatus, tokenValue) => {
     setClientId(id);
     setClientName(username);
     setClientEmail(email);
@@ -92,7 +98,7 @@ const StoreContextProvider = ({ setShowLoginPopup, children }) => {
     localStorage.setItem("clientName", username);
     localStorage.setItem("clientEmail", email);
     localStorage.setItem("isAdmin", adminStatus);
-    localStorage.setItem("token", tokenValue); 
+    localStorage.setItem("token", tokenValue);
   };
 
   const logout = () => {
@@ -246,64 +252,64 @@ const StoreContextProvider = ({ setShowLoginPopup, children }) => {
     }
   };
   ////////////////////////////////////
-const removeFromCart = async (itemId) => {
-  console.log("RemoveFromCart - Removing entire item");
-  const currentQuantity = cartItems[itemId] || 0;
+  const removeFromCart = async (itemId) => {
+    console.log("RemoveFromCart - Removing entire item");
+    const currentQuantity = cartItems[itemId] || 0;
 
-  if (currentQuantity === 0) {
-    console.error("item not in cart");
-    return;
-  }
+    if (currentQuantity === 0) {
+      console.error("item not in cart");
+      return;
+    }
 
-  console.log("Current quantity:", currentQuantity);
-  console.log("Removing entire item from cart");
+    console.log("Current quantity:", currentQuantity);
+    console.log("Removing entire item from cart");
 
-  if (clientId) {
-    // Remove o item completamente do estado local (optimistic update)
-    setCartItems((prev) => {
-      const newCart = { ...prev };
-      delete newCart[itemId];
-      return newCart;
-    });
-
-    try {
-      const response = await fetch(
-        `${backendUrl}/api/cart/${clientId}/${itemId}`,
-        {
-          method: "DELETE",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ quantity: 0 }),
-        }
-      );
-
-    if (!response.ok) {
-      const errorMessage = await response.text();
-      console.error("Error removing from cart:", errorMessage);
-
-      // Reverte o estado em caso de erro
-      setCartItems((prev) => ({ ...prev, [itemId]: currentQuantity }));
-    } else {
-      const result = await response.json();
-
-      const updatedCartItems = {};
-      result.items.forEach(item => {
-        updatedCartItems[item.productId] = item.quantity;
+    if (clientId) {
+      // Remove o item completamente do estado local (optimistic update)
+      setCartItems((prev) => {
+        const newCart = { ...prev };
+        delete newCart[itemId];
+        return newCart;
       });
 
-      setCartItems(updatedCartItems);
+      try {
+        const response = await fetch(
+          `${backendUrl}/api/cart/${clientId}/${itemId}`,
+          {
+            method: "DELETE",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ quantity: 0 }),
+          }
+        );
+
+        if (!response.ok) {
+          const errorMessage = await response.text();
+          console.error("Error removing from cart:", errorMessage);
+
+          // Reverte o estado em caso de erro
+          setCartItems((prev) => ({ ...prev, [itemId]: currentQuantity }));
+        } else {
+          const result = await response.json();
+
+          const updatedCartItems = {};
+          result.items.forEach((item) => {
+            updatedCartItems[item.productId] = item.quantity;
+          });
+
+          setCartItems(updatedCartItems);
+        }
+      } catch (error) {
+        console.error("Error removing from cart:", error);
+
+        // Reverte o estado em caso de erro
+        setCartItems((prev) => ({ ...prev, [itemId]: currentQuantity }));
+      }
+    } else {
+      console.error("Client ID is not defined");
     }
-    } catch (error) {
-      console.error("Error removing from cart:", error);
-      
-      // Reverte o estado em caso de erro
-      setCartItems((prev) => ({ ...prev, [itemId]: currentQuantity }));
-    }
-  } else {
-    console.error("Client ID is not defined");
-  }
-};
+  };
   const clearCart = async () => {
     setCartItems({});
     localStorage.removeItem("cartItems");
