@@ -72,25 +72,27 @@ const StoreContextProvider = ({ setShowLoginPopup, children }) => {
     }
   }, [clientId]);
 
-  useEffect(() => {
-    setToken(localStorage.getItem("token"));
-    console.log("TOKEN :", token);
-  }, [clientId]);
+  // useEffect(() => {
+   
+  //   console.log("TOKEN :", token);
+  // }, [clientId]);
 
   useEffect(() => {
     localStorage.setItem("cartItems", JSON.stringify(cartItems));
   }, [cartItems]);
 
-  const login = (id, username, email, adminStatus) => {
+  const login = (id, username, email, adminStatus,tokenValue) => {
     setClientId(id);
     setClientName(username);
     setClientEmail(email);
     setIsAdmin(adminStatus);
+    setToken(tokenValue);
     //console.log('Login function - ID:', id, 'Username:', username);
     localStorage.setItem("clientId", id);
     localStorage.setItem("clientName", username);
     localStorage.setItem("clientEmail", email);
     localStorage.setItem("isAdmin", adminStatus);
+    localStorage.setItem("token", tokenValue); 
   };
 
   const logout = () => {
@@ -188,77 +190,6 @@ const StoreContextProvider = ({ setShowLoginPopup, children }) => {
     }
   };
 
-  // const addToCart = async (itemId) => {
-  //   // const currentQuantity = cartItems[itemId] || 0;
-  //   // const newQuantity = currentQuantity + 1;
-  //   setCartItems((prev) => ({
-  //     ...prev,
-  //     [itemId]: (prev[itemId] || 0) + 1,
-  //   }));
-  //   if (clientId) {
-  //     try {
-  //       const response = await fetch(`${backendUrl}/api/cart/${clientId}`, {
-  //         method: "POST",
-  //         headers: {
-  //           "Content-Type": "application/json",
-  //         },
-  //         body: JSON.stringify({ productId: itemId }),
-  //       });
-
-  //       if (!response.ok) {
-  //         const errorMessage = await response.text();
-  //         console.error("Error adding to cart:", errorMessage);
-  //       }
-  //       const data = await response.json();
-  //       const syncedCart = {};
-  //       data.items.forEach((item) => {
-  //         syncedCart[item.productId] = item.quantity;
-  //       });
-  //       setCartItems(syncedCart);
-  //     } catch (error) {
-  //       console.error("Error adding to cart:", error);
-  //     }
-  //   } else {
-  //     console.error("Client ID is not defined");
-  //     setShowLoginPopup(true);
-  //   }
-  // };
-
-  // const ReduceItem = async (itemId) => {
-  //   if (clientId) {
-  //     try {
-  //       const response = await fetch(
-  //         `${backendUrl}/api/cart/${clientId}/${itemId}`,
-  //         {
-  //           method: "DELETE",
-  //           headers: {
-  //             "Content-Type": "application/json",
-  //           },
-  //           body: JSON.stringify({ productId: itemId }),
-  //         }
-  //       );
-  //       if (!response.ok) {
-  //         const errorMessage = await response.text();
-  //         console.error("Error Deleting to cart:", errorMessage);
-  //         console.log({
-  //           clientId: clientId,
-  //           productId: itemId,
-  //           quantity: newQuantity,
-  //         });
-  //       }
-  //       const data = await response.json();
-  //       const syncedCart = {};
-  //       data.items.forEach((item) => {
-  //         syncedCart[item.productId] = item.quantity;
-  //       });
-  //       setCartItems(syncedCart);
-  //     } catch (error) {
-  //       console.error("Error deleting to cart ERROR SERVER:", error);
-  //     }
-  //   } else {
-  //     console.error("Client ID is not defined");
-  //   }
-  // };
   const ReduceItem = async (itemId) => {
     if (pendingUpdates.has(itemId)) return;
 

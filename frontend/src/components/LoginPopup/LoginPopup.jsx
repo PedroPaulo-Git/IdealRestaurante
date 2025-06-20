@@ -101,7 +101,13 @@ export const LoginPopup = ({ setShowLoginPopup }) => {
       const data = await response.json();
       console.log(data);
       if (response.ok && data.client) {
-        login(data.client.id, data.client.username, data.client.email); // Call the login method from context
+        login(
+          data.client.id,
+          data.client.username,
+          data.client.email,
+          data.client.isAdmin,
+          data.token // aqui está o token real
+        );
         fetchCartItems(data.client.id);
         console.log("RESPONSE WORK", data);
         setShowSuccessMessage(true);
