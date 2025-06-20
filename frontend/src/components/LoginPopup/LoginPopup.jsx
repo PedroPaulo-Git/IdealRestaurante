@@ -12,7 +12,6 @@ export const LoginPopup = ({ setShowLoginPopup }) => {
   const [showSuccessMessage, setShowSuccessMessage] = useState(null);
   const [formError, setFormError] = useState(null);
 
-
   const { login, fetchCartItems } = useContext(StoreContext);
   const PORT = process.env.REACT_APP_PORT || 3000;
   const backendUrl = import.meta.env.VITE_BACKEND_URL;
@@ -67,17 +66,17 @@ export const LoginPopup = ({ setShowLoginPopup }) => {
 
       const data = await response.json();
 
-     if (!response.ok) {
-  setFormError(data.error || "Erro no registro.");
-  setShowSuccessMessage(false);
-  setTimeout(() => {
-    setShowSuccessMessage(null);
-    setFormError(null);
-  }, 3000);
-} else {
+      if (!response.ok) {
+        setFormError(data.error || "Erro no registro.");
+        setShowSuccessMessage(false);
+        setTimeout(() => {
+          setShowSuccessMessage(null);
+          setFormError(null);
+        }, 3000);
+      } else {
         console.log("RESPONSE WORK", data);
         setShowSuccessMessage(true);
-        setRegisterError(null);
+        setFormError(null);
         setTimeout(() => {
           setShowSuccessMessage(null);
           setShowLoginPopup(false);
@@ -133,9 +132,7 @@ export const LoginPopup = ({ setShowLoginPopup }) => {
           sucesso!
         </div>
       )}
-      {formError && (
-        <div className="loginorregister-fail">{formError}</div>
-      )}
+      {formError && <div className="loginorregister-fail">{formError}</div>}
 
       <div className="login-popup-content">
         <form onSubmit={handleSubmit}>
