@@ -54,7 +54,8 @@ const StoreContextProvider = ({ setShowLoginPopup, children }) => {
       console.error("Token não encontrado no localStorage");
     }
     if (storedClientId && storedUsername) {
-      login(storedClientId, storedUsername, storedEmail,storedToken);
+      login(storedClientId, storedUsername, storedEmail, storedIsAdmin, storedToken);
+
     }
   }, []);
 
