@@ -9,8 +9,8 @@ import Stripe from 'stripe';
 
 // const stripe = new Stripe(process.env.REACT_APP_STRIPE_PUBLISH_KEY as string);
 
-const stripe = new Stripe(process.env.REACT_APP_STRIPE_SECRET_KEY_TEST as string);
-console.log(process.env.REACT_APP_STRIPE_SECRET_KEY)
+const stripe = new Stripe(process.env.STRIPE_SECRET_KEY as string);
+console.log(process.env.STRIPE_SECRET_KEY)
 console.log(process.env.REACT_APP_STRIPE_PUBLISH_KEY)
 // const stripe = require('stripe')('');
 
@@ -23,7 +23,7 @@ console.log(process.env.REACT_APP_STRIPE_PUBLISH_KEY)
 // });
 router.get('/config', async (req: Request, res: Response) => {
     res.send({
-        stripePublishKey: process.env.REACT_APP_STRIPE_PUBLISH_KEY_TEST,
+        stripePublishKey: process.env.STRIPE_PUBLISHABLE_KEY,
     })
 })
 

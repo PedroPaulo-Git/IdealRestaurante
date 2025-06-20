@@ -74,7 +74,7 @@ const StoreContextProvider = ({ setShowLoginPopup, children }) => {
 
   useEffect(() => {
     setToken(localStorage.getItem("token"));
-    console.log("TOKEN :",token);
+    console.log("TOKEN :", token);
   }, [clientId]);
 
   useEffect(() => {
@@ -127,141 +127,252 @@ const StoreContextProvider = ({ setShowLoginPopup, children }) => {
       }
     }
   };
+  const [pendingUpdates, setPendingUpdates] = useState(new Set());
 
   const addToCart = async (itemId) => {
-    // const currentQuantity = cartItems[itemId] || 0;
-    // const newQuantity = currentQuantity + 1;
+    // Se já tem request pendente para este item, ignora
+    if (pendingUpdates.has(itemId)) return;
+
+    // Marca como pendente
+    setPendingUpdates((prev) => new Set([...prev, itemId]));
+
+    // Atualiza UI imediatamente (otimistic update)
     setCartItems((prev) => ({
       ...prev,
       [itemId]: (prev[itemId] || 0) + 1,
     }));
-    if (clientId) {
-      try {
-        const response = await fetch(`${backendUrl}/api/cart/${clientId}`, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ productId: itemId }),
-        });
 
-        if (!response.ok) {
-          const errorMessage = await response.text();
-          console.error("Error adding to cart:", errorMessage);
+    try {
+      // Faz a requisição
+      const response = await fetch(`${backendUrl}/api/cart/${clientId}`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ productId: itemId, quantity: 1 }),
+      });
+
+      const updatedCart = await response.json();
+
+      // SÓ ATUALIZA O ESTADO COM O BACKEND SE NÃO TEM MAIS REQUESTS PENDENTES
+      setPendingUpdates((prev) => {
+        const newSet = new Set(prev);
+        newSet.delete(itemId);
+
+        // Se não tem mais requests pendentes, sincroniza com backend
+        if (newSet.size === 0) {
+          setCartItems(
+            updatedCart.items.reduce(
+              (acc, item) => ({
+                ...acc,
+                [item.productId]: item.quantity,
+              }),
+              {}
+            )
+          );
         }
-        const data = await response.json();
-        const syncedCart = {};
-        data.items.forEach((item) => {
-          syncedCart[item.productId] = item.quantity;
-        });
-        setCartItems(syncedCart);
-      } catch (error) {
-        console.error("Error adding to cart:", error);
-      }
-    } else {
-      console.error("Client ID is not defined");
-      setShowLoginPopup(true);
+
+        return newSet;
+      });
+    } catch (error) {
+      // Se der erro, reverte o update otimistic
+      setCartItems((prev) => ({
+        ...prev,
+        [itemId]: Math.max(0, (prev[itemId] || 1) - 1),
+      }));
+
+      // Remove da lista de pendentes
+      setPendingUpdates((prev) => {
+        const newSet = new Set(prev);
+        newSet.delete(itemId);
+        return newSet;
+      });
     }
   };
 
+  // const addToCart = async (itemId) => {
+  //   // const currentQuantity = cartItems[itemId] || 0;
+  //   // const newQuantity = currentQuantity + 1;
+  //   setCartItems((prev) => ({
+  //     ...prev,
+  //     [itemId]: (prev[itemId] || 0) + 1,
+  //   }));
+  //   if (clientId) {
+  //     try {
+  //       const response = await fetch(`${backendUrl}/api/cart/${clientId}`, {
+  //         method: "POST",
+  //         headers: {
+  //           "Content-Type": "application/json",
+  //         },
+  //         body: JSON.stringify({ productId: itemId }),
+  //       });
+
+  //       if (!response.ok) {
+  //         const errorMessage = await response.text();
+  //         console.error("Error adding to cart:", errorMessage);
+  //       }
+  //       const data = await response.json();
+  //       const syncedCart = {};
+  //       data.items.forEach((item) => {
+  //         syncedCart[item.productId] = item.quantity;
+  //       });
+  //       setCartItems(syncedCart);
+  //     } catch (error) {
+  //       console.error("Error adding to cart:", error);
+  //     }
+  //   } else {
+  //     console.error("Client ID is not defined");
+  //     setShowLoginPopup(true);
+  //   }
+  // };
+
+  // const ReduceItem = async (itemId) => {
+  //   if (clientId) {
+  //     try {
+  //       const response = await fetch(
+  //         `${backendUrl}/api/cart/${clientId}/${itemId}`,
+  //         {
+  //           method: "DELETE",
+  //           headers: {
+  //             "Content-Type": "application/json",
+  //           },
+  //           body: JSON.stringify({ productId: itemId }),
+  //         }
+  //       );
+  //       if (!response.ok) {
+  //         const errorMessage = await response.text();
+  //         console.error("Error Deleting to cart:", errorMessage);
+  //         console.log({
+  //           clientId: clientId,
+  //           productId: itemId,
+  //           quantity: newQuantity,
+  //         });
+  //       }
+  //       const data = await response.json();
+  //       const syncedCart = {};
+  //       data.items.forEach((item) => {
+  //         syncedCart[item.productId] = item.quantity;
+  //       });
+  //       setCartItems(syncedCart);
+  //     } catch (error) {
+  //       console.error("Error deleting to cart ERROR SERVER:", error);
+  //     }
+  //   } else {
+  //     console.error("Client ID is not defined");
+  //   }
+  // };
   const ReduceItem = async (itemId) => {
-    if (clientId) {
-      try {
-        const response = await fetch(
-          `${backendUrl}/api/cart/${clientId}/${itemId}`,
-          {
-            method: "DELETE",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({ productId: itemId }),
-          }
-        );
-        if (!response.ok) {
-          const errorMessage = await response.text();
-          console.error("Error Deleting to cart:", errorMessage);
-          console.log({
-            clientId: clientId,
-            productId: itemId,
-            quantity: newQuantity,
-          });
+    if (pendingUpdates.has(itemId)) return;
+
+    setPendingUpdates((prev) => new Set([...prev, itemId]));
+
+    // Update otimistic
+    setCartItems((prev) => ({
+      ...prev,
+      [itemId]: Math.max(0, (prev[itemId] || 0) - 1),
+    }));
+
+    try {
+      const response = await fetch(
+        `${backendUrl}/api/cart/${clientId}/${itemId}`,
+        {
+          method: "DELETE",
+          headers: { "Content-Type": "application/json" },
         }
-        const data = await response.json();
-        const syncedCart = {};
-        data.items.forEach((item) => {
-          syncedCart[item.productId] = item.quantity;
-        });
-        setCartItems(syncedCart);
-      } catch (error) {
-        console.error("Error deleting to cart ERROR SERVER:", error);
-      }
-    } else {
-      console.error("Client ID is not defined");
+      );
+
+      const updatedCart = await response.json();
+
+      setPendingUpdates((prev) => {
+        const newSet = new Set(prev);
+        newSet.delete(itemId);
+
+        // Só sincroniza se não tem mais pendentes
+        if (newSet.size === 0) {
+          setCartItems(
+            updatedCart.items.reduce(
+              (acc, item) => ({
+                ...acc,
+                [item.productId]: item.quantity,
+              }),
+              {}
+            )
+          );
+        }
+
+        return newSet;
+      });
+    } catch (error) {
+      // Reverte se der erro
+      setCartItems((prev) => ({
+        ...prev,
+        [itemId]: (prev[itemId] || 0) + 1,
+      }));
+
+      setPendingUpdates((prev) => {
+        const newSet = new Set(prev);
+        newSet.delete(itemId);
+        return newSet;
+      });
     }
   };
   ////////////////////////////////////
+const removeFromCart = async (itemId) => {
+  console.log("RemoveFromCart - Removing entire item");
+  const currentQuantity = cartItems[itemId] || 0;
 
-  const removeFromCart = async (itemId) => {
-    const currentQuantity = cartItems[itemId] || 0;
+  if (currentQuantity === 0) {
+    console.error("item not in cart");
+    return;
+  }
 
-    const newQuantity =
-      currentQuantity > 1 ? currentQuantity - currentQuantity : 0;
+  console.log("Current quantity:", currentQuantity);
+  console.log("Removing entire item from cart");
 
-    if (currentQuantity === 0) {
-      console.error("item not in cart");
-      return;
-    }
-    console.log(currentQuantity);
-    console.log(newQuantity);
-    if (clientId) {
-      setCartItems((prev) => ({ ...prev, [itemId]: newQuantity })); // ONLY DEVELOPMENT
-      try {
-        const response = await fetch(
-          `${backendUrl}/api/cart/${clientId}/${itemId}`,
-          {
-            method: "DELETE",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-              clientId: clientId,
-              productId: itemId,
-              quantity: newQuantity, // You might want to adjust this to reflect the current quantity
-            }),
-          }
-        );
-        if (!response.ok) {
-          const errorMessage = await response.text();
-          console.error("Error Deleting to cart:", errorMessage);
-          console.log({
-            clientId: clientId,
-            productId: itemId,
-            quantity: newQuantity,
-          });
-        } else {
-          const result = await response.json();
-          console.log("ITEM ID :", itemId);
-          const deletedItem = result.items.find(
-            (item) => item.quantity === 0 || item.productId === itemId
-          );
+  if (clientId) {
+    // Remove o item completamente do estado local (optimistic update)
+    setCartItems((prev) => {
+      const newCart = { ...prev };
+      delete newCart[itemId];
+      return newCart;
+    });
 
-          if (deletedItem) {
-            console.log(
-              `One this Product ID ${deletedItem.productId} was deleted from the cart.`
-            );
-          } else {
-            console.log(`Product ID ${itemId} was deleted.`);
-          }
-          // setCartItems((prev) => ({ ...prev, [itemId]: newQuantity })); // CORRECT WAY IN PRODUCTION
+    try {
+      const response = await fetch(
+        `${backendUrl}/api/cart/${clientId}/${itemId}`,
+        {
+          method: "DELETE",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ quantity: 0 }),
         }
-      } catch (error) {
-        console.error("Error deleting to cart ERROR SERVER:", error);
-      }
-    } else {
-      console.error("Client ID is not defined");
-    }
-  };
+      );
 
+    if (!response.ok) {
+      const errorMessage = await response.text();
+      console.error("Error removing from cart:", errorMessage);
+
+      // Reverte o estado em caso de erro
+      setCartItems((prev) => ({ ...prev, [itemId]: currentQuantity }));
+    } else {
+      const result = await response.json();
+
+      const updatedCartItems = {};
+      result.items.forEach(item => {
+        updatedCartItems[item.productId] = item.quantity;
+      });
+
+      setCartItems(updatedCartItems);
+    }
+    } catch (error) {
+      console.error("Error removing from cart:", error);
+      
+      // Reverte o estado em caso de erro
+      setCartItems((prev) => ({ ...prev, [itemId]: currentQuantity }));
+    }
+  } else {
+    console.error("Client ID is not defined");
+  }
+};
   const clearCart = async () => {
     setCartItems({});
     localStorage.removeItem("cartItems");

@@ -68,13 +68,13 @@ export const LoginPopup = ({ setShowLoginPopup }) => {
       });
       const data = await response.json();
 
-      if (!response.ok) {
+      if (!response.status === 200) {
         console.error("RESPONSE NOT WORK", data);
         setShowSuccessMessage(false);
         setTimeout(() => {
           setShowSuccessMessage(null);
         }, 1000);
-      } else {
+      } else if (response.status === 200){
         console.log("RESPONSE WORK", data);
         setShowSuccessMessage(true);
         setTimeout(() => {

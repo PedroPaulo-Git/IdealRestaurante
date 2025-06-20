@@ -3,7 +3,8 @@ import clientRoutes from "./routes/clienteRoutes";
 import adminRouter from "./routes/adminRoutes";
 import stripeRoutes from "./Services/StripeService";
 import cors,{ CorsOptions } from "cors";
-
+import dotenv from 'dotenv';
+dotenv.config();
 const app = express();
 const allowedOrigins = [
   "https://ideal-restaurante.vercel.app",

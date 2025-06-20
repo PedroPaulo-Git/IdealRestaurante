@@ -79,7 +79,7 @@ const Navbar = ({ setShowLoginPopup }) => {
           </Link>
           <div className={getTotalCart() === 0 ? "" : "dot"}></div>
         </div>
-        {!clientId && !token && (
+        {(!clientId || !token) &&  (
           <button
             onClick={() => setShowLoginPopup(true)}
             className="button-navbar"
@@ -103,7 +103,7 @@ const Navbar = ({ setShowLoginPopup }) => {
                     <li className="navbar-right-info-profile-user">
                       <p>Seja Bem-Vindo(a) {clientName} ! </p>
                     </li>
-                    <li className="navbar-right-ul-profile">
+                    {/* <li className="navbar-right-ul-profile">
                       <ul className="space-y-1">
                         <li>
                           <a href="#" className="">
@@ -123,7 +123,7 @@ const Navbar = ({ setShowLoginPopup }) => {
                           </a>
                         </li>
                       </ul>
-                    </li>
+                    </li> */}
 
                     <li className="navbar-right-ul-profile">
                       <ul className="e-y-1">
