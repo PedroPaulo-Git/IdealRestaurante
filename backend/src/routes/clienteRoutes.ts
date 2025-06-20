@@ -16,8 +16,14 @@ router.post("/register", async (req, res) => {
     const existingUser = await prisma.client.findUnique({
       where: { email },
     });
+    const existingUsername = await prisma.client.findUnique({
+      where: { username },
+    });
     if (existingUser) {
-      return res.status(400).json({ error: "email já está em uso." });
+      return res.status(400).json({ error: "Email já está em uso." });
+    }
+    if (existingUsername) {
+      return res.status(400).json({ error: "Nome de usuário já está em uso." });
     }
     const hashedPassword = await bcrypt.hash(password, 10);
     console.log(req.body);
@@ -36,6 +42,7 @@ router.post("/register", async (req, res) => {
         zipcode: "", // or null
       },
     });
+    console.log(client_register);
     return res.json(client_register); // Return the created client
   } catch (error) {
     return res.status(400).json({ error: "Error creating client" });
@@ -52,7 +59,7 @@ router.post("/login", async (req: Request, res: Response) => {
 
     // CLIENT IS REGISTRED ?
     if (!client) {
-      return res.status(400).json({ error: "Invalid email or password" });
+      return res.status(400).json({ error: "Email ou Senha Inválida" });
     }
 
     const token = jwt.sign(
@@ -68,7 +75,7 @@ router.post("/login", async (req: Request, res: Response) => {
     const isPasswordValid = await bcrypt.compare(password, client.password);
     // PASSWORD USER VALID ?
     if (!isPasswordValid) {
-      return res.status(400).json({ error: "Invalid email or password" });
+      return res.status(400).json({ error: "Email ou Senha Inválida" });
     }
     return res.json({ message: "Login successful", client, token });
   } catch (error) {
@@ -160,7 +167,6 @@ router.post("/cart/:clientId", async (req, res) => {
   }
 });
 
-
 // DELETE CART CLIENT
 router.delete("/cart/:clientId/:productId", async (req, res) => {
   const clientId = parseInt(req.params.clientId, 10);
@@ -205,10 +211,6 @@ router.delete("/cart/:clientId/:productId", async (req, res) => {
     return res.status(500).json({ error: "Error deleting item from cart" });
   }
 });
-
-
-
-
 
 async function getProductById(productId: number) {
   try {
@@ -457,7 +459,6 @@ router.put("/clients/:id", async (req, res) => {
     return res.status(500).json({ error: "Failed to update client" });
   }
 });
-
 
 // >>>>>>>>>>>>>>>>>>>>>>>>
 router.delete("/:clientId/:id", async (req, res) => {

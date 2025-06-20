@@ -10,6 +10,8 @@ export const LoginPopup = ({ setShowLoginPopup }) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showSuccessMessage, setShowSuccessMessage] = useState(null);
+  const [formError, setFormError] = useState(null);
+
 
   const { login, fetchCartItems } = useContext(StoreContext);
   const PORT = process.env.REACT_APP_PORT || 3000;
@@ -36,27 +38,23 @@ export const LoginPopup = ({ setShowLoginPopup }) => {
     console.log("current > ", currentState);
 
     axios
-    .post(url, payload)
-    .then(async (res) => {
-      localStorage.setItem('token',JSON.stringify(res.data.token));
-      console.log("login jwt axios > ", res);
-     
-      console.log(res.data)
-    })
-    .catch((err) => {
-      console.log("login failed", err);
-    });
+      .post(url, payload)
+      .then(async (res) => {
+        localStorage.setItem("token", JSON.stringify(res.data.token));
+        console.log("login jwt axios > ", res);
+
+        console.log(res.data);
+      })
+      .catch((err) => {
+        console.log("login failed", err);
+      });
 
     if (currentState === "Login") {
-      await handleLogin({ username, email, password }); 
-    }
-     else {
+      await handleLogin({ username, email, password });
+    } else {
       await handleRegister(payload);
     }
-   
   };
-
-
   const handleRegister = async (payload) => {
     try {
       const response = await fetch(url, {
@@ -66,17 +64,20 @@ export const LoginPopup = ({ setShowLoginPopup }) => {
         },
         body: JSON.stringify(payload),
       });
+
       const data = await response.json();
 
-      if (!response.status === 200) {
-        console.error("RESPONSE NOT WORK", data);
-        setShowSuccessMessage(false);
-        setTimeout(() => {
-          setShowSuccessMessage(null);
-        }, 1000);
-      } else if (response.status === 200){
+     if (!response.ok) {
+  setFormError(data.error || "Erro no registro.");
+  setShowSuccessMessage(false);
+  setTimeout(() => {
+    setShowSuccessMessage(null);
+    setFormError(null);
+  }, 3000);
+} else {
         console.log("RESPONSE WORK", data);
         setShowSuccessMessage(true);
+        setRegisterError(null);
         setTimeout(() => {
           setShowSuccessMessage(null);
           setShowLoginPopup(false);
@@ -84,6 +85,7 @@ export const LoginPopup = ({ setShowLoginPopup }) => {
       }
     } catch (error) {
       console.error("Error during registration request", error);
+      setRegisterError("Erro ao se conectar com o servidor.");
     }
   };
 
@@ -98,7 +100,7 @@ export const LoginPopup = ({ setShowLoginPopup }) => {
       });
 
       const data = await response.json();
-      console.log(data)
+      console.log(data);
       if (response.ok && data.client) {
         login(data.client.id, data.client.username, data.client.email); // Call the login method from context
         fetchCartItems(data.client.id);
@@ -111,9 +113,11 @@ export const LoginPopup = ({ setShowLoginPopup }) => {
       } else {
         console.error("Login failed:", data.message || "Unknown error");
         console.error("RESPONSE NOT WORK", data);
+        setFormError(data.error || "Erro no login.");
         setShowSuccessMessage(false);
         setTimeout(() => {
           setShowSuccessMessage(null);
+          setFormError(null);
         }, 1000);
       }
     } catch (error) {
@@ -129,12 +133,10 @@ export const LoginPopup = ({ setShowLoginPopup }) => {
           sucesso!
         </div>
       )}
-      {showSuccessMessage === false && (
-        <div className="loginorregister-fail">
-          {currentState === "Login" ? <>Login</> : <>Registro</>} mal sucedido!
-          Tente Novamente
-        </div>
+      {formError && (
+        <div className="loginorregister-fail">{formError}</div>
       )}
+
       <div className="login-popup-content">
         <form onSubmit={handleSubmit}>
           <div className="login-popup-content-tittle">
