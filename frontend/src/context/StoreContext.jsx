@@ -21,11 +21,7 @@ const StoreContextProvider = ({ setShowLoginPopup, children }) => {
     setIsAdmin(storedIsAdmin);
     const storedCartItems = JSON.parse(localStorage.getItem("cartItems"));
     const storedToken = localStorage.getItem("token");
-    if (storedToken) {
-      setToken(storedToken);
-    } else {
-      console.error("Token não encontrado no localStorage");
-    }
+    
     //console.log(storedCartItems)
     //console.log('Stored Client ID:', storedClientId, 'Stored Username:', storedUsername); // Add this for debugging
     setCartItems(storedCartItems);
@@ -52,8 +48,13 @@ const StoreContextProvider = ({ setShowLoginPopup, children }) => {
     } else {
       console.error("Invalid storedEmail:", storedEmail);
     }
+    if (storedToken) {
+      setToken(storedToken);
+    } else {
+      console.error("Token não encontrado no localStorage");
+    }
     if (storedClientId && storedUsername) {
-      login(storedClientId, storedUsername, storedEmail);
+      login(storedClientId, storedUsername, storedEmail,storedToken);
     }
   }, []);
 
